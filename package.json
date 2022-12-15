@@ -1,0 +1,42 @@
+{
+	"name": "tabulator-modules",
+	"version": "0.0.1",
+	"description": "",
+	"main": "index.js",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/pfaciana/tabulator-modules.git"
+	},
+	"scripts": {},
+	"author": "Phil Faciana <phil@renderdev.com> (https://renderdev.com/)",
+	"license": "MIT",
+	"homepage": "https://github.com/pfaciana/tabulator-modules",
+	"devDependencies": {
+		"@babel/core": "^7",
+		"@babel/plugin-proposal-logical-assignment-operators": "^7",
+		"@babel/preset-env": "^7",
+		"babel-plugin-transform-es2017-object-entries": "^0",
+		"babelify": "^10",
+		"browserify-buffer": "^1",
+		"browserslist": "^4",
+		"gulp": "^4.0.1",
+		"gulp-babel": "^8",
+		"gulp-brotli": "^3",
+		"gulp-concat": "^2",
+		"gulp-conditional-eol": "^1",
+		"gulp-create-tasks": "^1",
+		"gulp-debug": "^4",
+		"gulp-if": "^3",
+		"gulp-rename": "^2",
+		"gulp-size": "^4",
+		"gulp-terser": "^2",
+		"gzip-size": "^7",
+		"jest": "^29",
+		"jquery": "^3.6.2",
+		"jquery-small-pubsub": "^0",
+		"jsdom": "^20"
+	},
+	"dependencies": {
+		"es5-util": "^1"
+	}
+}
