@@ -82,7 +82,14 @@ module.exports.modules = {
   })
 };
 if ((typeof window === "undefined" ? "undefined" : _typeof(window)) === 'object') {
-  window.Tabulator = module.exports;
+  var _window$Tabulator, _window$Tabulator$Cre, _window$Tabulator2, _window$Tabulator2$fi, _window$Tabulator3, _window$Tabulator3$fo, _window$Tabulator4, _window$Tabulator4$so, _window$Tabulator5, _window$Tabulator5$ht, _window$Tabulator6, _window$Tabulator6$he, _window$Tabulator7, _window$Tabulator7$mo;
+  (_window$Tabulator$Cre = (_window$Tabulator = window.Tabulator).Create) !== null && _window$Tabulator$Cre !== void 0 ? _window$Tabulator$Cre : _window$Tabulator.Create = module.exports.Create;
+  (_window$Tabulator2$fi = (_window$Tabulator2 = window.Tabulator).filters) !== null && _window$Tabulator2$fi !== void 0 ? _window$Tabulator2$fi : _window$Tabulator2.filters = module.exports.filters;
+  (_window$Tabulator3$fo = (_window$Tabulator3 = window.Tabulator).formatters) !== null && _window$Tabulator3$fo !== void 0 ? _window$Tabulator3$fo : _window$Tabulator3.formatters = module.exports.formatters;
+  (_window$Tabulator4$so = (_window$Tabulator4 = window.Tabulator).sorters) !== null && _window$Tabulator4$so !== void 0 ? _window$Tabulator4$so : _window$Tabulator4.sorters = module.exports.sorters;
+  (_window$Tabulator5$ht = (_window$Tabulator5 = window.Tabulator).html) !== null && _window$Tabulator5$ht !== void 0 ? _window$Tabulator5$ht : _window$Tabulator5.html = module.exports.html;
+  (_window$Tabulator6$he = (_window$Tabulator6 = window.Tabulator).helpers) !== null && _window$Tabulator6$he !== void 0 ? _window$Tabulator6$he : _window$Tabulator6.helpers = module.exports.helpers;
+  (_window$Tabulator7$mo = (_window$Tabulator7 = window.Tabulator).modules) !== null && _window$Tabulator7$mo !== void 0 ? _window$Tabulator7$mo : _window$Tabulator7.modules = module.exports.modules;
 }
 
 }).call(this)}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})

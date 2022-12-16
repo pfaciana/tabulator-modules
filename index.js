@@ -52,5 +52,11 @@ module.exports.modules = {
 };
 
 if (typeof window === 'object') {
-	window.Tabulator = module.exports;
+	window.Tabulator.Create ??= module.exports.Create;
+	window.Tabulator.filters ??= module.exports.filters;
+	window.Tabulator.formatters ??= module.exports.formatters;
+	window.Tabulator.sorters ??= module.exports.sorters;
+	window.Tabulator.html ??= module.exports.html;
+	window.Tabulator.helpers ??= module.exports.helpers;
+	window.Tabulator.modules ??= module.exports.modules;
 }

@@ -81,7 +81,14 @@ module.exports.modules = {
   })
 };
 if (typeof window === 'object') {
-  window.Tabulator = module.exports;
+  var _window$Tabulator, _window$Tabulator2, _window$Tabulator3, _window$Tabulator4, _window$Tabulator5, _window$Tabulator6, _window$Tabulator7;
+  (_window$Tabulator = window.Tabulator).Create ?? (_window$Tabulator.Create = module.exports.Create);
+  (_window$Tabulator2 = window.Tabulator).filters ?? (_window$Tabulator2.filters = module.exports.filters);
+  (_window$Tabulator3 = window.Tabulator).formatters ?? (_window$Tabulator3.formatters = module.exports.formatters);
+  (_window$Tabulator4 = window.Tabulator).sorters ?? (_window$Tabulator4.sorters = module.exports.sorters);
+  (_window$Tabulator5 = window.Tabulator).html ?? (_window$Tabulator5.html = module.exports.html);
+  (_window$Tabulator6 = window.Tabulator).helpers ?? (_window$Tabulator6.helpers = module.exports.helpers);
+  (_window$Tabulator7 = window.Tabulator).modules ?? (_window$Tabulator7.modules = module.exports.modules);
 }
 
 }).call(this)}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
