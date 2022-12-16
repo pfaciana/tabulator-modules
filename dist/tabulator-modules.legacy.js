@@ -919,8 +919,9 @@ module.exports = function (column, data, initial, options, element) {
 "use strict";
 
 var isType = require('../helpers/isType');
+var objectSorter = require("../sorters/object");
 module.exports = function (column, data, initial, options, element) {
-  var _column$headerFilter, _column$headerFilterP;
+  var _column$headerFilter, _column$headerFilterP, _column$sorter;
   var type = isType('formatter', ['list'], column, initial);
   if (!type) {
     return column;
@@ -931,11 +932,12 @@ module.exports = function (column, data, initial, options, element) {
     sort: 'asc',
     valuesLookup: true
   };
+  (_column$sorter = column.sorter) !== null && _column$sorter !== void 0 ? _column$sorter : column.sorter = objectSorter;
   delete column.formatter;
   return column;
 };
 
-},{"../helpers/isType":28}],36:[function(require,module,exports){
+},{"../helpers/isType":28,"../sorters/object":48}],36:[function(require,module,exports){
 "use strict";
 
 var isType = require('../helpers/isType');

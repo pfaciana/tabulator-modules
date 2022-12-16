@@ -861,6 +861,7 @@ module.exports = function (column, data, initial, options, element) {
 "use strict";
 
 const isType = require('../helpers/isType');
+const objectSorter = require("../sorters/object");
 module.exports = function (column, data, initial, options, element) {
   var type = isType('formatter', ['list'], column, initial);
   if (!type) {
@@ -872,11 +873,12 @@ module.exports = function (column, data, initial, options, element) {
     sort: 'asc',
     valuesLookup: true
   });
+  column.sorter ?? (column.sorter = objectSorter);
   delete column.formatter;
   return column;
 };
 
-},{"../helpers/isType":28}],36:[function(require,module,exports){
+},{"../helpers/isType":28,"../sorters/object":48}],36:[function(require,module,exports){
 "use strict";
 
 const isType = require('../helpers/isType');

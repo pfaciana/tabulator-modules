@@ -1,4 +1,5 @@
 const isType = require('../helpers/isType');
+const objectSorter = require("../sorters/object");
 
 module.exports = function (column, data, initial, options, element) {
 	var type = isType('formatter', ['list'], column, initial);
@@ -13,6 +14,8 @@ module.exports = function (column, data, initial, options, element) {
 		sort: 'asc',
 		valuesLookup: true,
 	};
+
+	column.sorter ??= objectSorter;
 
 	delete column.formatter;
 
