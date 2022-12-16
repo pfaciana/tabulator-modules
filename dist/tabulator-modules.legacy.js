@@ -327,6 +327,9 @@ var filters = [require('./modules/regex'), require('./modules/timeAgo'), require
 function Create(element, options) {
   var table,
     parameters = _objectValues(arguments);
+  if (typeof jQuery === 'function' && 'publish' in jQuery) {
+    options = jQuery.publish('tabulator-table-setup', options, element);
+  }
   function updateColumn(column, data) {
     var initial = jQuery.extend(true, {}, column || {});
     if (typeof jQuery === 'function' && 'publish' in jQuery) {
@@ -349,7 +352,8 @@ function Create(element, options) {
     parameters[1] = options;
     table = _construct(Tabulator, _toConsumableArray(parameters));
   } else {
-    table = _construct(Tabulator, Array.prototype.slice.call(arguments));
+    parameters[1] = options;
+    table = _construct(Tabulator, _toConsumableArray(parameters));
     table.on('tableBuilt', function () {
       var data = table.getData();
       jQuery.each(table.columnManager.getColumns(), function (i, column) {

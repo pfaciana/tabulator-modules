@@ -19,6 +19,10 @@ let filters = [
 function Create(element, options) {
 	var table, parameters = Object.values(arguments);
 
+	if (typeof jQuery === 'function' && 'publish' in jQuery) {
+		options = jQuery.publish('tabulator-table-setup', options, element);
+	}
+
 	function updateColumn(column, data) {
 		const initial = jQuery.extend(true, {}, column || {});
 		if (typeof jQuery === 'function' && 'publish' in jQuery) {
@@ -41,7 +45,8 @@ function Create(element, options) {
 		parameters[1] = options;
 		table = new Tabulator(...parameters);
 	} else {
-		table = new Tabulator(...arguments);
+		parameters[1] = options;
+		table = new Tabulator(...parameters);
 		table.on('tableBuilt', function () {
 			var data = table.getData();
 			jQuery.each(table.columnManager.getColumns(), function (i, column) {
