@@ -1,5 +1,6 @@
 const isType = require('../helpers/isType');
 const {valuesLookup} = require('./../html/list[]');
+const arraySorter = require("../sorters/array");
 
 module.exports = function (column, data, initial, options, element) {
 	var type = isType('formatter', ['list[]'], column, initial);
@@ -17,6 +18,8 @@ module.exports = function (column, data, initial, options, element) {
 	column.headerFilterFunc ??= function (headerValue, rowValue, rowData, filterParams = {}) {
 		return rowValue.includes(headerValue);
 	};
+
+	column.sorter ??= arraySorter;
 
 	delete column.formatter;
 

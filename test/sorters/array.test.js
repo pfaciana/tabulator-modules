@@ -10,8 +10,8 @@ const table = [
 	[1, arr2, arr1],
 	[0, arr1, arr1],
 
-	[0, obj1, obj2],
-	[0, obj2, obj1],
+	[-1, obj1, obj2],
+	[1, obj2, obj1],
 	[0, obj1, obj1],
 
 	[2, arr1, obj1],
@@ -19,25 +19,29 @@ const table = [
 	[3, arr2, obj1],
 	[3, arr2, obj2],
 
-	[0, '[a]', '{a}'],
-	[0, '[a]', 'a'],
-	[0, '{a}', 'a'],
-	[0, 'a', 'b'],
-	[0, '1', 'a'],
-	[0, '-1', 'a'],
+	[-1, '[a]', '{a}'],
+	[-1, '[a]', 'a'],
+	[1, '{a}', 'a'],
+	[-1, 'a', 'b'],
+	[-1, '1', 'a'],
+	[-1, '-1', 'a'],
 
-	[0, 1, 100],
-	[0, -99.99, 99.99],
+	[-99, 1, 100],
+	[-199.98, -99.99, 99.99],
 
-	[0, '1', true],
-	[0, 1, true],
-	[0, '.1', 1.1],
-	[0, 1.1, '2.1'],
+	[1, '1', true],
+	[1, 1, true],
+	[-1, '.1', 1.1],
+	[-1, 1.1, '2.1'],
 	[-1, false, true],
-	[0, undefined, ''],
-	[0, undefined, null],
-	[0, null, false],
-	[0, '', null],
+	[-1, undefined, ''],
+	[-1, undefined, null],
+	[-1, null, false],
+	[1, '', null],
+
+	[1, [1, 2, 3], ['A', 'B', 'C']], // JSON.stringify make "'" (from string) so ' < 1 instead of 1 < A
+	[-1, ['1', '2', '3'], ['A', 'B', 'C']],
+	[1, ['abc', 'xyz'], ['abc', 'def']],
 ];
 
 test.each(table)(

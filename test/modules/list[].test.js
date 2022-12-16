@@ -25,6 +25,7 @@ test('list[]', () => {
 		expect(options.columns[0]).toHaveProperty('headerFilterParams');
 		expect(options.columns[0].headerFilterParams).toHaveProperty('valuesLookup');
 		expect(options.columns[0]).toHaveProperty('headerFilterFunc');
+		expect(options.columns[0]).toHaveProperty('sorter');
 		expect(options.columns[0]).not.toHaveProperty('formatter');
 	});
 
@@ -42,6 +43,7 @@ test('ignore non-list[]', () => {
 		expect(options.columns[0]).not.toHaveProperty('headerFilter', 'list');
 		expect(options.columns[0]).not.toHaveProperty('headerFilterParams');
 		expect(options.columns[0]).not.toHaveProperty('headerFilterFunc');
+		expect(options.columns[0]).not.toHaveProperty('sorter');
 		expect(options.columns[0]).toHaveProperty('formatter', 'not-list[]');
 	});
 
