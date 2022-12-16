@@ -35,12 +35,57 @@ module.exports.helpers = {
   intervals: require('./src/helpers/intervals'),
   isType: require('./src/helpers/isType')
 };
+module.exports.modules = {
+  all: require('./src/modules/all')({}),
+  args: require('./src/modules/args')({
+    formatter: 'args'
+  }),
+  boolean: require('./src/modules/boolean')({
+    formatter: 'boolean'
+  }),
+  files: require('./src/modules/files')({
+    formatter: 'files'
+  }),
+  list: require('./src/modules/list')({
+    formatter: 'list'
+  }),
+  "list[]": require('./src/modules/list[]')({
+    formatter: 'list[]'
+  }),
+  minMax: require('./src/modules/minMax')({
+    formatter: 'minMax'
+  }, []),
+  "minMax[]": require('./src/modules/minMax[]')({
+    formatter: 'minMax[]'
+  }, []),
+  number: require('./src/modules/number')({
+    formatter: 'number'
+  }),
+  object: require('./src/modules/object')({
+    formatter: 'object'
+  }),
+  regex: require('./src/modules/regex')({
+    formatter: 'regex'
+  }),
+  string: require('./src/modules/string')({
+    formatter: 'string'
+  }),
+  timeAgo: require('./src/modules/timeAgo')({
+    formatter: 'timeAgo'
+  }),
+  timeMs: require('./src/modules/timeMs')({
+    formatter: 'timeMs'
+  }, []),
+  urls: require('./src/modules/urls')({
+    formatter: 'urls'
+  })
+};
 if (typeof window === 'object') {
   window.Tabulator = module.exports;
 }
 
 }).call(this)}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./src/Create":12,"./src/filters/advanced":13,"./src/filters/args":14,"./src/filters/array":15,"./src/filters/minMax":16,"./src/filters/regex":17,"./src/filters/timeAgo":18,"./src/formatters/args":19,"./src/formatters/array":20,"./src/formatters/files":21,"./src/formatters/object":22,"./src/formatters/timeAgo":23,"./src/formatters/urls":24,"./src/helpers/advancedSearch":25,"./src/helpers/getSize":26,"./src/helpers/intervals":27,"./src/helpers/isType":28,"./src/html/list[]":29,"./src/html/minMax":30,"./src/sorters/args":46,"./src/sorters/array":47,"./src/sorters/object":48}],2:[function(require,module,exports){
+},{"./src/Create":12,"./src/filters/advanced":13,"./src/filters/args":14,"./src/filters/array":15,"./src/filters/minMax":16,"./src/filters/regex":17,"./src/filters/timeAgo":18,"./src/formatters/args":19,"./src/formatters/array":20,"./src/formatters/files":21,"./src/formatters/object":22,"./src/formatters/timeAgo":23,"./src/formatters/urls":24,"./src/helpers/advancedSearch":25,"./src/helpers/getSize":26,"./src/helpers/intervals":27,"./src/helpers/isType":28,"./src/html/list[]":29,"./src/html/minMax":30,"./src/modules/all":31,"./src/modules/args":32,"./src/modules/boolean":33,"./src/modules/files":34,"./src/modules/list":35,"./src/modules/list[]":36,"./src/modules/minMax":37,"./src/modules/minMax[]":38,"./src/modules/number":39,"./src/modules/object":40,"./src/modules/regex":41,"./src/modules/string":42,"./src/modules/timeAgo":43,"./src/modules/timeMs":44,"./src/modules/urls":45,"./src/sorters/args":46,"./src/sorters/array":47,"./src/sorters/object":48}],2:[function(require,module,exports){
 const getFromObjPath = require('./getFromObjPath');
 
 function arrayColumn(array, columnKey = null, indexKey = null) {
@@ -838,6 +883,7 @@ const isType = require('../helpers/isType');
 const {
   valuesLookup
 } = require('./../html/list[]');
+const arraySorter = require("../sorters/array");
 module.exports = function (column, data, initial, options, element) {
   var type = isType('formatter', ['list[]'], column, initial);
   if (!type) {
@@ -852,11 +898,12 @@ module.exports = function (column, data, initial, options, element) {
     let filterParams = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : {};
     return rowValue.includes(headerValue);
   });
+  column.sorter ?? (column.sorter = arraySorter);
   delete column.formatter;
   return column;
 };
 
-},{"../helpers/isType":28,"./../html/list[]":29}],37:[function(require,module,exports){
+},{"../helpers/isType":28,"../sorters/array":47,"./../html/list[]":29}],37:[function(require,module,exports){
 "use strict";
 
 const arrayColumn = require('es5-util/js/arrayColumn');
@@ -868,10 +915,10 @@ module.exports = function (column, data, initial, options, element) {
   if (!type) {
     return column;
   }
-  var values = arrayColumn(data, column.field);
+  var values = data.length ? arrayColumn(data, column.field) : [];
   column.headerFilterParams ?? (column.headerFilterParams = {
-    min: Math.min(...values),
-    max: Math.max(...values),
+    min: values.length ? Math.min(...values) : false,
+    max: values.length ? Math.max(...values) : false,
     filterMin: ['minMax', 'min'].includes(type),
     filterMax: ['minMax', 'max'].includes(type)
   });
@@ -897,11 +944,11 @@ module.exports = function (column, data, initial, options, element) {
   if (!type) {
     return column;
   }
-  var values = arrayColumn(data, column.field);
+  var values = data.length ? arrayColumn(data, column.field) : [];
   values = values.map(value => getSize(value));
   column.headerFilterParams ?? (column.headerFilterParams = {
-    min: Math.min(...values),
-    max: Math.max(...values),
+    min: values.length ? Math.min(...values) : false,
+    max: values.length ? Math.max(...values) : false,
     filterMin: ['minMax[]', 'min[]'].includes(type),
     filterMax: ['minMax[]', 'max[]'].includes(type)
   });
@@ -987,7 +1034,6 @@ module.exports = function (column, data, initial, options, element) {
 },{"../helpers/isType":28}],43:[function(require,module,exports){
 "use strict";
 
-const getKey = require('es5-util/js/getKey');
 const isType = require('../helpers/isType');
 const minMaxDom = require("../html/minMax");
 const timeAgoFilter = require("../filters/timeAgo");
@@ -1014,7 +1060,7 @@ module.exports = function (column, data, initial, options, element) {
   return column;
 };
 
-},{"../filters/timeAgo":18,"../formatters/timeAgo":23,"../helpers/isType":28,"../html/minMax":30,"es5-util/js/getKey":5}],44:[function(require,module,exports){
+},{"../filters/timeAgo":18,"../formatters/timeAgo":23,"../helpers/isType":28,"../html/minMax":30}],44:[function(require,module,exports){
 "use strict";
 
 const arrayColumn = require("es5-util/js/arrayColumn");
@@ -1026,10 +1072,10 @@ module.exports = function (column, data, initial, options, element) {
   if (!type) {
     return column;
   }
-  var values = arrayColumn(data, column.field);
+  var values = data.length ? arrayColumn(data, column.field) : [];
   column.headerFilterParams ?? (column.headerFilterParams = {
-    min: Math.min(...values),
-    max: Math.max(...values),
+    min: values.length ? Math.min(...values) : false,
+    max: values.length ? Math.max(...values) : false,
     filterMin: ['timeMs', 'minTimeMs'].includes(type),
     filterMax: ['timeMs', 'maxTimeMs'].includes(type)
   });
@@ -1080,11 +1126,16 @@ module.exports = function (o1, o2) {
 "use strict";
 
 const getSize = require("../helpers/getSize");
+const objectSorter = require("./../sorters/object");
 module.exports = function (a, b, aRow, bRow, column, dir, sorterParams) {
-  return getSize(a) - getSize(b);
+  const sizeDiff = getSize(a) - getSize(b);
+  if (sizeDiff) {
+    return sizeDiff;
+  }
+  return objectSorter(...arguments);
 };
 
-},{"../helpers/getSize":26}],48:[function(require,module,exports){
+},{"../helpers/getSize":26,"./../sorters/object":48}],48:[function(require,module,exports){
 "use strict";
 
 const compare = require('es5-util/js/compare');

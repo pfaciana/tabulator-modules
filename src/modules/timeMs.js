@@ -9,10 +9,10 @@ module.exports = function (column, data, initial, options, element) {
 		return column;
 	}
 
-	var values = arrayColumn(data, column.field);
+	var values = data.length ? arrayColumn(data, column.field) : [];
 	column.headerFilterParams ??= {
-		min: Math.min(...values),
-		max: Math.max(...values),
+		min: values.length ? Math.min(...values) : false,
+		max: values.length ? Math.max(...values) : false,
 		filterMin: ['timeMs', 'minTimeMs'].includes(type),
 		filterMax: ['timeMs', 'maxTimeMs'].includes(type),
 	};

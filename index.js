@@ -33,6 +33,23 @@ module.exports.helpers = {
 	intervals: require('./src/helpers/intervals'),
 	isType: require('./src/helpers/isType'),
 };
+module.exports.modules = {
+	all: require('./src/modules/all')({}),
+	args: require('./src/modules/args')({formatter: 'args'}),
+	boolean: require('./src/modules/boolean')({formatter: 'boolean'}),
+	files: require('./src/modules/files')({formatter: 'files'}),
+	list: require('./src/modules/list')({formatter: 'list'}),
+	"list[]": require('./src/modules/list[]')({formatter: 'list[]'}),
+	minMax: require('./src/modules/minMax')({formatter: 'minMax'}, []),
+	"minMax[]": require('./src/modules/minMax[]')({formatter: 'minMax[]'}, []),
+	number: require('./src/modules/number')({formatter: 'number'}),
+	object: require('./src/modules/object')({formatter: 'object'}),
+	regex: require('./src/modules/regex')({formatter: 'regex'}),
+	string: require('./src/modules/string')({formatter: 'string'}),
+	timeAgo: require('./src/modules/timeAgo')({formatter: 'timeAgo'}),
+	timeMs: require('./src/modules/timeMs')({formatter: 'timeMs'}, []),
+	urls: require('./src/modules/urls')({formatter: 'urls'}),
+};
 
 if (typeof window === 'object') {
 	window.Tabulator = module.exports;

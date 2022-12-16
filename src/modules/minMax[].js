@@ -12,11 +12,11 @@ module.exports = function (column, data, initial, options, element) {
 		return column;
 	}
 
-	var values = arrayColumn(data, column.field);
+	var values = data.length ? arrayColumn(data, column.field) : [];
 	values = values.map(value => getSize(value));
 	column.headerFilterParams ??= {
-		min: Math.min(...values),
-		max: Math.max(...values),
+		min: values.length ? Math.min(...values) : false,
+		max: values.length ? Math.max(...values) : false,
 		filterMin: ['minMax[]', 'min[]'].includes(type),
 		filterMax: ['minMax[]', 'max[]'].includes(type),
 	};

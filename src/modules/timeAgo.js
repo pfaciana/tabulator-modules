@@ -1,4 +1,3 @@
-const getKey = require('es5-util/js/getKey');
 const isType = require('../helpers/isType');
 const minMaxDom = require("../html/minMax");
 const timeAgoFilter = require("../filters/timeAgo");
