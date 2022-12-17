@@ -17,8 +17,8 @@ test('minMax', () => {
 	expect($(wrapper).find('input').attr('max')).toEqual('10');
 	expect($(wrapper).find('input').toArray().reduce((accumulator, currentValue) => accumulator + $(currentValue).attr('placeholder'), '')).toEqual('MinMax');
 	expect($(wrapper).prop('outerHTML')).toEqual(`<span>
-		<input type="number" placeholder="Min" min="2" max="10" style="padding: 4px; width: 50%; box-sizing: border-box;">
-		<input type="number" placeholder="Max" min="2" max="10" style="padding: 4px; width: 50%; box-sizing: border-box;">
+		<input type="number" placeholder="Min" min="2" max="10" style="padding: 4px !important; width: 50% !important; box-sizing: border-box;">
+		<input type="number" placeholder="Max" min="2" max="10" style="padding: 4px !important; width: 50% !important; box-sizing: border-box;">
 	</span>`.replace(/[\t\r\n]/g, ''));
 });
 
@@ -31,7 +31,7 @@ test('min', () => {
 	expect($(wrapper).find('input').attr('max')).toEqual('7');
 	expect($(wrapper).find('input').toArray().reduce((accumulator, currentValue) => accumulator + $(currentValue).attr('placeholder'), '')).toEqual('Min');
 	expect($(wrapper).prop('outerHTML')).toEqual(`<span>
-		<input type="number" placeholder="Min" min="3" max="7" style="padding: 4px; width: 100%; box-sizing: border-box;">
+		<input type="number" placeholder="Min" min="3" max="7" style="padding: 4px !important; width: 100% !important; box-sizing: border-box;">
 	</span>`.replace(/[\t\r\n]/g, ''));
 });
 
@@ -44,7 +44,7 @@ test('max', () => {
 	expect($(wrapper).find('input').attr('max')).toEqual('8');
 	expect($(wrapper).find('input').toArray().reduce((accumulator, currentValue) => accumulator + $(currentValue).attr('placeholder'), '')).toEqual('Max');
 	expect($(wrapper).prop('outerHTML')).toEqual(`<span>
-		<input type="number" placeholder="Max" min="1" max="8" style="padding: 4px; width: 100%; box-sizing: border-box;">
+		<input type="number" placeholder="Max" min="1" max="8" style="padding: 4px !important; width: 100% !important; box-sizing: border-box;">
 	</span>`.replace(/[\t\r\n]/g, ''));
 });
 
@@ -57,6 +57,6 @@ test('no min/max attrs', () => {
 	expect($(wrapper).find('input').attr('max')).toEqual(undefined);
 	expect($(wrapper).find('input').toArray().reduce((accumulator, currentValue) => accumulator + $(currentValue).attr('placeholder'), '')).toEqual('Max');
 	expect($(wrapper).prop('outerHTML')).toEqual(`<span>
-		<input type="number" placeholder="Max" style="padding: 4px; width: 100%; box-sizing: border-box;">
+		<input type="number" placeholder="Max" style="padding: 4px !important; width: 100% !important; box-sizing: border-box;">
 	</span>`.replace(/[\t\r\n]/g, ''));
 });

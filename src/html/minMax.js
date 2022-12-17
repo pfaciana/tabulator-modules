@@ -21,8 +21,8 @@ module.exports = function (cell, onRendered, success, cancel, params) {
 		if (params.max !== false) {
 			input.setAttribute('max', Math.ceil(params.max) || 100);
 		}
-		input.style.padding = '4px';
-		input.style.width = params.filterMin && params.filterMax ? '50%' : '100%';
+		input.style.setProperty('padding', '4px', 'important');
+		input.style.setProperty('width', params.filterMin && params.filterMax ? '50%' : '100%', 'important');
 		input.style.boxSizing = 'border-box';
 		input.value = cell.getValue();
 		input.addEventListener('change', buildValues);
