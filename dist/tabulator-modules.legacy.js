@@ -643,6 +643,10 @@ module.exports = function (cell, formatterParams, onRendered) {
   }
   return toAssociativeArray(values).join((_formatterParams$join = formatterParams.join) !== null && _formatterParams$join !== void 0 ? _formatterParams$join : '<br>');
 };
+module.exports.byKeys = function (cell, formatterParams, onRendered) {
+  var value = cell.getValue();
+  return isObject(value) ? Object.keys(value).length : +!!value;
+};
 
 },{"es5-util/js/isObject":7,"es5-util/js/toAssociativeArray":10}],24:[function(require,module,exports){
 "use strict";
@@ -1083,7 +1087,7 @@ module.exports = function (column, data, initial, options, element) {
   if (!type) {
     return column;
   }
-  var values = data.length ? arrayColumn(data, column.field) : {};
+  var values = data.length ? arrayColumn(data, column.field) : [];
   values = values.map(function (value) {
     return value ? Object.keys(value).length : 0;
   });
@@ -1096,9 +1100,9 @@ module.exports = function (column, data, initial, options, element) {
   (_column$headerFilter = column.headerFilter) !== null && _column$headerFilter !== void 0 ? _column$headerFilter : column.headerFilter = minMaxDom;
   (_column$headerFilterF = column.headerFilterFunc) !== null && _column$headerFilterF !== void 0 ? _column$headerFilterF : column.headerFilterFunc = objectFilter;
   (_column$headerFilterL = column.headerFilterLiveFilter) !== null && _column$headerFilterL !== void 0 ? _column$headerFilterL : column.headerFilterLiveFilter = false;
-  column.formatter = objectFormatter;
+  column.formatter = objectFormatter.byKeys;
   (_column$headerSortSta = column.headerSortStartingDir) !== null && _column$headerSortSta !== void 0 ? _column$headerSortSta : column.headerSortStartingDir = 'desc';
-  (_column$sorter = column.sorter) !== null && _column$sorter !== void 0 ? _column$sorter : column.sorter = objectSorter;
+  (_column$sorter = column.sorter) !== null && _column$sorter !== void 0 ? _column$sorter : column.sorter = objectSorter.byKeys;
   return column;
 };
 
@@ -1292,9 +1296,19 @@ module.exports = function (a, b, aRow, bRow, column, dir, sorterParams) {
 },{"../helpers/getSize":27,"./../sorters/object":50}],50:[function(require,module,exports){
 "use strict";
 
+var isObject = require('es5-util/js/isObject');
 var compare = require('es5-util/js/compare');
 module.exports = function (a, b, aRow, bRow, column, dir, sorterParams) {
   return compare(a, b);
 };
+module.exports.byKeys = function (a, b, aRow, bRow, column, dir, sorterParams) {
+  var aSize = isObject(a) ? Object.keys(a).length : +!!a;
+  var bSize = isObject(b) ? Object.keys(b).length : +!!b;
+  var sizeDiff = aSize - bSize;
+  if (sizeDiff) {
+    return sizeDiff;
+  }
+  return compare(a, b);
+};
 
-},{"es5-util/js/compare":3}]},{},[1]);
+},{"es5-util/js/compare":3,"es5-util/js/isObject":7}]},{},[1]);

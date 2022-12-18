@@ -13,3 +13,8 @@ module.exports = function (cell, formatterParams, onRendered) {
 	}
 	return toAssociativeArray(values).join(formatterParams.join ?? '<br>');
 };
+
+module.exports.byKeys = function (cell, formatterParams, onRendered) {
+	var value = cell.getValue();
+	return isObject(value) ? Object.keys(value).length : (+!!value);
+};

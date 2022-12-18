@@ -11,7 +11,7 @@ module.exports = function (column, data, initial, options, element) {
 		return column;
 	}
 
-	var values = data.length ? arrayColumn(data, column.field) : {};
+	var values = data.length ? arrayColumn(data, column.field) : [];
 	values = values.map(value => value ? Object.keys(value).length : 0);
 	column.headerFilterParams ??= {
 		min: values.length ? Math.min(...values) : false,
@@ -23,10 +23,10 @@ module.exports = function (column, data, initial, options, element) {
 	column.headerFilterFunc ??= objectFilter;
 	column.headerFilterLiveFilter ??= false;
 
-	column.formatter = objectFormatter;
+	column.formatter = objectFormatter.byKeys;
 
 	column.headerSortStartingDir ??= 'desc';
-	column.sorter ??= objectSorter;
+	column.sorter ??= objectSorter.byKeys;
 
 	return column;
 };

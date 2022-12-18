@@ -608,6 +608,10 @@ module.exports = function (cell, formatterParams, onRendered) {
   }
   return toAssociativeArray(values).join(formatterParams.join ?? '<br>');
 };
+module.exports.byKeys = function (cell, formatterParams, onRendered) {
+  var value = cell.getValue();
+  return isObject(value) ? Object.keys(value).length : +!!value;
+};
 
 },{"es5-util/js/isObject":7,"es5-util/js/toAssociativeArray":10}],24:[function(require,module,exports){
 "use strict";
@@ -1001,7 +1005,7 @@ module.exports = function (column, data, initial, options, element) {
   if (!type) {
     return column;
   }
-  var values = data.length ? arrayColumn(data, column.field) : {};
+  var values = data.length ? arrayColumn(data, column.field) : [];
   values = values.map(value => value ? Object.keys(value).length : 0);
   column.headerFilterParams ?? (column.headerFilterParams = {
     min: values.length ? Math.min(...values) : false,
@@ -1012,9 +1016,9 @@ module.exports = function (column, data, initial, options, element) {
   column.headerFilter ?? (column.headerFilter = minMaxDom);
   column.headerFilterFunc ?? (column.headerFilterFunc = objectFilter);
   column.headerFilterLiveFilter ?? (column.headerFilterLiveFilter = false);
-  column.formatter = objectFormatter;
+  column.formatter = objectFormatter.byKeys;
   column.headerSortStartingDir ?? (column.headerSortStartingDir = 'desc');
-  column.sorter ?? (column.sorter = objectSorter);
+  column.sorter ?? (column.sorter = objectSorter.byKeys);
   return column;
 };
 
@@ -1195,9 +1199,19 @@ module.exports = function (a, b, aRow, bRow, column, dir, sorterParams) {
 },{"../helpers/getSize":27,"./../sorters/object":50}],50:[function(require,module,exports){
 "use strict";
 
+const isObject = require('es5-util/js/isObject');
 const compare = require('es5-util/js/compare');
 module.exports = function (a, b, aRow, bRow, column, dir, sorterParams) {
   return compare(a, b);
 };
+module.exports.byKeys = function (a, b, aRow, bRow, column, dir, sorterParams) {
+  var aSize = isObject(a) ? Object.keys(a).length : +!!a;
+  var bSize = isObject(b) ? Object.keys(b).length : +!!b;
+  const sizeDiff = aSize - bSize;
+  if (sizeDiff) {
+    return sizeDiff;
+  }
+  return compare(a, b);
+};
 
-},{"es5-util/js/compare":3}]},{},[1]);
+},{"es5-util/js/compare":3,"es5-util/js/isObject":7}]},{},[1]);
