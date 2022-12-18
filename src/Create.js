@@ -3,6 +3,7 @@ let filters = [
 	require('./modules/timeAgo'),
 	require('./modules/timeMs'),
 	require('./modules/minMax'),
+	require('./modules/minMax{}'),
 	require('./modules/minMax[]'),
 	require('./modules/list[]'),
 	require('./modules/list'),

@@ -7,6 +7,7 @@ module.exports.filters = {
 	args: require('./src/filters/args'),
 	array: require('./src/filters/array'),
 	minMax: require('./src/filters/minMax'),
+	object: require('./src/filters/object'),
 	regex: require('./src/filters/regex'),
 	timeAgo: require('./src/filters/timeAgo'),
 };
@@ -42,6 +43,7 @@ module.exports.modules = {
 	"list[]": require('./src/modules/list[]')({formatter: 'list[]'}),
 	minMax: require('./src/modules/minMax')({formatter: 'minMax'}, []),
 	"minMax[]": require('./src/modules/minMax[]')({formatter: 'minMax[]'}, []),
+	"minMax{}": require('./src/modules/minMax[]')({formatter: 'minMax{}'}, []),
 	number: require('./src/modules/number')({formatter: 'number'}),
 	object: require('./src/modules/object')({formatter: 'object'}),
 	regex: require('./src/modules/regex')({formatter: 'regex'}),
