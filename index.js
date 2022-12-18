@@ -43,7 +43,7 @@ module.exports.modules = {
 	"list[]": require('./src/modules/list[]')({formatter: 'list[]'}),
 	minMax: require('./src/modules/minMax')({formatter: 'minMax'}, []),
 	"minMax[]": require('./src/modules/minMax[]')({formatter: 'minMax[]'}, []),
-	"minMax{}": require('./src/modules/minMax[]')({formatter: 'minMax{}'}, []),
+	"minMax{}": require('./src/modules/minMax{}')({formatter: 'minMax{}'}, []),
 	number: require('./src/modules/number')({formatter: 'number'}),
 	object: require('./src/modules/object')({formatter: 'object'}),
 	regex: require('./src/modules/regex')({formatter: 'regex'}),

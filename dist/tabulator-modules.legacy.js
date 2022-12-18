@@ -60,7 +60,7 @@ module.exports.modules = {
   "minMax[]": require('./src/modules/minMax[]')({
     formatter: 'minMax[]'
   }, []),
-  "minMax{}": require('./src/modules/minMax[]')({
+  "minMax{}": require('./src/modules/minMax{}')({
     formatter: 'minMax{}'
   }, []),
   number: require('./src/modules/number')({
@@ -97,7 +97,7 @@ if ((typeof window === "undefined" ? "undefined" : _typeof(window)) === 'object'
 }
 
 }).call(this)}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./src/Create":12,"./src/filters/advanced":13,"./src/filters/args":14,"./src/filters/array":15,"./src/filters/minMax":16,"./src/filters/object":17,"./src/filters/regex":18,"./src/filters/timeAgo":19,"./src/formatters/args":20,"./src/formatters/array":21,"./src/formatters/files":22,"./src/formatters/object":23,"./src/formatters/timeAgo":24,"./src/formatters/urls":25,"./src/helpers/advancedSearch":26,"./src/helpers/getSize":27,"./src/helpers/intervals":28,"./src/helpers/isType":29,"./src/html/list[]":30,"./src/html/minMax":31,"./src/modules/all":32,"./src/modules/args":33,"./src/modules/boolean":34,"./src/modules/files":35,"./src/modules/list":36,"./src/modules/list[]":37,"./src/modules/minMax":38,"./src/modules/minMax[]":39,"./src/modules/number":41,"./src/modules/object":42,"./src/modules/regex":43,"./src/modules/string":44,"./src/modules/timeAgo":45,"./src/modules/timeMs":46,"./src/modules/urls":47,"./src/sorters/args":48,"./src/sorters/array":49,"./src/sorters/object":50}],2:[function(require,module,exports){
+},{"./src/Create":12,"./src/filters/advanced":13,"./src/filters/args":14,"./src/filters/array":15,"./src/filters/minMax":16,"./src/filters/object":17,"./src/filters/regex":18,"./src/filters/timeAgo":19,"./src/formatters/args":20,"./src/formatters/array":21,"./src/formatters/files":22,"./src/formatters/object":23,"./src/formatters/timeAgo":24,"./src/formatters/urls":25,"./src/helpers/advancedSearch":26,"./src/helpers/getSize":27,"./src/helpers/intervals":28,"./src/helpers/isType":29,"./src/html/list[]":30,"./src/html/minMax":31,"./src/modules/all":32,"./src/modules/args":33,"./src/modules/boolean":34,"./src/modules/files":35,"./src/modules/list":36,"./src/modules/list[]":37,"./src/modules/minMax":38,"./src/modules/minMax[]":39,"./src/modules/minMax{}":40,"./src/modules/number":41,"./src/modules/object":42,"./src/modules/regex":43,"./src/modules/string":44,"./src/modules/timeAgo":45,"./src/modules/timeMs":46,"./src/modules/urls":47,"./src/sorters/args":48,"./src/sorters/array":49,"./src/sorters/object":50}],2:[function(require,module,exports){
 const getFromObjPath = require('./getFromObjPath');
 
 function arrayColumn(array, columnKey = null, indexKey = null) {
