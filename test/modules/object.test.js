@@ -42,3 +42,23 @@ test('ignore non-object', () => {
 		],
 	});
 });
+
+test('object showKeys', () => {
+
+	$.subscribe('tabulator-table-created', function (table, element, options) {
+		expect(options.columns[0]).toHaveProperty('headerFilter', 'input');
+		expect(options.columns[0]).toHaveProperty('headerFilterFunc');
+		expect(options.columns[0]).toHaveProperty('headerFilterLiveFilter', true);
+		expect(options.columns[0]).toHaveProperty('headerSortStartingDir', 'desc');
+		expect(options.columns[0]).toHaveProperty('sorter');
+		expect(options.columns[0]).toHaveProperty('formatter');
+		expect(options.columns[0]).toHaveProperty('hozAlign', 'left');
+	});
+
+	Tabulator.Create('#object', {
+		data: [{}],
+		columns: [
+			{title: 'A', field: 'a', formatter: 'object', formatterParams: {showKeys: true}},
+		],
+	});
+});

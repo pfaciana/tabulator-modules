@@ -26,6 +26,7 @@ const table = [
 
 	['', []],
 	['1,2,3', [1, 2, 3]],
+	['1<br>2<br>3', [1, 2, 3], {join: '<br>'}],
 	[`<div style="white-space: pre">{}</div>`, {}],
 	[`<div style="white-space: pre">{"3":4,"a":1,"b":2,"c":3}</div>`, {a: 1, b: 2, c: 3, 3: 4}],
 	[`<div style="white-space: pre">{
