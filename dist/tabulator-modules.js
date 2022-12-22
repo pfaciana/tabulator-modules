@@ -36,6 +36,9 @@ module.exports.helpers = {
   intervals: require('./src/helpers/intervals'),
   isType: require('./src/helpers/isType')
 };
+module.exports.popups = {
+  object: require('./src/popups/object')
+};
 module.exports.modules = {
   all: require('./src/modules/all')({}),
   args: require('./src/modules/args')({
@@ -96,10 +99,13 @@ if (typeof window === 'object') {
 }
 
 }).call(this)}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./src/Create":12,"./src/filters/advanced":13,"./src/filters/args":14,"./src/filters/array":15,"./src/filters/minMax":16,"./src/filters/object":17,"./src/filters/regex":18,"./src/filters/timeAgo":19,"./src/formatters/args":20,"./src/formatters/array":21,"./src/formatters/files":22,"./src/formatters/object":23,"./src/formatters/timeAgo":24,"./src/formatters/urls":25,"./src/helpers/advancedSearch":26,"./src/helpers/getSize":27,"./src/helpers/intervals":28,"./src/helpers/isType":29,"./src/html/list[]":30,"./src/html/minMax":31,"./src/modules/all":32,"./src/modules/args":33,"./src/modules/boolean":34,"./src/modules/files":35,"./src/modules/list":36,"./src/modules/list[]":37,"./src/modules/minMax":38,"./src/modules/minMax[]":39,"./src/modules/minMax{}":40,"./src/modules/number":41,"./src/modules/object":42,"./src/modules/regex":43,"./src/modules/string":44,"./src/modules/timeAgo":45,"./src/modules/timeMs":46,"./src/modules/urls":47,"./src/sorters/args":48,"./src/sorters/array":49,"./src/sorters/object":50}],2:[function(require,module,exports){
+},{"./src/Create":16,"./src/filters/advanced":17,"./src/filters/args":18,"./src/filters/array":19,"./src/filters/minMax":20,"./src/filters/object":21,"./src/filters/regex":22,"./src/filters/timeAgo":23,"./src/formatters/args":24,"./src/formatters/array":25,"./src/formatters/files":26,"./src/formatters/object":27,"./src/formatters/timeAgo":28,"./src/formatters/urls":29,"./src/helpers/advancedSearch":30,"./src/helpers/getSize":31,"./src/helpers/intervals":32,"./src/helpers/isType":33,"./src/html/list[]":34,"./src/html/minMax":35,"./src/modules/all":36,"./src/modules/args":37,"./src/modules/boolean":38,"./src/modules/files":39,"./src/modules/list":40,"./src/modules/list[]":41,"./src/modules/minMax":42,"./src/modules/minMax[]":43,"./src/modules/minMax{}":44,"./src/modules/number":45,"./src/modules/object":46,"./src/modules/regex":47,"./src/modules/string":48,"./src/modules/timeAgo":49,"./src/modules/timeMs":50,"./src/modules/urls":51,"./src/popups/object":52,"./src/sorters/args":53,"./src/sorters/array":54,"./src/sorters/object":55}],2:[function(require,module,exports){
 const getFromObjPath = require('./getFromObjPath');
+const getValues = require('./getValues');
 
-function arrayColumn(array, columnKey = null, indexKey = null) {
+function arrayColumn(array, columnKey, indexKey) {
+	columnKey = columnKey != null ? columnKey : null;
+	indexKey = indexKey != null ? indexKey : null;
 	if (indexKey !== null) {
 		let obj = {};
 		for (var index in array) {
@@ -110,14 +116,14 @@ function arrayColumn(array, columnKey = null, indexKey = null) {
 		return obj;
 	}
 
-	array = Array.isArray(array) ? array : Object.values(array);
+	array = Array.isArray(array) ? array : getValues(array);
 	return array.map(function (value, index) {
 		return typeof columnKey === 'function' ? columnKey(value) : getFromObjPath(value, columnKey);
 	})
 }
 
 module.exports = arrayColumn;
-},{"./getFromObjPath":4}],3:[function(require,module,exports){
+},{"./getFromObjPath":4,"./getValues":7}],3:[function(require,module,exports){
 function isArray(value) {
 	return Array.isArray(value);
 }
@@ -130,7 +136,9 @@ function isCompound(value) {
 	return typeof value === 'object' || typeof value === 'function';
 }
 
-function compare(type = 'sort', locale = 'en-US') {
+function compare(type, locale) {
+	type = type != null ? type : 'sort';
+	locale = locale != null ? locale : 'en-US';
 	return function (a, b) {
 		if (a === b) {
 			return 0;
@@ -212,7 +220,8 @@ function getFromObjPath(obj, path) {
 
 module.exports = getFromObjPath;
 },{}],5:[function(require,module,exports){
-function getKey(object, key, defaultValue = undefined) {
+function getKey(object, key, defaultValue) {
+	defaultValue = typeof defaultValue !== 'undefined' ? defaultValue : undefined;
 	if (typeof object !== 'object' || !(key in object)) {
 		return defaultValue;
 	}
@@ -222,18 +231,51 @@ function getKey(object, key, defaultValue = undefined) {
 
 module.exports = getKey;
 },{}],6:[function(require,module,exports){
+function hasKeys(object, path, defaultValue) {
+	defaultValue = typeof defaultValue !== 'undefined' ? defaultValue : undefined;
+	if (typeof object !== 'object' || typeof path !== 'string') {
+		return defaultValue;
+	}
+
+	var keys = path.split('.');
+
+	for (var index in keys) {
+		if (typeof object !== 'object' || !(keys[index] in object)) {
+			return defaultValue;
+		}
+		object = object[keys[index]];
+	}
+
+	return object;
+}
+
+module.exports = hasKeys;
+},{}],7:[function(require,module,exports){
+function getValues(object) {
+	var result = [];
+	for (var prop in object) {
+		if (object.hasOwnProperty(prop)) {
+			result.push(object[prop]);
+		}
+	}
+
+	return result;
+}
+
+module.exports = getValues;
+},{}],8:[function(require,module,exports){
 function hasKey(object, key) {
 	return typeof object === 'object' && key in object;
 }
 
 module.exports = hasKey;
-},{}],7:[function(require,module,exports){
+},{}],9:[function(require,module,exports){
 function isObject(value) {
 	return (typeof value == 'object' || typeof value == 'function') && value !== null;
 }
 
 module.exports = isObject;
-},{}],8:[function(require,module,exports){
+},{}],10:[function(require,module,exports){
 /*
  * Protection against
  *  - undefined
@@ -266,7 +308,7 @@ function safeParse(data, forceParse) {
 }
 
 module.exports = safeParse;
-},{}],9:[function(require,module,exports){
+},{}],11:[function(require,module,exports){
 /*
  * Differs from just JSON.stringify because it does not escapes strings
  *
@@ -302,7 +344,7 @@ function safeStringify(data, replacer, space, forceParse) {
 }
 
 module.exports = safeStringify;
-},{"./safeParse":8}],10:[function(require,module,exports){
+},{"./safeParse":10}],12:[function(require,module,exports){
 function toAssociativeArray(obj) {
 	if (typeof obj === 'undefined') {
 		return [];
@@ -328,7 +370,17 @@ function toAssociativeArray(obj) {
 }
 
 module.exports = toAssociativeArray;
-},{}],11:[function(require,module,exports){
+},{}],13:[function(require,module,exports){
+function toHtmlEntities(input) {
+	return input.replace(/&/g, '&amp;')
+		.replace(/</g, '&lt;')
+		.replace(/>/g, '&gt;')
+		.replace(/"/g, '&quot;')
+		.replace(/'/g, '&#039;');
+};
+
+module.exports = toHtmlEntities;
+},{}],14:[function(require,module,exports){
 function toString(value, glue, keyGlue) {
 	if (typeof value === 'string') {
 		return value;
@@ -360,7 +412,17 @@ function toString(value, glue, keyGlue) {
 }
 
 module.exports = toString;
-},{}],12:[function(require,module,exports){
+},{}],15:[function(require,module,exports){
+var isObject = require('./isObject');
+
+function truncate(input, length, suffix) {
+	suffix = typeof suffix != 'undefined' ? suffix : '&hellip;';
+	input = isObject(input) ? JSON.stringify(input) : String(input);
+	return (input.length > length) ? input.slice(0, length) + suffix : input;
+};
+
+module.exports = truncate;
+},{"./isObject":9}],16:[function(require,module,exports){
 "use strict";
 
 let filters = [require('./modules/regex'), require('./modules/timeAgo'), require('./modules/timeMs'), require('./modules/minMax'), require('./modules/minMax{}'), require('./modules/minMax[]'), require('./modules/list[]'), require('./modules/list'), require('./modules/args'), require('./modules/files'), require('./modules/urls'), require('./modules/boolean'), require('./modules/number'), require('./modules/string'), require('./modules/object'), require('./modules/all')];
@@ -410,7 +472,7 @@ function Create(element, options) {
 }
 module.exports = Create;
 
-},{"./modules/all":32,"./modules/args":33,"./modules/boolean":34,"./modules/files":35,"./modules/list":36,"./modules/list[]":37,"./modules/minMax":38,"./modules/minMax[]":39,"./modules/minMax{}":40,"./modules/number":41,"./modules/object":42,"./modules/regex":43,"./modules/string":44,"./modules/timeAgo":45,"./modules/timeMs":46,"./modules/urls":47}],13:[function(require,module,exports){
+},{"./modules/all":36,"./modules/args":37,"./modules/boolean":38,"./modules/files":39,"./modules/list":40,"./modules/list[]":41,"./modules/minMax":42,"./modules/minMax[]":43,"./modules/minMax{}":44,"./modules/number":45,"./modules/object":46,"./modules/regex":47,"./modules/string":48,"./modules/timeAgo":49,"./modules/timeMs":50,"./modules/urls":51}],17:[function(require,module,exports){
 "use strict";
 
 const advancedSearch = require('../helpers/advancedSearch');
@@ -441,7 +503,7 @@ module.exports = function (headerValue, rowValue, rowData) {
   return true;
 };
 
-},{"../helpers/advancedSearch":26,"es5-util/js/safeStringify":9}],14:[function(require,module,exports){
+},{"../helpers/advancedSearch":30,"es5-util/js/safeStringify":11}],18:[function(require,module,exports){
 "use strict";
 
 const isObject = require('es5-util/js/isObject');
@@ -455,7 +517,7 @@ module.exports = function (headerValue, rowValueObj) {
   return advancedFilter(headerValue, safeStringify(rowValue), ...args);
 };
 
-},{"./../filters/advanced":13,"es5-util/js/isObject":7,"es5-util/js/safeStringify":9}],15:[function(require,module,exports){
+},{"./../filters/advanced":17,"es5-util/js/isObject":9,"es5-util/js/safeStringify":11}],19:[function(require,module,exports){
 "use strict";
 
 const getSize = require('./../helpers/getSize');
@@ -467,7 +529,7 @@ module.exports = function (headerValue, rowValue) {
   return minMaxFilter(headerValue, getSize(rowValue), ...args);
 };
 
-},{"./../filters/minMax":16,"./../helpers/getSize":27}],16:[function(require,module,exports){
+},{"./../filters/minMax":20,"./../helpers/getSize":31}],20:[function(require,module,exports){
 "use strict";
 
 module.exports = function (headerValue, rowValue, rowData, filterParams) {
@@ -488,7 +550,7 @@ module.exports = function (headerValue, rowValue, rowData, filterParams) {
   return true;
 };
 
-},{}],17:[function(require,module,exports){
+},{}],21:[function(require,module,exports){
 "use strict";
 
 const isObject = require('es5-util/js/isObject');
@@ -501,14 +563,14 @@ module.exports = function (headerValue, rowValue) {
   return minMaxFilter(headerValue, keySize, ...args);
 };
 
-},{"./../filters/minMax":16,"es5-util/js/isObject":7}],18:[function(require,module,exports){
+},{"./../filters/minMax":20,"es5-util/js/isObject":9}],22:[function(require,module,exports){
 "use strict";
 
 module.exports = function (headerValue, rowValue, rowData, filterParams) {
   return new RegExp(headerValue).test(rowValue);
 };
 
-},{}],19:[function(require,module,exports){
+},{}],23:[function(require,module,exports){
 "use strict";
 
 const minMaxFilter = require('./../filters/minMax');
@@ -527,7 +589,7 @@ module.exports = function (headerValue, rowValue, rowData, filterParams) {
   return minMaxFilter(headerValue, rowValue, rowData, filterParams);
 };
 
-},{"./../filters/minMax":16,"./../helpers/intervals":28,"es5-util/js/getKey":5}],20:[function(require,module,exports){
+},{"./../filters/minMax":20,"./../helpers/intervals":32,"es5-util/js/getKey":5}],24:[function(require,module,exports){
 "use strict";
 
 const toAssociativeArray = require('es5-util/js/toAssociativeArray');
@@ -561,7 +623,7 @@ module.exports = function (cell, formatterParams, onRendered) {
   return (formatterParams.before ?? '<div>') + toAssociativeArray(values).join(formatterParams.join ?? "\n") + (formatterParams.after ?? '</div>');
 };
 
-},{"es5-util/js/getKey":5,"es5-util/js/hasKey":6,"es5-util/js/toAssociativeArray":10,"es5-util/js/toString":11}],21:[function(require,module,exports){
+},{"es5-util/js/getKey":5,"es5-util/js/hasKey":8,"es5-util/js/toAssociativeArray":12,"es5-util/js/toString":14}],25:[function(require,module,exports){
 "use strict";
 
 const getSize = require("../helpers/getSize");
@@ -569,7 +631,7 @@ module.exports = function (cell, formatterParams, onRendered) {
   return getSize(cell.getValue());
 };
 
-},{"../helpers/getSize":27}],22:[function(require,module,exports){
+},{"../helpers/getSize":31}],26:[function(require,module,exports){
 "use strict";
 
 const isObject = require('es5-util/js/isObject');
@@ -591,7 +653,7 @@ module.exports = function (cell, formatterParams, onRendered) {
   return links.join(formatterParams.join || " | ");
 };
 
-},{"es5-util/js/isObject":7}],23:[function(require,module,exports){
+},{"es5-util/js/isObject":9}],27:[function(require,module,exports){
 "use strict";
 
 const isObject = require('es5-util/js/isObject');
@@ -599,12 +661,9 @@ const toAssociativeArray = require('es5-util/js/toAssociativeArray');
 module.exports = function (cell, formatterParams, onRendered) {
   formatterParams.whiteSpace ?? (formatterParams.whiteSpace = 'pre');
   var values = cell.getValue();
-  if (!Array.isArray(values) && isObject(values)) {
-    if (formatterParams.whiteSpace) {
-      return '<div style="white-space: ' + formatterParams.whiteSpace + '">' + JSON.stringify(values, null, formatterParams.space || 0) + '</div>';
-    } else {
-      return JSON.stringify(values, null, formatterParams.space || 0);
-    }
+  if (isObject(values) && !Array.isArray(values)) {
+    var content = JSON.stringify(values, null, formatterParams.space || 0);
+    return formatterParams.whiteSpace ? '<div style="white-space: ' + formatterParams.whiteSpace + '">' + content + '</div>' : content;
   }
   return toAssociativeArray(values).join(formatterParams.join ?? '<br>');
 };
@@ -613,7 +672,7 @@ module.exports.byKeys = function (cell, formatterParams, onRendered) {
   return isObject(value) ? Object.keys(value).length : +!!value;
 };
 
-},{"es5-util/js/isObject":7,"es5-util/js/toAssociativeArray":10}],24:[function(require,module,exports){
+},{"es5-util/js/isObject":9,"es5-util/js/toAssociativeArray":12}],28:[function(require,module,exports){
 "use strict";
 
 const getKey = require("es5-util/js/getKey");
@@ -645,7 +704,7 @@ module.exports = function (cell, formatterParams, onRendered) {
   return `<span title="${dateObject.toLocaleString()}">${timeAgoFormatted}</span>`;
 };
 
-},{"./../helpers/intervals":28,"es5-util/js/getKey":5}],25:[function(require,module,exports){
+},{"./../helpers/intervals":32,"es5-util/js/getKey":5}],29:[function(require,module,exports){
 "use strict";
 
 module.exports = function (cell, formatterParams, onRendered) {
@@ -660,7 +719,7 @@ module.exports = function (cell, formatterParams, onRendered) {
   return links.join(formatterParams.join || '<br>');
 };
 
-},{}],26:[function(require,module,exports){
+},{}],30:[function(require,module,exports){
 "use strict";
 
 const safeStringify = require('es5-util/js/safeStringify');
@@ -703,14 +762,14 @@ module.exports = function (keyword, content) {
   return true;
 };
 
-},{"es5-util/js/safeStringify":9}],27:[function(require,module,exports){
+},{"es5-util/js/safeStringify":11}],31:[function(require,module,exports){
 "use strict";
 
 module.exports = function (items) {
   return Array.isArray(items) ? items.length : +![undefined, null, false, '', '0', 0].includes(items);
 };
 
-},{}],28:[function(require,module,exports){
+},{}],32:[function(require,module,exports){
 "use strict";
 
 module.exports = {
@@ -721,7 +780,7 @@ module.exports = {
   y: 60 * 60 * 24 * 365
 };
 
-},{}],29:[function(require,module,exports){
+},{}],33:[function(require,module,exports){
 "use strict";
 
 module.exports = function (key, values) {
@@ -741,7 +800,7 @@ module.exports = function (key, values) {
   return false;
 };
 
-},{}],30:[function(require,module,exports){
+},{}],34:[function(require,module,exports){
 "use strict";
 
 module.exports = {
@@ -759,7 +818,7 @@ module.exports = {
   }
 };
 
-},{}],31:[function(require,module,exports){
+},{}],35:[function(require,module,exports){
 "use strict";
 
 module.exports = function (cell, onRendered, success, cancel, params) {
@@ -799,7 +858,7 @@ module.exports = function (cell, onRendered, success, cancel, params) {
   return container;
 };
 
-},{}],32:[function(require,module,exports){
+},{}],36:[function(require,module,exports){
 "use strict";
 
 module.exports = function (column, data, initial, options, element) {
@@ -814,7 +873,7 @@ module.exports = function (column, data, initial, options, element) {
   };
 };
 
-},{}],33:[function(require,module,exports){
+},{}],37:[function(require,module,exports){
 "use strict";
 
 const isType = require('../helpers/isType');
@@ -834,7 +893,7 @@ module.exports = function (column, data, initial, options, element) {
   return column;
 };
 
-},{"../helpers/isType":29,"./../filters/args":14,"./../formatters/args":20,"./../sorters/args":48}],34:[function(require,module,exports){
+},{"../helpers/isType":33,"./../filters/args":18,"./../formatters/args":24,"./../sorters/args":53}],38:[function(require,module,exports){
 "use strict";
 
 const isType = require('../helpers/isType');
@@ -863,7 +922,7 @@ module.exports = function (column, data, initial, options, element) {
   };
 };
 
-},{"../helpers/isType":29}],35:[function(require,module,exports){
+},{"../helpers/isType":33}],39:[function(require,module,exports){
 "use strict";
 
 const isType = require('../helpers/isType');
@@ -885,7 +944,7 @@ module.exports = function (column, data, initial, options, element) {
   return column;
 };
 
-},{"../helpers/isType":29,"./../filters/advanced":13,"./../formatters/files":22,"./../sorters/object":50}],36:[function(require,module,exports){
+},{"../helpers/isType":33,"./../filters/advanced":17,"./../formatters/files":26,"./../sorters/object":55}],40:[function(require,module,exports){
 "use strict";
 
 const isType = require('../helpers/isType');
@@ -906,7 +965,7 @@ module.exports = function (column, data, initial, options, element) {
   return column;
 };
 
-},{"../helpers/isType":29,"../sorters/object":50}],37:[function(require,module,exports){
+},{"../helpers/isType":33,"../sorters/object":55}],41:[function(require,module,exports){
 "use strict";
 
 const isType = require('../helpers/isType');
@@ -933,7 +992,7 @@ module.exports = function (column, data, initial, options, element) {
   return column;
 };
 
-},{"../helpers/isType":29,"../sorters/array":49,"./../html/list[]":30}],38:[function(require,module,exports){
+},{"../helpers/isType":33,"../sorters/array":54,"./../html/list[]":34}],42:[function(require,module,exports){
 "use strict";
 
 const arrayColumn = require('es5-util/js/arrayColumn');
@@ -959,7 +1018,7 @@ module.exports = function (column, data, initial, options, element) {
   return column;
 };
 
-},{"../filters/minMax":16,"../helpers/isType":29,"../html/minMax":31,"es5-util/js/arrayColumn":2}],39:[function(require,module,exports){
+},{"../filters/minMax":20,"../helpers/isType":33,"../html/minMax":35,"es5-util/js/arrayColumn":2}],43:[function(require,module,exports){
 "use strict";
 
 const arrayColumn = require('es5-util/js/arrayColumn');
@@ -991,7 +1050,7 @@ module.exports = function (column, data, initial, options, element) {
   return column;
 };
 
-},{"../helpers/getSize":27,"../helpers/isType":29,"../html/minMax":31,"./../filters/array":15,"./../formatters/array":21,"./../sorters/array":49,"es5-util/js/arrayColumn":2}],40:[function(require,module,exports){
+},{"../helpers/getSize":31,"../helpers/isType":33,"../html/minMax":35,"./../filters/array":19,"./../formatters/array":25,"./../sorters/array":54,"es5-util/js/arrayColumn":2}],44:[function(require,module,exports){
 "use strict";
 
 const arrayColumn = require('es5-util/js/arrayColumn');
@@ -1022,7 +1081,7 @@ module.exports = function (column, data, initial, options, element) {
   return column;
 };
 
-},{"../helpers/isType":29,"../html/minMax":31,"./../filters/object":17,"./../formatters/object":23,"./../sorters/object":50,"es5-util/js/arrayColumn":2}],41:[function(require,module,exports){
+},{"../helpers/isType":33,"../html/minMax":35,"./../filters/object":21,"./../formatters/object":27,"./../sorters/object":55,"es5-util/js/arrayColumn":2}],45:[function(require,module,exports){
 "use strict";
 
 const isType = require('../helpers/isType');
@@ -1037,30 +1096,44 @@ module.exports = function (column, data, initial, options, element) {
   return column;
 };
 
-},{"../helpers/isType":29}],42:[function(require,module,exports){
+},{"../helpers/isType":33}],46:[function(require,module,exports){
 "use strict";
 
 const isType = require('../helpers/isType');
 const advancedFilter = require('./../filters/advanced');
 const objectFormatter = require('./../formatters/object');
 const objectSorter = require('./../sorters/object');
+const objectPopup = require('./../popups/object');
+const getKeys = require('es5-util/js/getKeys');
 module.exports = function (column, data, initial, options, element) {
   var type = isType('formatter', ['object', 'obj', 'compound'], column, initial);
   if (!type) {
     return column;
   }
+  const showKeys = getKeys(column, 'formatterParams.showKeys', false);
+  const showPopup = getKeys(column, 'formatterParams.showPopup', true);
   column.headerFilter ?? (column.headerFilter = 'input');
   column.headerFilterFuncParams ?? (column.headerFilterFuncParams = {
     strict: false
   });
   column.headerFilterFunc ?? (column.headerFilterFunc = advancedFilter);
-  column.formatter = objectFormatter;
-  column.sorter ?? (column.sorter = objectSorter);
-  column.hozAlign ?? (column.hozAlign = 'left');
+  if (showKeys) {
+    column.headerFilterLiveFilter ?? (column.headerFilterLiveFilter = true);
+    column.formatter = objectFormatter.byKeys;
+    column.headerSortStartingDir ?? (column.headerSortStartingDir = 'desc');
+    column.sorter ?? (column.sorter = objectSorter.byKeys);
+    if (showPopup) {
+      column.clickPopup = objectPopup;
+    }
+  } else {
+    column.formatter = objectFormatter;
+    column.sorter ?? (column.sorter = objectSorter);
+    column.hozAlign ?? (column.hozAlign = 'left');
+  }
   return column;
 };
 
-},{"../helpers/isType":29,"./../filters/advanced":13,"./../formatters/object":23,"./../sorters/object":50}],43:[function(require,module,exports){
+},{"../helpers/isType":33,"./../filters/advanced":17,"./../formatters/object":27,"./../popups/object":52,"./../sorters/object":55,"es5-util/js/getKeys":6}],47:[function(require,module,exports){
 "use strict";
 
 const isType = require('../helpers/isType');
@@ -1078,21 +1151,41 @@ module.exports = function (column, data, initial, options, element) {
   return column;
 };
 
-},{"../helpers/isType":29}],44:[function(require,module,exports){
+},{"../helpers/isType":33}],48:[function(require,module,exports){
 "use strict";
 
 const isType = require('../helpers/isType');
+const getKeys = require('es5-util/js/getKeys');
+const objectPopup = require('./../popups/object');
+const truncate = require('es5-util/js/truncate');
+const toHtmlEntities = require('es5-util/js/toHtmlEntities');
 module.exports = function (column, data, initial, options, element) {
   var type = isType('formatter', ['string', 'str'], column, initial);
   if (!type) {
     return column;
   }
+  const textLimit = getKeys(column, 'formatterParams.textLimit', false);
+  const htmlChars = getKeys(column, 'formatterParams.htmlChars', !!textLimit);
+  const showPopup = getKeys(column, 'formatterParams.showPopup', !!textLimit);
   column.headerFilter ?? (column.headerFilter = 'input');
-  delete column.formatter;
+  if (textLimit) {
+    column.formatter = function (cell, formatterParams, onRendered) {
+      if (cell.getValue() == null) {
+        return '';
+      }
+      const content = truncate(cell.getValue(), textLimit, '...');
+      return htmlChars ? toHtmlEntities(content) : content;
+    };
+    if (showPopup) {
+      column.clickPopup = objectPopup;
+    }
+  } else {
+    delete column.formatter;
+  }
   return column;
 };
 
-},{"../helpers/isType":29}],45:[function(require,module,exports){
+},{"../helpers/isType":33,"./../popups/object":52,"es5-util/js/getKeys":6,"es5-util/js/toHtmlEntities":13,"es5-util/js/truncate":15}],49:[function(require,module,exports){
 "use strict";
 
 const isType = require('../helpers/isType');
@@ -1121,7 +1214,7 @@ module.exports = function (column, data, initial, options, element) {
   return column;
 };
 
-},{"../filters/timeAgo":19,"../formatters/timeAgo":24,"../helpers/isType":29,"../html/minMax":31}],46:[function(require,module,exports){
+},{"../filters/timeAgo":23,"../formatters/timeAgo":28,"../helpers/isType":33,"../html/minMax":35}],50:[function(require,module,exports){
 "use strict";
 
 const arrayColumn = require("es5-util/js/arrayColumn");
@@ -1153,7 +1246,7 @@ module.exports = function (column, data, initial, options, element) {
   return column;
 };
 
-},{"../filters/minMax":16,"../helpers/isType":29,"../html/minMax":31,"es5-util/js/arrayColumn":2}],47:[function(require,module,exports){
+},{"../filters/minMax":20,"../helpers/isType":33,"../html/minMax":35,"es5-util/js/arrayColumn":2}],51:[function(require,module,exports){
 "use strict";
 
 const isType = require('../helpers/isType');
@@ -1169,7 +1262,27 @@ module.exports = function (column, data, initial, options, element) {
   return column;
 };
 
-},{"../helpers/isType":29,"./../formatters/urls":25}],48:[function(require,module,exports){
+},{"../helpers/isType":33,"./../formatters/urls":29}],52:[function(require,module,exports){
+"use strict";
+
+const isObject = require('es5-util/js/isObject');
+const getKeys = require('es5-util/js/getKeys');
+const toHtmlEntities = require('es5-util/js/toHtmlEntities');
+module.exports = function (e, component, onRendered) {
+  let content = component.getValue();
+  if (content == null) {
+    return null;
+  }
+  if (isObject(content)) {
+    content = JSON.stringify(content, null, 4);
+  }
+  const config = component.getColumn().getDefinition() || {};
+  const htmlChars = getKeys(config, 'popupParams.htmlChars', getKeys(config, 'formatterParams.htmlChars', false));
+  content = htmlChars ? toHtmlEntities(content) : content;
+  return '<div style="white-space: pre; max-width: 50vw; max-height: 50vh">' + content + '</div>';
+};
+
+},{"es5-util/js/getKeys":6,"es5-util/js/isObject":9,"es5-util/js/toHtmlEntities":13}],53:[function(require,module,exports){
 "use strict";
 
 const isObject = require('es5-util/js/isObject');
@@ -1183,7 +1296,7 @@ module.exports = function (o1, o2) {
   return objectSorter(a, b, ...args);
 };
 
-},{"../sorters/object":50,"es5-util/js/isObject":7}],49:[function(require,module,exports){
+},{"../sorters/object":55,"es5-util/js/isObject":9}],54:[function(require,module,exports){
 "use strict";
 
 const getSize = require("../helpers/getSize");
@@ -1196,7 +1309,7 @@ module.exports = function (a, b, aRow, bRow, column, dir, sorterParams) {
   return objectSorter(...arguments);
 };
 
-},{"../helpers/getSize":27,"./../sorters/object":50}],50:[function(require,module,exports){
+},{"../helpers/getSize":31,"./../sorters/object":55}],55:[function(require,module,exports){
 "use strict";
 
 const isObject = require('es5-util/js/isObject');
@@ -1214,4 +1327,4 @@ module.exports.byKeys = function (a, b, aRow, bRow, column, dir, sorterParams) {
   return compare(a, b);
 };
 
-},{"es5-util/js/compare":3,"es5-util/js/isObject":7}]},{},[1]);
+},{"es5-util/js/compare":3,"es5-util/js/isObject":9}]},{},[1]);

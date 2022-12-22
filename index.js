@@ -34,6 +34,9 @@ module.exports.helpers = {
 	intervals: require('./src/helpers/intervals'),
 	isType: require('./src/helpers/isType'),
 };
+module.exports.popups = {
+	object: require('./src/popups/object'),
+};
 module.exports.modules = {
 	all: require('./src/modules/all')({}),
 	args: require('./src/modules/args')({formatter: 'args'}),

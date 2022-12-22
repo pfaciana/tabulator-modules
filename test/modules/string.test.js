@@ -45,3 +45,19 @@ test('ignore non-string', () => {
 		],
 	});
 });
+
+test('string truncate', () => {
+
+	$.subscribe('tabulator-table-created', function (table, element, options) {
+		expect(options.columns[0]).toHaveProperty('headerFilter', 'input');
+		expect(options.columns[0]).toHaveProperty('formatter');
+		expect(options.columns[0]).toHaveProperty('clickPopup');
+	});
+
+	Tabulator.Create('#string', {
+		data,
+		columns: [
+			{title: 'A', field: 'a', formatter: 'string', formatterParams: {textLimit: 25},},
+		],
+	});
+});
