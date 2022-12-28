@@ -36,6 +36,18 @@ module.exports.helpers = {
 	indexOf: require('./src/helpers/indexOf'),
 	intervals: require('./src/helpers/intervals'),
 	isType: require('./src/helpers/isType'),
+	/* es5-util */
+	arrayColumn: require('es5-util/js/arrayColumn'),
+	compare: require('es5-util/js/compare'),
+	getKey: require('es5-util/js/getKey'),
+	getKeys: require('es5-util/js/getKeys'),
+	hasKey: require('es5-util/js/hasKey'),
+	isObject: require('es5-util/js/isObject'),
+	safeStringify: require('es5-util/js/safeStringify'),
+	toAssociativeArray: require('es5-util/js/toAssociativeArray'),
+	toHtmlEntities: require('es5-util/js/toHtmlEntities'),
+	toString: require('es5-util/js/toString'),
+	truncate: require('es5-util/js/truncate'),
 };
 module.exports.popups = {
 	object: require('./src/popups/object'),
