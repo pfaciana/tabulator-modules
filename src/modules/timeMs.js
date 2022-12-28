@@ -1,4 +1,5 @@
 const arrayColumn = require("es5-util/js/arrayColumn");
+const getKeys = require('es5-util/js/getKeys');
 const isType = require('../helpers/isType');
 const minMaxDom = require("../html/minMax");
 const minMaxFilter = require("../filters/minMax");
@@ -9,6 +10,11 @@ module.exports = function (column, data, initial, options, element) {
 	if (!type) {
 		return column;
 	}
+
+	const unit = getKeys(column, 'formatterParams.unit', 'ms');
+	const prefix = getKeys(column, 'formatterParams.prefix', '');
+	const suffix = getKeys(column, 'formatterParams.suffix', ' ' + unit);
+	const precision = getKeys(column, 'formatterParams.precision', 2);
 
 	var values = data.length ? arrayColumn(data, column.field) : [];
 	column.headerFilterParams ??= {
@@ -23,7 +29,10 @@ module.exports = function (column, data, initial, options, element) {
 	column.headerFilterLiveFilter ??= false;
 
 	column.formatter = function (cell, formatterParams, onRendered) {
-		return cell.getValue().toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2}) + ' ms';
+		return prefix + cell.getValue().toLocaleString(undefined, {
+			minimumFractionDigits: precision,
+			maximumFractionDigits: precision,
+		}) + suffix;
 	};
 
 	column.hozAlign ??= 'right';
