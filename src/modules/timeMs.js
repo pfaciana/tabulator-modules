@@ -15,6 +15,7 @@ module.exports = function (column, data, initial, options, element) {
 	const prefix = getKeys(column, 'formatterParams.prefix', '');
 	const suffix = getKeys(column, 'formatterParams.suffix', ' ' + unit);
 	const precision = getKeys(column, 'formatterParams.precision', 2);
+	const bottomSum = getKeys(column, 'formatterParams.bottomSum', false);
 
 	var values = data.length ? arrayColumn(data, column.field) : [];
 	column.headerFilterParams ??= {
@@ -34,6 +35,14 @@ module.exports = function (column, data, initial, options, element) {
 			maximumFractionDigits: precision,
 		}) + suffix;
 	};
+
+	if (bottomSum) {
+		column.bottomCalc ??= function (values, data) {
+			return prefix + Math.round(values.reduce(function (a, b) {
+				return a + b;
+			}, 0)) + suffix;
+		};
+	}
 
 	column.hozAlign ??= 'right';
 

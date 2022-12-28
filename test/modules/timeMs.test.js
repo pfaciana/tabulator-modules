@@ -102,6 +102,7 @@ test('duration', () => {
 		expect(options.columns[0]).toHaveProperty('headerFilterLiveFilter', false);
 		expect(options.columns[0]).toHaveProperty('hozAlign', 'right');
 		expect(options.columns[0]).toHaveProperty('formatter');
+		expect(options.columns[0]).toHaveProperty('bottomCalc');
 	});
 
 	Tabulator.Create('#duration', {
