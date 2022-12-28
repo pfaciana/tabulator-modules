@@ -82,3 +82,32 @@ test('maxTimeMs', () => {
 	});
 
 });
+
+test('duration', () => {
+
+	const data = [
+		{a: 5},
+		{a: 10},
+		{a: 2},
+		{a: 3},
+		{a: 7},
+	];
+
+	$.subscribe('tabulator-table-created', function (table, element, options) {
+		expect(options.columns[0]).toHaveProperty('headerFilterParams', {
+			min: 2, max: 10, filterMin: true, filterMax: true,
+		});
+		expect(options.columns[0]).toHaveProperty('headerFilter');
+		expect(options.columns[0]).toHaveProperty('headerFilterFunc');
+		expect(options.columns[0]).toHaveProperty('headerFilterLiveFilter', false);
+		expect(options.columns[0]).toHaveProperty('hozAlign', 'right');
+		expect(options.columns[0]).toHaveProperty('formatter');
+	});
+
+	Tabulator.Create('#duration', {
+		data,
+		columns: [
+			{title: 'A', field: 'a', formatter: 'duration', formatterParams: {bottomSum: true}},
+		],
+	});
+});

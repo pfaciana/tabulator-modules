@@ -41,6 +41,7 @@ module.exports.modules = {
 	all: require('./src/modules/all')({}),
 	args: require('./src/modules/args')({formatter: 'args'}),
 	boolean: require('./src/modules/boolean')({formatter: 'boolean'}),
+	duration: require('./src/modules/timeMs')({formatter: 'duration'}, []),
 	files: require('./src/modules/files')({formatter: 'files'}),
 	list: require('./src/modules/list')({formatter: 'list'}),
 	"list[]": require('./src/modules/list[]')({formatter: 'list[]'}),
@@ -52,7 +53,7 @@ module.exports.modules = {
 	regex: require('./src/modules/regex')({formatter: 'regex'}),
 	string: require('./src/modules/string')({formatter: 'string'}),
 	timeAgo: require('./src/modules/timeAgo')({formatter: 'timeAgo'}),
-	timeMs: require('./src/modules/timeMs')({formatter: 'timeMs'}, []),
+	timeMs: require('./src/modules/timeMs')({formatter: 'timeMs'}, []), // to be deprecated in future versions, use `duration` instead
 	urls: require('./src/modules/urls')({formatter: 'urls'}),
 };
 
