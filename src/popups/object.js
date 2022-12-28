@@ -1,20 +1,33 @@
 const isObject = require('es5-util/js/isObject');
 const getKeys = require('es5-util/js/getKeys');
 const toHtmlEntities = require('es5-util/js/toHtmlEntities');
+const hasPopup = require('./../helpers/hasPopup');
+const formatString = require('./../helpers/formatString');
 
 module.exports = function (e, component, onRendered) {
 	let content = component.getValue();
-	if (content == null) {
+	const column = component.getColumn().getDefinition() || {};
+	const showPopup = getKeys(column, 'formatterParams.showPopup', true);
+	if (content == null || showPopup === false) {
 		return null;
 	}
+
+	let formatterParams = {...(column.formatterParams ?? {})};
+	formatterParams.textLimit = formatterParams.popupTextLimit ?? false;
+	formatterParams.whiteSpace ??= 'pre';
+	formatterParams.htmlChars ??= false;
+	formatterParams.space ??= 4;
+
 	if (isObject(content)) {
-		content = JSON.stringify(content, null, 4);
+		content = JSON.stringify(content, null, formatterParams.space);
 	}
 
-	const config = component.getColumn().getDefinition() || {};
-	const htmlChars = getKeys(config, 'popupParams.htmlChars', getKeys(config, 'formatterParams.htmlChars', false));
+	if (!hasPopup(showPopup, content, formatterParams, component, onRendered, e)) {
+		return null;
+	}
 
-	content = htmlChars ? toHtmlEntities(content) : content;
+	formatterParams.prefix = formatterParams.popupPrefix ?? `<div style="white-space: ${formatterParams.whiteSpace}; max-width: 50vw; max-height: 50vh">`;
+	formatterParams.suffix = formatterParams.popupSuffix ?? `</div>`;
 
-	return '<div style="white-space: pre; max-width: 50vw; max-height: 50vh">' + content + '</div>';
+	return formatString(content, formatterParams);
 };

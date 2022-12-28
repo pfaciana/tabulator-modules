@@ -30,7 +30,10 @@ module.exports.html = {
 };
 module.exports.helpers = {
 	advancedSearch: require('./src/helpers/advancedSearch'),
+	formatString: require('./src/helpers/formatString'),
 	getSize: require('./src/helpers/getSize'),
+	hasPopup: require('./src/helpers/hasPopup'),
+	indexOf: require('./src/helpers/indexOf'),
 	intervals: require('./src/helpers/intervals'),
 	isType: require('./src/helpers/isType'),
 };

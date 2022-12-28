@@ -1,8 +1,7 @@
 const isType = require('../helpers/isType');
 const getKeys = require('es5-util/js/getKeys');
 const objectPopup = require('./../popups/object');
-const truncate = require('es5-util/js/truncate');
-const toHtmlEntities = require('es5-util/js/toHtmlEntities');
+const formatString = require('./../helpers/formatString');
 
 module.exports = function (column, data, initial, options, element) {
 	var type = isType('formatter', ['string', 'str'], column, initial);
@@ -10,21 +9,18 @@ module.exports = function (column, data, initial, options, element) {
 		return column;
 	}
 
-	const textLimit = getKeys(column, 'formatterParams.textLimit', false);
-	const htmlChars = getKeys(column, 'formatterParams.htmlChars', !!textLimit);
-	const showPopup = getKeys(column, 'formatterParams.showPopup', !!textLimit);
+	column.formatterParams ??= {};
+	column.formatterParams.textLimit ??= false;
+	column.formatterParams.htmlChars ??= !!column.formatterParams.textLimit;
+	column.formatterParams.showPopup ??= column.formatterParams.textLimit;
 
 	column.headerFilter ??= 'input';
 
-	if (textLimit) {
+	if (column.formatterParams.textLimit) {
 		column.formatter = function (cell, formatterParams, onRendered) {
-			if (cell.getValue() == null) {
-				return '';
-			}
-			const content = truncate(cell.getValue(), textLimit, '...');
-			return htmlChars ? toHtmlEntities(content) : content;
+			return formatString(cell.getValue(), formatterParams);
 		};
-		if (showPopup) {
+		if (column.formatterParams.showPopup) {
 			column.clickPopup = objectPopup;
 		}
 	} else {

@@ -12,7 +12,7 @@ module.exports = function (column, data, initial, options, element) {
 	}
 
 	const showKeys = getKeys(column, 'formatterParams.showKeys', false);
-	const showPopup = getKeys(column, 'formatterParams.showPopup', true);
+	const showPopup = getKeys(column, 'formatterParams.showPopup', getKeys(column, 'formatterParams.textLimit', showKeys));
 
 	column.headerFilter ??= 'input';
 
@@ -26,15 +26,16 @@ module.exports = function (column, data, initial, options, element) {
 
 		column.headerSortStartingDir ??= 'desc';
 		column.sorter ??= objectSorter.byKeys;
-		if (showPopup) {
-			column.clickPopup = objectPopup;
-		}
 	} else {
 		column.formatter = objectFormatter;
 
 		column.sorter ??= objectSorter;
 
 		column.hozAlign ??= 'left';
+	}
+
+	if (showPopup) {
+		column.clickPopup = objectPopup;
 	}
 
 	return column;
