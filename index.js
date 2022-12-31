@@ -39,14 +39,18 @@ module.exports.helpers = {
 	/* es5-util */
 	arrayColumn: require('es5-util/js/arrayColumn'),
 	compare: require('es5-util/js/compare'),
+	getFromObjPath: require('es5-util/js/getFromObjPath'),
 	getKey: require('es5-util/js/getKey'),
 	getKeys: require('es5-util/js/getKeys'),
+	getValues: require('es5-util/js/getValues'),
 	hasKey: require('es5-util/js/hasKey'),
+	hasKeys: require('es5-util/js/hasKeys'),
+	isInteger: require('es5-util/js/isInteger'),
 	isObject: require('es5-util/js/isObject'),
+	safeParse: require('es5-util/js/safeParse'),
 	safeStringify: require('es5-util/js/safeStringify'),
 	toAssociativeArray: require('es5-util/js/toAssociativeArray'),
 	toHtmlEntities: require('es5-util/js/toHtmlEntities'),
-	toString: require('es5-util/js/toString'),
 	truncate: require('es5-util/js/truncate'),
 };
 module.exports.popups = {
