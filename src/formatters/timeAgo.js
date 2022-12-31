@@ -6,11 +6,11 @@ module.exports = function (cell, formatterParams, onRendered) {
 		return '<span title="Invalid Date">-</span>';
 	}
 
-	let startTime = getKey(formatterParams, 'startTime', Date.now());
+	let startTime = getKey(formatterParams, 'startTime', Date.now() / 1000);
 	if (typeof startTime === 'function') {
 		startTime = startTime();
 	}
-	const timeAgo = Math.floor(startTime / 1000 - (cell.getValue() || 0));
+	const timeAgo = Math.floor(startTime - (cell.getValue() || 0));
 
 	let interval;
 	const timeAgoAbs = Math.abs(timeAgo);

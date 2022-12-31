@@ -7,8 +7,8 @@ function cellConstructor(value) {
 	return {getValue: () => value};
 }
 
-const now = Date.now();
-const currentTime = Math.floor(now / 1000);
+const now = Date.now() / 1000;
+const currentTime = Math.floor(now);
 const minutes = (count) => 60 * count;
 const hours = (count) => 3600 * count;
 const days = (count) => 86400 * count;
