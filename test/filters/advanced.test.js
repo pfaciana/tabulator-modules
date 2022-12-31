@@ -73,6 +73,11 @@ const table = [
 	[true, 'regex:"\\"b\\\\sc\\"" +d', 'a "b c" d'],
 	[true, 'regex:"\\"b\\\\sc\\"" -z', 'a "b c" d'],
 	[false, 'regex:"\\"b\\\\sc\\"" -d', 'a "b c" d'],
+
+	[true, 'regex:"c.*land\\\\s+rocks!"', ' cleveland rocks! '],
+	[true, 'regex:"c.*land\\\\s+\\"rocks\\"!"', ' cleveland "rocks"! '],
+	[true, 'regex:\\"rocks\\"', ' cleveland "rocks"! '],
+	[true, 'regex:"rtl\\":\\""', {rtl: "replace", suffix: ".min"}],
 ];
 
 test.each(table)(

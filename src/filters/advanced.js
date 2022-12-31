@@ -21,7 +21,7 @@ module.exports = function (headerValue, rowValue, rowData, filterParams = {}) {
 		return rowValue.includes(headerValue);
 	}
 
-	var keywords = headerValue.match(/(?:[^\s"]+|"[^"]*")+/g);
+	var keywords = headerValue.match(/(?:[^\s"]+|"[^"]*(?:(?!\\").)*")+/g);
 	for (var keyword of keywords) {
 		if (!advancedSearch(keyword, rowValue)) {
 			return false;
