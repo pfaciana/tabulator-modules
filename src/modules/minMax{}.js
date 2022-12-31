@@ -1,15 +1,19 @@
 const arrayColumn = require('es5-util/js/arrayColumn');
+const getKeys = require("es5-util/js/getKeys");
 const isType = require('../helpers/isType');
 const objectFilter = require('./../filters/object');
 const objectFormatter = require('./../formatters/object');
 const objectSorter = require('./../sorters/object');
 const minMaxDom = require("../html/minMax");
+const objectPopup = require("../popups/object");
 
 module.exports = function (column, data, initial, options, element) {
 	var type = isType('formatter', ['minMax{}', 'min{}', 'max{}'], column, initial);
 	if (!type) {
 		return column;
 	}
+
+	const showPopup = getKeys(column, 'formatterParams.showPopup', false);
 
 	var values = data.length ? arrayColumn(data, column.field) : [];
 	values = values.map(value => value ? Object.keys(value).length : 0);
@@ -27,6 +31,10 @@ module.exports = function (column, data, initial, options, element) {
 
 	column.headerSortStartingDir ??= 'desc';
 	column.sorter ??= objectSorter.byKeys;
+
+	if (showPopup) {
+		column.clickPopup = objectPopup;
+	}
 
 	return column;
 };
