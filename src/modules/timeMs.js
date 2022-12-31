@@ -3,6 +3,7 @@ const getKeys = require('es5-util/js/getKeys');
 const isType = require('../helpers/isType');
 const minMaxDom = require("../html/minMax");
 const minMaxFilter = require("../filters/minMax");
+const sum = require("../helpers/sum");
 
 module.exports = function (column, data, initial, options, element) {
 	// `timeMs*` to be deprecated in future versions, use `duration*` instead
@@ -37,11 +38,7 @@ module.exports = function (column, data, initial, options, element) {
 	};
 
 	if (bottomSum) {
-		column.bottomCalc ??= function (values, data) {
-			return prefix + Math.round(values.reduce(function (a, b) {
-				return a + b;
-			}, 0)) + suffix;
-		};
+		column.bottomCalc ??= sum;
 	}
 
 	column.hozAlign ??= 'right';
