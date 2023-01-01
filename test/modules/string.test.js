@@ -61,3 +61,20 @@ test('string truncate', () => {
 		],
 	});
 });
+
+test('text', () => {
+
+	$.subscribe('tabulator-table-created', function (table, element, options) {
+		expect(options.columns[0]).toHaveProperty('headerFilter', 'input');
+		expect(options.columns[0]).toHaveProperty('headerFilterFunc');
+		expect(options.columns[0]).toHaveProperty('hozAlign', 'left');
+		expect(options.columns[0]).not.toHaveProperty('formatter');
+	});
+
+	Tabulator.Create('#text', {
+		data,
+		columns: [
+			{title: 'A', field: 'a', formatter: 'text',},
+		],
+	});
+});
