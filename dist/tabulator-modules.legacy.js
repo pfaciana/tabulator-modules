@@ -33,9 +33,28 @@ module.exports.html = {
 };
 module.exports.helpers = {
   advancedSearch: require('./src/helpers/advancedSearch'),
+  formatString: require('./src/helpers/formatString'),
   getSize: require('./src/helpers/getSize'),
+  hasPopup: require('./src/helpers/hasPopup'),
+  indexOf: require('./src/helpers/indexOf'),
   intervals: require('./src/helpers/intervals'),
-  isType: require('./src/helpers/isType')
+  isType: require('./src/helpers/isType'),
+  /* es5-util */
+  arrayColumn: require('es5-util/js/arrayColumn'),
+  compare: require('es5-util/js/compare'),
+  getFromObjPath: require('es5-util/js/getFromObjPath'),
+  getKey: require('es5-util/js/getKey'),
+  getKeys: require('es5-util/js/getKeys'),
+  getValues: require('es5-util/js/getValues'),
+  hasKey: require('es5-util/js/hasKey'),
+  hasKeys: require('es5-util/js/hasKeys'),
+  isInteger: require('es5-util/js/isInteger'),
+  isObject: require('es5-util/js/isObject'),
+  safeParse: require('es5-util/js/safeParse'),
+  safeStringify: require('es5-util/js/safeStringify'),
+  toAssociativeArray: require('es5-util/js/toAssociativeArray'),
+  toHtmlEntities: require('es5-util/js/toHtmlEntities'),
+  truncate: require('es5-util/js/truncate')
 };
 module.exports.popups = {
   object: require('./src/popups/object')
@@ -48,6 +67,9 @@ module.exports.modules = {
   "boolean": require('./src/modules/boolean')({
     formatter: 'boolean'
   }),
+  duration: require('./src/modules/timeMs')({
+    formatter: 'duration'
+  }, []),
   files: require('./src/modules/files')({
     formatter: 'files'
   }),
@@ -84,6 +106,7 @@ module.exports.modules = {
   timeMs: require('./src/modules/timeMs')({
     formatter: 'timeMs'
   }, []),
+  // to be deprecated in future versions, use `duration` instead
   urls: require('./src/modules/urls')({
     formatter: 'urls'
   })
@@ -100,7 +123,7 @@ if ((typeof window === "undefined" ? "undefined" : _typeof(window)) === 'object'
 }
 
 }).call(this)}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./src/Create":16,"./src/filters/advanced":17,"./src/filters/args":18,"./src/filters/array":19,"./src/filters/minMax":20,"./src/filters/object":21,"./src/filters/regex":22,"./src/filters/timeAgo":23,"./src/formatters/args":24,"./src/formatters/array":25,"./src/formatters/files":26,"./src/formatters/object":27,"./src/formatters/timeAgo":28,"./src/formatters/urls":29,"./src/helpers/advancedSearch":30,"./src/helpers/getSize":31,"./src/helpers/intervals":32,"./src/helpers/isType":33,"./src/html/list[]":34,"./src/html/minMax":35,"./src/modules/all":36,"./src/modules/args":37,"./src/modules/boolean":38,"./src/modules/files":39,"./src/modules/list":40,"./src/modules/list[]":41,"./src/modules/minMax":42,"./src/modules/minMax[]":43,"./src/modules/minMax{}":44,"./src/modules/number":45,"./src/modules/object":46,"./src/modules/regex":47,"./src/modules/string":48,"./src/modules/timeAgo":49,"./src/modules/timeMs":50,"./src/modules/urls":51,"./src/popups/object":52,"./src/sorters/args":53,"./src/sorters/array":54,"./src/sorters/object":55}],2:[function(require,module,exports){
+},{"./src/Create":17,"./src/filters/advanced":18,"./src/filters/args":19,"./src/filters/array":20,"./src/filters/minMax":21,"./src/filters/object":22,"./src/filters/regex":23,"./src/filters/timeAgo":24,"./src/formatters/args":25,"./src/formatters/array":26,"./src/formatters/files":27,"./src/formatters/object":28,"./src/formatters/timeAgo":29,"./src/formatters/urls":30,"./src/helpers/advancedSearch":31,"./src/helpers/formatString":32,"./src/helpers/getSize":33,"./src/helpers/hasPopup":34,"./src/helpers/indexOf":35,"./src/helpers/intervals":36,"./src/helpers/isType":37,"./src/html/list[]":39,"./src/html/minMax":40,"./src/modules/all":41,"./src/modules/args":42,"./src/modules/boolean":43,"./src/modules/files":44,"./src/modules/list":45,"./src/modules/list[]":46,"./src/modules/minMax":47,"./src/modules/minMax[]":48,"./src/modules/minMax{}":49,"./src/modules/number":50,"./src/modules/object":51,"./src/modules/regex":52,"./src/modules/string":53,"./src/modules/timeAgo":54,"./src/modules/timeMs":55,"./src/modules/urls":56,"./src/popups/object":57,"./src/sorters/args":58,"./src/sorters/array":59,"./src/sorters/object":60,"es5-util/js/arrayColumn":2,"es5-util/js/compare":3,"es5-util/js/getFromObjPath":4,"es5-util/js/getKey":5,"es5-util/js/getKeys":6,"es5-util/js/getValues":7,"es5-util/js/hasKey":8,"es5-util/js/hasKeys":9,"es5-util/js/isInteger":10,"es5-util/js/isObject":11,"es5-util/js/safeParse":12,"es5-util/js/safeStringify":13,"es5-util/js/toAssociativeArray":14,"es5-util/js/toHtmlEntities":15,"es5-util/js/truncate":16}],2:[function(require,module,exports){
 const getFromObjPath = require('./getFromObjPath');
 const getValues = require('./getValues');
 
@@ -232,7 +255,7 @@ function getKey(object, key, defaultValue) {
 
 module.exports = getKey;
 },{}],6:[function(require,module,exports){
-function hasKeys(object, path, defaultValue) {
+function getKeys(object, path, defaultValue) {
 	defaultValue = typeof defaultValue !== 'undefined' ? defaultValue : undefined;
 	if (typeof object !== 'object' || typeof path !== 'string') {
 		return defaultValue;
@@ -250,7 +273,7 @@ function hasKeys(object, path, defaultValue) {
 	return object;
 }
 
-module.exports = hasKeys;
+module.exports = getKeys;
 },{}],7:[function(require,module,exports){
 function getValues(object) {
 	var result = [];
@@ -266,17 +289,44 @@ function getValues(object) {
 module.exports = getValues;
 },{}],8:[function(require,module,exports){
 function hasKey(object, key) {
-	return typeof object === 'object' && key in object;
+	return typeof object === 'object' && object !== null && key in object;
 }
 
 module.exports = hasKey;
 },{}],9:[function(require,module,exports){
+function hasKeys(object, path) {
+	if (typeof object !== 'object' || typeof path !== 'string') {
+		return false;
+	}
+
+	var keys = path.split('.');
+
+	for (var index in keys) {
+		if (keys.hasOwnProperty(index)) {
+			if (typeof object !== 'object' || !(keys[index] in object)) {
+				return false;
+			}
+			object = object[keys[index]];
+		}
+	}
+
+	return true;
+}
+
+module.exports = hasKeys;
+},{}],10:[function(require,module,exports){
+function isInteger(value) {
+	return typeof value == 'number' && value == ~~value;
+}
+
+module.exports = isInteger;
+},{}],11:[function(require,module,exports){
 function isObject(value) {
 	return (typeof value == 'object' || typeof value == 'function') && value !== null;
 }
 
 module.exports = isObject;
-},{}],10:[function(require,module,exports){
+},{}],12:[function(require,module,exports){
 /*
  * Protection against
  *  - undefined
@@ -309,7 +359,7 @@ function safeParse(data, forceParse) {
 }
 
 module.exports = safeParse;
-},{}],11:[function(require,module,exports){
+},{}],13:[function(require,module,exports){
 /*
  * Differs from just JSON.stringify because it does not escapes strings
  *
@@ -345,7 +395,7 @@ function safeStringify(data, replacer, space, forceParse) {
 }
 
 module.exports = safeStringify;
-},{"./safeParse":10}],12:[function(require,module,exports){
+},{"./safeParse":12}],14:[function(require,module,exports){
 function toAssociativeArray(obj) {
 	if (typeof obj === 'undefined') {
 		return [];
@@ -371,7 +421,7 @@ function toAssociativeArray(obj) {
 }
 
 module.exports = toAssociativeArray;
-},{}],13:[function(require,module,exports){
+},{}],15:[function(require,module,exports){
 function toHtmlEntities(input) {
 	return input.replace(/&/g, '&amp;')
 		.replace(/</g, '&lt;')
@@ -381,49 +431,21 @@ function toHtmlEntities(input) {
 };
 
 module.exports = toHtmlEntities;
-},{}],14:[function(require,module,exports){
-function toString(value, glue, keyGlue) {
-	if (typeof value === 'string') {
-		return value;
-	}
-
-	if (value == null) {
-		return '';
-	}
-
-	glue = glue != null ? glue : ',';
-	keyGlue = typeof keyGlue != 'undefined' ? keyGlue : '=';
-
-	if (typeof value === 'object' || typeof value === 'function') {
-		var str = '', currentGlue = '';
-		for (var key in value) {
-			if (value.hasOwnProperty(key) || typeof value[key] !== 'function') {
-				str += currentGlue + ((keyGlue && key != ~~key ? key + keyGlue : '') + value[key]);
-				currentGlue = glue;
-			}
-		}
-		return str;
-	}
-
-	if (String(value) == '0' && (1 / value) == -(1 / 0)) {
-		return '-0';
-	}
-
-	return String(value);
-}
-
-module.exports = toString;
-},{}],15:[function(require,module,exports){
+},{}],16:[function(require,module,exports){
 var isObject = require('./isObject');
 
-function truncate(input, length, suffix) {
-	suffix = typeof suffix != 'undefined' ? suffix : '&hellip;';
+function truncate(input, condition, suffix) {
 	input = isObject(input) ? JSON.stringify(input) : String(input);
-	return (input.length > length) ? input.slice(0, length) + suffix : input;
+	suffix = typeof suffix != 'undefined' ? suffix : '&hellip;';
+	if (condition instanceof Function) {
+		condition = condition(input, suffix);
+	}
+
+	return (input.length > condition) ? input.slice(0, condition) + suffix : input;
 };
 
 module.exports = truncate;
-},{"./isObject":9}],16:[function(require,module,exports){
+},{"./isObject":11}],17:[function(require,module,exports){
 "use strict";
 
 function _objectValues(obj) {
@@ -440,7 +462,7 @@ function _nonIterableSpread() { throw new TypeError("Invalid attempt to spread n
 function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
 function _iterableToArray(iter) { if (typeof Symbol !== "undefined" && iter[Symbol.iterator] != null || iter["@@iterator"] != null) return Array.from(iter); }
 function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) return _arrayLikeToArray(arr); }
-function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) { arr2[i] = arr[i]; } return arr2; }
+function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) arr2[i] = arr[i]; return arr2; }
 var filters = [require('./modules/regex'), require('./modules/timeAgo'), require('./modules/timeMs'), require('./modules/minMax'), require('./modules/minMax{}'), require('./modules/minMax[]'), require('./modules/list[]'), require('./modules/list'), require('./modules/args'), require('./modules/files'), require('./modules/urls'), require('./modules/boolean'), require('./modules/number'), require('./modules/string'), require('./modules/object'), require('./modules/all')];
 function Create(element, options) {
   var table,
@@ -489,12 +511,12 @@ function Create(element, options) {
 }
 module.exports = Create;
 
-},{"./modules/all":36,"./modules/args":37,"./modules/boolean":38,"./modules/files":39,"./modules/list":40,"./modules/list[]":41,"./modules/minMax":42,"./modules/minMax[]":43,"./modules/minMax{}":44,"./modules/number":45,"./modules/object":46,"./modules/regex":47,"./modules/string":48,"./modules/timeAgo":49,"./modules/timeMs":50,"./modules/urls":51}],17:[function(require,module,exports){
+},{"./modules/all":41,"./modules/args":42,"./modules/boolean":43,"./modules/files":44,"./modules/list":45,"./modules/list[]":46,"./modules/minMax":47,"./modules/minMax[]":48,"./modules/minMax{}":49,"./modules/number":50,"./modules/object":51,"./modules/regex":52,"./modules/string":53,"./modules/timeAgo":54,"./modules/timeMs":55,"./modules/urls":56}],18:[function(require,module,exports){
 "use strict";
 
 function _createForOfIteratorHelper(o, allowArrayLike) { var it = typeof Symbol !== "undefined" && o[Symbol.iterator] || o["@@iterator"]; if (!it) { if (Array.isArray(o) || (it = _unsupportedIterableToArray(o)) || allowArrayLike && o && typeof o.length === "number") { if (it) o = it; var i = 0; var F = function F() {}; return { s: F, n: function n() { if (i >= o.length) return { done: true }; return { done: false, value: o[i++] }; }, e: function e(_e) { throw _e; }, f: F }; } throw new TypeError("Invalid attempt to iterate non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); } var normalCompletion = true, didErr = false, err; return { s: function s() { it = it.call(o); }, n: function n() { var step = it.next(); normalCompletion = step.done; return step; }, e: function e(_e2) { didErr = true; err = _e2; }, f: function f() { try { if (!normalCompletion && it["return"] != null) it["return"](); } finally { if (didErr) throw err; } } }; }
 function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
-function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) { arr2[i] = arr[i]; } return arr2; }
+function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) arr2[i] = arr[i]; return arr2; }
 var advancedSearch = require('../helpers/advancedSearch');
 var safeStringify = require('es5-util/js/safeStringify');
 module.exports = function (headerValue, rowValue, rowData) {
@@ -515,7 +537,7 @@ module.exports = function (headerValue, rowValue, rowData) {
   if (!headerValue.includes(' ') && !headerValue.includes(':') && !headerValue.includes('-') && !headerValue.includes('+')) {
     return rowValue.includes(headerValue);
   }
-  var keywords = headerValue.match(/(?:[^\s"]+|"[^"]*")+/g);
+  var keywords = headerValue.match(/(?:[^\s"]+|"[^"]*(?:(?!\\").)*")+/g);
   var _iterator = _createForOfIteratorHelper(keywords),
     _step;
   try {
@@ -533,7 +555,7 @@ module.exports = function (headerValue, rowValue, rowData) {
   return true;
 };
 
-},{"../helpers/advancedSearch":30,"es5-util/js/safeStringify":11}],18:[function(require,module,exports){
+},{"../helpers/advancedSearch":31,"es5-util/js/safeStringify":13}],19:[function(require,module,exports){
 "use strict";
 
 var isObject = require('es5-util/js/isObject');
@@ -547,7 +569,7 @@ module.exports = function (headerValue, rowValueObj) {
   return advancedFilter.apply(void 0, [headerValue, safeStringify(rowValue)].concat(args));
 };
 
-},{"./../filters/advanced":17,"es5-util/js/isObject":9,"es5-util/js/safeStringify":11}],19:[function(require,module,exports){
+},{"./../filters/advanced":18,"es5-util/js/isObject":11,"es5-util/js/safeStringify":13}],20:[function(require,module,exports){
 "use strict";
 
 var getSize = require('./../helpers/getSize');
@@ -559,7 +581,7 @@ module.exports = function (headerValue, rowValue) {
   return minMaxFilter.apply(void 0, [headerValue, getSize(rowValue)].concat(args));
 };
 
-},{"./../filters/minMax":20,"./../helpers/getSize":31}],20:[function(require,module,exports){
+},{"./../filters/minMax":21,"./../helpers/getSize":33}],21:[function(require,module,exports){
 "use strict";
 
 module.exports = function (headerValue, rowValue, rowData, filterParams) {
@@ -580,7 +602,7 @@ module.exports = function (headerValue, rowValue, rowData, filterParams) {
   return true;
 };
 
-},{}],21:[function(require,module,exports){
+},{}],22:[function(require,module,exports){
 "use strict";
 
 var isObject = require('es5-util/js/isObject');
@@ -593,14 +615,14 @@ module.exports = function (headerValue, rowValue) {
   return minMaxFilter.apply(void 0, [headerValue, keySize].concat(args));
 };
 
-},{"./../filters/minMax":20,"es5-util/js/isObject":9}],22:[function(require,module,exports){
+},{"./../filters/minMax":21,"es5-util/js/isObject":11}],23:[function(require,module,exports){
 "use strict";
 
 module.exports = function (headerValue, rowValue, rowData, filterParams) {
   return new RegExp(headerValue).test(rowValue);
 };
 
-},{}],23:[function(require,module,exports){
+},{}],24:[function(require,module,exports){
 "use strict";
 
 var minMaxFilter = require('./../filters/minMax');
@@ -610,52 +632,90 @@ module.exports = function (headerValue, rowValue, rowData, filterParams) {
   if ((headerValue.start !== '' || headerValue.end !== '') && rowValue == null) {
     return false;
   }
-  var startTime = getKey(filterParams, 'startTime', Date.now());
+  var startTime = getKey(filterParams, 'startTime', Date.now() / 1000);
   if (typeof startTime === 'function') {
     startTime = startTime();
   }
-  var timeAgo = Math.floor(startTime / 1000 - rowValue);
+  var timeAgo = Math.floor(startTime - rowValue);
   rowValue = timeAgo / getKey(intervals, getKey(filterParams, 'searchBy', 'm')[0], intervals.m);
   return minMaxFilter(headerValue, rowValue, rowData, filterParams);
 };
 
-},{"./../filters/minMax":20,"./../helpers/intervals":32,"es5-util/js/getKey":5}],24:[function(require,module,exports){
+},{"./../filters/minMax":21,"./../helpers/intervals":36,"es5-util/js/getKey":5}],25:[function(require,module,exports){
 "use strict";
 
-function _typeof(obj) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (obj) { return typeof obj; } : function (obj) { return obj && "function" == typeof Symbol && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }, _typeof(obj); }
 var toAssociativeArray = require('es5-util/js/toAssociativeArray');
 var hasKey = require('es5-util/js/hasKey');
 var getKey = require('es5-util/js/getKey');
-var toString = require('es5-util/js/toString');
+var isInteger = require('es5-util/js/isInteger');
+var toHtmlEntities = require('es5-util/js/toHtmlEntities');
+var formatString = require('./../helpers/formatString');
+function formatArg(arg) {
+  var formatterParams = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
+  var type = arg.type,
+    text = arg.text,
+    titleText = arg.text;
+  if (type === 'string') {
+    text = formatString(arg.text, formatterParams);
+    titleText = toHtmlEntities(titleText);
+  } else if (type === 'same') {
+    text = '(same)';
+    titleText = 'This value did not change';
+  }
+  return "<span title=\"(".concat(type, ") ").concat(titleText, "\" data-type=\"").concat(type, "\">").concat(text, "</span>");
+}
+function getType(input) {
+  var type = Object.prototype.toString.call(input).replace('[object ', '').replace(']', '').toLowerCase();
+  if (isInteger(input)) {
+    type = 'integer';
+  } else if (type === 'number' && ![NaN, Infinity].includes(input)) {
+    type = 'float';
+  } else if (input === '(same)') {
+    type = 'same';
+  } else if (type === 'function') {
+    type = 'callable';
+  }
+  var text = String(input);
+  if (input === '') {
+    text = '(empty)';
+  } else if (type === 'array') {
+    text = "array[".concat(input.length, "]");
+  } else if (type === 'object') {
+    text = "object{".concat(Object.keys(input).length, "}");
+  } else if (type === 'callable') {
+    text = 'Function()';
+  }
+  return {
+    type: type,
+    text: text
+  };
+}
 module.exports = function (cell, formatterParams, onRendered) {
-  var _formatterParams$befo, _formatterParams$join, _formatterParams$afte;
+  var _formatterParams$pref, _formatterParams$join, _formatterParams$suff;
   if (cell.getValue() == null) {
     return '';
   }
   var defaultType = getKey(formatterParams, 'type');
   var values = [];
-  function formatArg(arg) {
-    return "<span title=\"(".concat(arg.type, ") ").concat(arg.type === 'same' ? 'This value did not change' : arg.text, "\" data-type=\"").concat(arg.type, "\">").concat(arg.type === 'same' ? '(same)' : arg.text, "</span>");
-  }
   var args = Array.isArray(cell.getValue()) ? cell.getValue() : [cell.getValue()];
   args.forEach(function (arg) {
     if (hasKey(arg, 'type')) {
-      values.push(formatArg(arg));
+      values.push(formatArg(arg, formatterParams));
     } else if (defaultType) {
       values.push(formatArg({
         type: defaultType,
         text: arg
-      }));
-    } else if (_typeof(arg) === 'object' || typeof arg === 'function') {
-      values.push(JSON.stringify(arg));
+      }, formatterParams));
     } else {
-      values.push(toString(arg));
+      values.push(formatArg(getType(arg), formatterParams));
     }
   });
-  return ((_formatterParams$befo = formatterParams.before) !== null && _formatterParams$befo !== void 0 ? _formatterParams$befo : '<div>') + toAssociativeArray(values).join((_formatterParams$join = formatterParams.join) !== null && _formatterParams$join !== void 0 ? _formatterParams$join : "\n") + ((_formatterParams$afte = formatterParams.after) !== null && _formatterParams$afte !== void 0 ? _formatterParams$afte : '</div>');
+  return ((_formatterParams$pref = formatterParams.prefix) !== null && _formatterParams$pref !== void 0 ? _formatterParams$pref : '<div>') + toAssociativeArray(values).join((_formatterParams$join = formatterParams.join) !== null && _formatterParams$join !== void 0 ? _formatterParams$join : "\n") + ((_formatterParams$suff = formatterParams.suffix) !== null && _formatterParams$suff !== void 0 ? _formatterParams$suff : '</div>');
 };
+module.exports.getType = formatArg;
+module.exports.getType = getType;
 
-},{"es5-util/js/getKey":5,"es5-util/js/hasKey":8,"es5-util/js/toAssociativeArray":12,"es5-util/js/toString":14}],25:[function(require,module,exports){
+},{"./../helpers/formatString":32,"es5-util/js/getKey":5,"es5-util/js/hasKey":8,"es5-util/js/isInteger":10,"es5-util/js/toAssociativeArray":14,"es5-util/js/toHtmlEntities":15}],26:[function(require,module,exports){
 "use strict";
 
 var getSize = require("../helpers/getSize");
@@ -663,7 +723,7 @@ module.exports = function (cell, formatterParams, onRendered) {
   return getSize(cell.getValue());
 };
 
-},{"../helpers/getSize":31}],26:[function(require,module,exports){
+},{"../helpers/getSize":33}],27:[function(require,module,exports){
 "use strict";
 
 var isObject = require('es5-util/js/isObject');
@@ -687,27 +747,42 @@ module.exports = function (cell, formatterParams, onRendered) {
   return links.join(formatterParams.join || " | ");
 };
 
-},{"es5-util/js/isObject":9}],27:[function(require,module,exports){
+},{"es5-util/js/isObject":11}],28:[function(require,module,exports){
 "use strict";
 
+function _typeof(obj) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (obj) { return typeof obj; } : function (obj) { return obj && "function" == typeof Symbol && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }, _typeof(obj); }
+function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); enumerableOnly && (symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; })), keys.push.apply(keys, symbols); } return keys; }
+function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = null != arguments[i] ? arguments[i] : {}; i % 2 ? ownKeys(Object(source), !0).forEach(function (key) { _defineProperty(target, key, source[key]); }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)) : ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } return target; }
+function _defineProperty(obj, key, value) { key = _toPropertyKey(key); if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+function _toPropertyKey(arg) { var key = _toPrimitive(arg, "string"); return _typeof(key) === "symbol" ? key : String(key); }
+function _toPrimitive(input, hint) { if (_typeof(input) !== "object" || input === null) return input; var prim = input[Symbol.toPrimitive]; if (prim !== undefined) { var res = prim.call(input, hint || "default"); if (_typeof(res) !== "object") return res; throw new TypeError("@@toPrimitive must return a primitive value."); } return (hint === "string" ? String : Number)(input); }
 var isObject = require('es5-util/js/isObject');
 var toAssociativeArray = require('es5-util/js/toAssociativeArray');
+var formatString = require('./../helpers/formatString');
 module.exports = function (cell, formatterParams, onRendered) {
-  var _formatterParams$whit, _formatterParams$join;
-  (_formatterParams$whit = formatterParams.whiteSpace) !== null && _formatterParams$whit !== void 0 ? _formatterParams$whit : formatterParams.whiteSpace = 'pre';
+  var _params$join;
+  var params = _objectSpread(_objectSpread({}, {
+    whiteSpace: 'pre',
+    textLimit: false,
+    htmlChars: false,
+    space: 0
+  }), formatterParams);
   var values = cell.getValue();
   if (isObject(values) && !Array.isArray(values)) {
-    var content = JSON.stringify(values, null, formatterParams.space || 0);
-    return formatterParams.whiteSpace ? '<div style="white-space: ' + formatterParams.whiteSpace + '">' + content + '</div>' : content;
+    var _params$prefix, _params$suffix;
+    var content = JSON.stringify(values, null, params.space);
+    (_params$prefix = params.prefix) !== null && _params$prefix !== void 0 ? _params$prefix : params.prefix = params.whiteSpace ? "<div style=\"white-space: ".concat(params.whiteSpace, "\">") : '';
+    (_params$suffix = params.suffix) !== null && _params$suffix !== void 0 ? _params$suffix : params.suffix = params.whiteSpace ? "</div>" : '';
+    return formatString(content, params);
   }
-  return toAssociativeArray(values).join((_formatterParams$join = formatterParams.join) !== null && _formatterParams$join !== void 0 ? _formatterParams$join : '<br>');
+  return formatString(toAssociativeArray(values).join((_params$join = params.join) !== null && _params$join !== void 0 ? _params$join : '<br>'), params);
 };
 module.exports.byKeys = function (cell, formatterParams, onRendered) {
   var value = cell.getValue();
   return isObject(value) ? Object.keys(value).length : +!!value;
 };
 
-},{"es5-util/js/isObject":9,"es5-util/js/toAssociativeArray":12}],28:[function(require,module,exports){
+},{"./../helpers/formatString":32,"es5-util/js/isObject":11,"es5-util/js/toAssociativeArray":14}],29:[function(require,module,exports){
 "use strict";
 
 var getKey = require("es5-util/js/getKey");
@@ -716,11 +791,11 @@ module.exports = function (cell, formatterParams, onRendered) {
   if (!cell.getValue() || cell.getValue() <= 1) {
     return '<span title="Invalid Date">-</span>';
   }
-  var startTime = getKey(formatterParams, 'startTime', Date.now());
+  var startTime = getKey(formatterParams, 'startTime', Date.now() / 1000);
   if (typeof startTime === 'function') {
     startTime = startTime();
   }
-  var timeAgo = Math.floor(startTime / 1000 - (cell.getValue() || 0));
+  var timeAgo = Math.floor(startTime - (cell.getValue() || 0));
   var interval;
   var timeAgoAbs = Math.abs(timeAgo);
   if (timeAgoAbs < 60) {
@@ -739,7 +814,7 @@ module.exports = function (cell, formatterParams, onRendered) {
   return "<span title=\"".concat(dateObject.toLocaleString(), "\">").concat(timeAgoFormatted, "</span>");
 };
 
-},{"./../helpers/intervals":32,"es5-util/js/getKey":5}],29:[function(require,module,exports){
+},{"./../helpers/intervals":36,"es5-util/js/getKey":5}],30:[function(require,module,exports){
 "use strict";
 
 module.exports = function (cell, formatterParams, onRendered) {
@@ -755,7 +830,7 @@ module.exports = function (cell, formatterParams, onRendered) {
   return links.join(formatterParams.join || '<br>');
 };
 
-},{}],30:[function(require,module,exports){
+},{}],31:[function(require,module,exports){
 "use strict";
 
 var safeStringify = require('es5-util/js/safeStringify');
@@ -798,14 +873,95 @@ module.exports = function (keyword, content) {
   return true;
 };
 
-},{"es5-util/js/safeStringify":11}],31:[function(require,module,exports){
+},{"es5-util/js/safeStringify":13}],32:[function(require,module,exports){
+"use strict";
+
+function _typeof(obj) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (obj) { return typeof obj; } : function (obj) { return obj && "function" == typeof Symbol && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }, _typeof(obj); }
+function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); enumerableOnly && (symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; })), keys.push.apply(keys, symbols); } return keys; }
+function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = null != arguments[i] ? arguments[i] : {}; i % 2 ? ownKeys(Object(source), !0).forEach(function (key) { _defineProperty(target, key, source[key]); }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)) : ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } return target; }
+function _defineProperty(obj, key, value) { key = _toPropertyKey(key); if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+function _toPropertyKey(arg) { var key = _toPrimitive(arg, "string"); return _typeof(key) === "symbol" ? key : String(key); }
+function _toPrimitive(input, hint) { if (_typeof(input) !== "object" || input === null) return input; var prim = input[Symbol.toPrimitive]; if (prim !== undefined) { var res = prim.call(input, hint || "default"); if (_typeof(res) !== "object") return res; throw new TypeError("@@toPrimitive must return a primitive value."); } return (hint === "string" ? String : Number)(input); }
+var truncate = require('es5-util/js/truncate');
+var toHtmlEntities = require('es5-util/js/toHtmlEntities');
+var getKeys = require("es5-util/js/getKeys");
+module.exports = function (content) {
+  var formatterParams = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
+  var modify = getKeys(formatterParams, 'modify', false);
+  var textLimit = getKeys(formatterParams, 'textLimit', false);
+  var moreText = getKeys(formatterParams, 'moreText', '...');
+  var htmlChars = getKeys(formatterParams, 'htmlChars', false);
+  var prefix = getKeys(formatterParams, 'prefix', '');
+  var suffix = getKeys(formatterParams, 'suffix', '');
+  if (modify) {
+    content = modify(content, _objectSpread(_objectSpread({}, formatterParams), {
+      textLimit: textLimit,
+      moreText: moreText,
+      htmlChars: htmlChars,
+      prefix: prefix,
+      suffix: suffix
+    }));
+  }
+  if (content == null) {
+    return '';
+  }
+  content = textLimit ? truncate(content, textLimit, moreText) : content;
+  content = htmlChars ? toHtmlEntities(content) : content;
+  return prefix + content + suffix;
+};
+
+},{"es5-util/js/getKeys":6,"es5-util/js/toHtmlEntities":15,"es5-util/js/truncate":16}],33:[function(require,module,exports){
 "use strict";
 
 module.exports = function (items) {
   return Array.isArray(items) ? items.length : +![undefined, null, false, '', '0', 0].includes(items);
 };
 
-},{}],32:[function(require,module,exports){
+},{}],34:[function(require,module,exports){
+"use strict";
+
+var isObject = require('es5-util/js/isObject');
+module.exports = function (condition, content, params, cell, onRendered) {
+  var e = arguments.length > 5 && arguments[5] !== undefined ? arguments[5] : {};
+  if (typeof condition === 'boolean') {
+    return condition;
+  }
+  if (condition instanceof Function) {
+    return condition(content, params, cell, onRendered, e);
+  }
+  if (Object.prototype.toString.call(condition) === '[object RegExp]') {
+    return condition.test(content);
+  }
+  return condition < (isObject(cell.getValue()) ? JSON.stringify(cell.getValue(), null, 0) : cell.getValue()).length;
+};
+
+},{"es5-util/js/isObject":11}],35:[function(require,module,exports){
+"use strict";
+
+function indexOf(haystack) {
+  var needle = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : "\n";
+  var offset = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 1;
+  return haystack.split(needle).slice(0, offset).join(needle).length;
+}
+function indexOfFn() {
+  var needle = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : "\n";
+  var offset = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 1;
+  return function (haystack) {
+    return haystack.split(needle).slice(0, offset).join(needle).length;
+  };
+}
+function indexOfNlFn() {
+  var offset = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 1;
+  var needle = "\n";
+  return function (haystack) {
+    return haystack.split(needle).slice(0, offset).join(needle).length;
+  };
+}
+module.exports = indexOf;
+module.exports.fn = indexOfFn;
+module.exports.nl = indexOfNlFn;
+
+},{}],36:[function(require,module,exports){
 "use strict";
 
 module.exports = {
@@ -816,13 +972,13 @@ module.exports = {
   y: 60 * 60 * 24 * 365
 };
 
-},{}],33:[function(require,module,exports){
+},{}],37:[function(require,module,exports){
 "use strict";
 
 function _typeof(obj) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (obj) { return typeof obj; } : function (obj) { return obj && "function" == typeof Symbol && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }, _typeof(obj); }
 function _createForOfIteratorHelper(o, allowArrayLike) { var it = typeof Symbol !== "undefined" && o[Symbol.iterator] || o["@@iterator"]; if (!it) { if (Array.isArray(o) || (it = _unsupportedIterableToArray(o)) || allowArrayLike && o && typeof o.length === "number") { if (it) o = it; var i = 0; var F = function F() {}; return { s: F, n: function n() { if (i >= o.length) return { done: true }; return { done: false, value: o[i++] }; }, e: function e(_e) { throw _e; }, f: F }; } throw new TypeError("Invalid attempt to iterate non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); } var normalCompletion = true, didErr = false, err; return { s: function s() { it = it.call(o); }, n: function n() { var step = it.next(); normalCompletion = step.done; return step; }, e: function e(_e2) { didErr = true; err = _e2; }, f: function f() { try { if (!normalCompletion && it["return"] != null) it["return"](); } finally { if (didErr) throw err; } } }; }
 function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
-function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) { arr2[i] = arr[i]; } return arr2; }
+function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) arr2[i] = arr[i]; return arr2; }
 module.exports = function (key, values) {
   if (!Array.isArray(values)) {
     values = [values];
@@ -850,7 +1006,27 @@ module.exports = function (key, values) {
   return false;
 };
 
-},{}],34:[function(require,module,exports){
+},{}],38:[function(require,module,exports){
+"use strict";
+
+var getKey = require("es5-util/js/getKey");
+function sum(values) {
+  var data = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : [];
+  var params = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : {};
+  var prefix = getKey(params, 'prefix', '');
+  var suffix = getKey(params, 'suffix', '');
+  var locales = getKey(params, 'locales', undefined);
+  var options = getKey(params, 'options', {
+    minimumFractionDigits: 0,
+    maximumFractionDigits: 0
+  });
+  return prefix + values.reduce(function (a, b) {
+    return a + b;
+  }, 0).toLocaleString(locales, options) + suffix;
+}
+module.exports = sum;
+
+},{"es5-util/js/getKey":5}],39:[function(require,module,exports){
 "use strict";
 
 module.exports = {
@@ -868,7 +1044,7 @@ module.exports = {
   }
 };
 
-},{}],35:[function(require,module,exports){
+},{}],40:[function(require,module,exports){
 "use strict";
 
 module.exports = function (cell, onRendered, success, cancel, params) {
@@ -908,7 +1084,7 @@ module.exports = function (cell, onRendered, success, cancel, params) {
   return container;
 };
 
-},{}],36:[function(require,module,exports){
+},{}],41:[function(require,module,exports){
 "use strict";
 
 function _typeof(obj) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (obj) { return typeof obj; } : function (obj) { return obj && "function" == typeof Symbol && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }, _typeof(obj); }
@@ -918,6 +1094,10 @@ function _defineProperty(obj, key, value) { key = _toPropertyKey(key); if (key i
 function _toPropertyKey(arg) { var key = _toPrimitive(arg, "string"); return _typeof(key) === "symbol" ? key : String(key); }
 function _toPrimitive(input, hint) { if (_typeof(input) !== "object" || input === null) return input; var prim = input[Symbol.toPrimitive]; if (prim !== undefined) { var res = prim.call(input, hint || "default"); if (_typeof(res) !== "object") return res; throw new TypeError("@@toPrimitive must return a primitive value."); } return (hint === "string" ? String : Number)(input); }
 module.exports = function (column, data, initial, options, element) {
+  if ('src' in column) {
+    column.title = "<img alt=\"".concat(column.title, "\" title=\"").concat(column.title, "\" src=\"").concat(column.src, "\" style=\"max-width: 100%;\" />");
+    delete column.src;
+  }
   return _objectSpread(_objectSpread({}, {
     vertAlign: 'middle',
     hozAlign: 'center',
@@ -926,7 +1106,7 @@ module.exports = function (column, data, initial, options, element) {
   }), column);
 };
 
-},{}],37:[function(require,module,exports){
+},{}],42:[function(require,module,exports){
 "use strict";
 
 var isType = require('../helpers/isType');
@@ -947,7 +1127,7 @@ module.exports = function (column, data, initial, options, element) {
   return column;
 };
 
-},{"../helpers/isType":33,"./../filters/args":18,"./../formatters/args":24,"./../sorters/args":53}],38:[function(require,module,exports){
+},{"../helpers/isType":37,"./../filters/args":19,"./../formatters/args":25,"./../sorters/args":58}],43:[function(require,module,exports){
 "use strict";
 
 function _typeof(obj) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (obj) { return typeof obj; } : function (obj) { return obj && "function" == typeof Symbol && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }, _typeof(obj); }
@@ -960,10 +1140,6 @@ var isType = require('../helpers/isType');
 module.exports = function (column, data, initial, options, element) {
   if (!isType('formatter', ['bool', 'boolean', 'tickCross'], column, initial)) {
     return column;
-  }
-  if ('src' in column) {
-    column.title = "<img alt=\"".concat(column.title, "\" title=\"").concat(column.title, "\" src=\"").concat(column.src, "\" style=\"max-width: 100%;\" />");
-    delete column.src;
   }
   column.formatter = 'tickCross';
   return _objectSpread(_objectSpread({}, {
@@ -979,7 +1155,7 @@ module.exports = function (column, data, initial, options, element) {
   }), column);
 };
 
-},{"../helpers/isType":33}],39:[function(require,module,exports){
+},{"../helpers/isType":37}],44:[function(require,module,exports){
 "use strict";
 
 var isType = require('../helpers/isType');
@@ -1002,7 +1178,7 @@ module.exports = function (column, data, initial, options, element) {
   return column;
 };
 
-},{"../helpers/isType":33,"./../filters/advanced":17,"./../formatters/files":26,"./../sorters/object":55}],40:[function(require,module,exports){
+},{"../helpers/isType":37,"./../filters/advanced":18,"./../formatters/files":27,"./../sorters/object":60}],45:[function(require,module,exports){
 "use strict";
 
 var isType = require('../helpers/isType');
@@ -1024,7 +1200,7 @@ module.exports = function (column, data, initial, options, element) {
   return column;
 };
 
-},{"../helpers/isType":33,"../sorters/object":55}],41:[function(require,module,exports){
+},{"../helpers/isType":37,"../sorters/object":60}],46:[function(require,module,exports){
 "use strict";
 
 var isType = require('../helpers/isType');
@@ -1051,7 +1227,7 @@ module.exports = function (column, data, initial, options, element) {
   return column;
 };
 
-},{"../helpers/isType":33,"../sorters/array":54,"./../html/list[]":34}],42:[function(require,module,exports){
+},{"../helpers/isType":37,"../sorters/array":59,"./../html/list[]":39}],47:[function(require,module,exports){
 "use strict";
 
 function _toConsumableArray(arr) { return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _unsupportedIterableToArray(arr) || _nonIterableSpread(); }
@@ -1059,17 +1235,20 @@ function _nonIterableSpread() { throw new TypeError("Invalid attempt to spread n
 function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
 function _iterableToArray(iter) { if (typeof Symbol !== "undefined" && iter[Symbol.iterator] != null || iter["@@iterator"] != null) return Array.from(iter); }
 function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) return _arrayLikeToArray(arr); }
-function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) { arr2[i] = arr[i]; } return arr2; }
+function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) arr2[i] = arr[i]; return arr2; }
 var arrayColumn = require('es5-util/js/arrayColumn');
+var getKeys = require("es5-util/js/getKeys");
 var isType = require('../helpers/isType');
 var minMaxDom = require('../html/minMax');
 var minMaxFilter = require('../filters/minMax');
+var sum = require("../helpers/sum");
 module.exports = function (column, data, initial, options, element) {
   var _column$headerFilterP, _column$headerFilter, _column$headerFilterF, _column$headerFilterL;
   var type = isType('formatter', ['minMax', 'min', 'max'], column, initial);
   if (!type) {
     return column;
   }
+  var bottomSum = getKeys(column, 'formatterParams.bottomSum', false);
   var values = data.length ? arrayColumn(data, column.field) : [];
   (_column$headerFilterP = column.headerFilterParams) !== null && _column$headerFilterP !== void 0 ? _column$headerFilterP : column.headerFilterParams = {
     min: values.length ? Math.min.apply(Math, _toConsumableArray(values)) : false,
@@ -1080,11 +1259,15 @@ module.exports = function (column, data, initial, options, element) {
   (_column$headerFilter = column.headerFilter) !== null && _column$headerFilter !== void 0 ? _column$headerFilter : column.headerFilter = minMaxDom;
   (_column$headerFilterF = column.headerFilterFunc) !== null && _column$headerFilterF !== void 0 ? _column$headerFilterF : column.headerFilterFunc = minMaxFilter;
   (_column$headerFilterL = column.headerFilterLiveFilter) !== null && _column$headerFilterL !== void 0 ? _column$headerFilterL : column.headerFilterLiveFilter = false;
+  if (bottomSum) {
+    var _column$bottomCalc;
+    (_column$bottomCalc = column.bottomCalc) !== null && _column$bottomCalc !== void 0 ? _column$bottomCalc : column.bottomCalc = sum;
+  }
   delete column.formatter;
   return column;
 };
 
-},{"../filters/minMax":20,"../helpers/isType":33,"../html/minMax":35,"es5-util/js/arrayColumn":2}],43:[function(require,module,exports){
+},{"../filters/minMax":21,"../helpers/isType":37,"../helpers/sum":38,"../html/minMax":40,"es5-util/js/arrayColumn":2,"es5-util/js/getKeys":6}],48:[function(require,module,exports){
 "use strict";
 
 function _toConsumableArray(arr) { return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _unsupportedIterableToArray(arr) || _nonIterableSpread(); }
@@ -1092,20 +1275,23 @@ function _nonIterableSpread() { throw new TypeError("Invalid attempt to spread n
 function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
 function _iterableToArray(iter) { if (typeof Symbol !== "undefined" && iter[Symbol.iterator] != null || iter["@@iterator"] != null) return Array.from(iter); }
 function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) return _arrayLikeToArray(arr); }
-function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) { arr2[i] = arr[i]; } return arr2; }
+function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) arr2[i] = arr[i]; return arr2; }
 var arrayColumn = require('es5-util/js/arrayColumn');
+var getKeys = require("es5-util/js/getKeys");
 var isType = require('../helpers/isType');
 var getSize = require('../helpers/getSize');
 var arrayFilter = require('./../filters/array');
 var arrayFormatter = require('./../formatters/array');
 var arraySorter = require('./../sorters/array');
 var minMaxDom = require("../html/minMax");
+var objectPopup = require("../popups/object");
 module.exports = function (column, data, initial, options, element) {
   var _column$headerFilterP, _column$headerFilter, _column$headerFilterF, _column$headerFilterL, _column$headerSortSta, _column$sorter;
   var type = isType('formatter', ['minMax[]', 'min[]', 'max[]'], column, initial);
   if (!type) {
     return column;
   }
+  var showPopup = getKeys(column, 'formatterParams.showPopup', false);
   var values = data.length ? arrayColumn(data, column.field) : [];
   values = values.map(function (value) {
     return getSize(value);
@@ -1122,10 +1308,13 @@ module.exports = function (column, data, initial, options, element) {
   column.formatter = arrayFormatter;
   (_column$headerSortSta = column.headerSortStartingDir) !== null && _column$headerSortSta !== void 0 ? _column$headerSortSta : column.headerSortStartingDir = 'desc';
   (_column$sorter = column.sorter) !== null && _column$sorter !== void 0 ? _column$sorter : column.sorter = arraySorter;
+  if (showPopup) {
+    column.clickPopup = objectPopup;
+  }
   return column;
 };
 
-},{"../helpers/getSize":31,"../helpers/isType":33,"../html/minMax":35,"./../filters/array":19,"./../formatters/array":25,"./../sorters/array":54,"es5-util/js/arrayColumn":2}],44:[function(require,module,exports){
+},{"../helpers/getSize":33,"../helpers/isType":37,"../html/minMax":40,"../popups/object":57,"./../filters/array":20,"./../formatters/array":26,"./../sorters/array":59,"es5-util/js/arrayColumn":2,"es5-util/js/getKeys":6}],49:[function(require,module,exports){
 "use strict";
 
 function _toConsumableArray(arr) { return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _unsupportedIterableToArray(arr) || _nonIterableSpread(); }
@@ -1133,19 +1322,22 @@ function _nonIterableSpread() { throw new TypeError("Invalid attempt to spread n
 function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
 function _iterableToArray(iter) { if (typeof Symbol !== "undefined" && iter[Symbol.iterator] != null || iter["@@iterator"] != null) return Array.from(iter); }
 function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) return _arrayLikeToArray(arr); }
-function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) { arr2[i] = arr[i]; } return arr2; }
+function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) arr2[i] = arr[i]; return arr2; }
 var arrayColumn = require('es5-util/js/arrayColumn');
+var getKeys = require("es5-util/js/getKeys");
 var isType = require('../helpers/isType');
 var objectFilter = require('./../filters/object');
 var objectFormatter = require('./../formatters/object');
 var objectSorter = require('./../sorters/object');
 var minMaxDom = require("../html/minMax");
+var objectPopup = require("../popups/object");
 module.exports = function (column, data, initial, options, element) {
   var _column$headerFilterP, _column$headerFilter, _column$headerFilterF, _column$headerFilterL, _column$headerSortSta, _column$sorter;
   var type = isType('formatter', ['minMax{}', 'min{}', 'max{}'], column, initial);
   if (!type) {
     return column;
   }
+  var showPopup = getKeys(column, 'formatterParams.showPopup', false);
   var values = data.length ? arrayColumn(data, column.field) : [];
   values = values.map(function (value) {
     return value ? Object.keys(value).length : 0;
@@ -1162,10 +1354,13 @@ module.exports = function (column, data, initial, options, element) {
   column.formatter = objectFormatter.byKeys;
   (_column$headerSortSta = column.headerSortStartingDir) !== null && _column$headerSortSta !== void 0 ? _column$headerSortSta : column.headerSortStartingDir = 'desc';
   (_column$sorter = column.sorter) !== null && _column$sorter !== void 0 ? _column$sorter : column.sorter = objectSorter.byKeys;
+  if (showPopup) {
+    column.clickPopup = objectPopup;
+  }
   return column;
 };
 
-},{"../helpers/isType":33,"../html/minMax":35,"./../filters/object":21,"./../formatters/object":27,"./../sorters/object":55,"es5-util/js/arrayColumn":2}],45:[function(require,module,exports){
+},{"../helpers/isType":37,"../html/minMax":40,"../popups/object":57,"./../filters/object":22,"./../formatters/object":28,"./../sorters/object":60,"es5-util/js/arrayColumn":2,"es5-util/js/getKeys":6}],50:[function(require,module,exports){
 "use strict";
 
 var isType = require('../helpers/isType');
@@ -1181,7 +1376,7 @@ module.exports = function (column, data, initial, options, element) {
   return column;
 };
 
-},{"../helpers/isType":33}],46:[function(require,module,exports){
+},{"../helpers/isType":37}],51:[function(require,module,exports){
 "use strict";
 
 var isType = require('../helpers/isType');
@@ -1197,7 +1392,7 @@ module.exports = function (column, data, initial, options, element) {
     return column;
   }
   var showKeys = getKeys(column, 'formatterParams.showKeys', false);
-  var showPopup = getKeys(column, 'formatterParams.showPopup', true);
+  var showPopup = getKeys(column, 'formatterParams.showPopup', getKeys(column, 'formatterParams.textLimit', showKeys));
   (_column$headerFilter = column.headerFilter) !== null && _column$headerFilter !== void 0 ? _column$headerFilter : column.headerFilter = 'input';
   (_column$headerFilterF = column.headerFilterFuncParams) !== null && _column$headerFilterF !== void 0 ? _column$headerFilterF : column.headerFilterFuncParams = {
     strict: false
@@ -1209,19 +1404,19 @@ module.exports = function (column, data, initial, options, element) {
     column.formatter = objectFormatter.byKeys;
     (_column$headerSortSta = column.headerSortStartingDir) !== null && _column$headerSortSta !== void 0 ? _column$headerSortSta : column.headerSortStartingDir = 'desc';
     (_column$sorter = column.sorter) !== null && _column$sorter !== void 0 ? _column$sorter : column.sorter = objectSorter.byKeys;
-    if (showPopup) {
-      column.clickPopup = objectPopup;
-    }
   } else {
     var _column$sorter2, _column$hozAlign;
     column.formatter = objectFormatter;
     (_column$sorter2 = column.sorter) !== null && _column$sorter2 !== void 0 ? _column$sorter2 : column.sorter = objectSorter;
     (_column$hozAlign = column.hozAlign) !== null && _column$hozAlign !== void 0 ? _column$hozAlign : column.hozAlign = 'left';
   }
+  if (showPopup) {
+    column.clickPopup = objectPopup;
+  }
   return column;
 };
 
-},{"../helpers/isType":33,"./../filters/advanced":17,"./../formatters/object":27,"./../popups/object":52,"./../sorters/object":55,"es5-util/js/getKeys":6}],47:[function(require,module,exports){
+},{"../helpers/isType":37,"./../filters/advanced":18,"./../formatters/object":28,"./../popups/object":57,"./../sorters/object":60,"es5-util/js/getKeys":6}],52:[function(require,module,exports){
 "use strict";
 
 var isType = require('../helpers/isType');
@@ -1240,42 +1435,43 @@ module.exports = function (column, data, initial, options, element) {
   return column;
 };
 
-},{"../helpers/isType":33}],48:[function(require,module,exports){
+},{"../helpers/isType":37}],53:[function(require,module,exports){
 "use strict";
 
 var isType = require('../helpers/isType');
-var getKeys = require('es5-util/js/getKeys');
 var objectPopup = require('./../popups/object');
-var truncate = require('es5-util/js/truncate');
-var toHtmlEntities = require('es5-util/js/toHtmlEntities');
+var formatString = require('./../helpers/formatString');
+var advancedFilter = require("../filters/advanced");
 module.exports = function (column, data, initial, options, element) {
-  var _column$headerFilter;
-  var type = isType('formatter', ['string', 'str'], column, initial);
+  var _column$formatterPara, _column$formatterPara2, _column$formatterPara3, _column$formatterPara4, _column$formatterPara5, _column$formatterPara6, _column$formatterPara7, _column$headerFilter;
+  var type = isType('formatter', ['string', 'str', 'text', 'html'], column, initial);
   if (!type) {
     return column;
   }
-  var textLimit = getKeys(column, 'formatterParams.textLimit', false);
-  var htmlChars = getKeys(column, 'formatterParams.htmlChars', !!textLimit);
-  var showPopup = getKeys(column, 'formatterParams.showPopup', !!textLimit);
+  (_column$formatterPara = column.formatterParams) !== null && _column$formatterPara !== void 0 ? _column$formatterPara : column.formatterParams = {};
+  (_column$formatterPara3 = (_column$formatterPara2 = column.formatterParams).textLimit) !== null && _column$formatterPara3 !== void 0 ? _column$formatterPara3 : _column$formatterPara2.textLimit = false;
+  (_column$formatterPara5 = (_column$formatterPara4 = column.formatterParams).htmlChars) !== null && _column$formatterPara5 !== void 0 ? _column$formatterPara5 : _column$formatterPara4.htmlChars = type === 'html';
+  (_column$formatterPara7 = (_column$formatterPara6 = column.formatterParams).showPopup) !== null && _column$formatterPara7 !== void 0 ? _column$formatterPara7 : _column$formatterPara6.showPopup = column.formatterParams.textLimit;
   (_column$headerFilter = column.headerFilter) !== null && _column$headerFilter !== void 0 ? _column$headerFilter : column.headerFilter = 'input';
-  if (textLimit) {
+  if (column.formatterParams.textLimit) {
     column.formatter = function (cell, formatterParams, onRendered) {
-      if (cell.getValue() == null) {
-        return '';
-      }
-      var content = truncate(cell.getValue(), textLimit, '...');
-      return htmlChars ? toHtmlEntities(content) : content;
+      return formatString(cell.getValue(), formatterParams);
     };
-    if (showPopup) {
+    if (column.formatterParams.showPopup) {
       column.clickPopup = objectPopup;
     }
   } else {
     delete column.formatter;
   }
+  if (['text', 'html'].includes(type)) {
+    var _column$hozAlign, _column$headerFilterF;
+    (_column$hozAlign = column.hozAlign) !== null && _column$hozAlign !== void 0 ? _column$hozAlign : column.hozAlign = 'left';
+    (_column$headerFilterF = column.headerFilterFunc) !== null && _column$headerFilterF !== void 0 ? _column$headerFilterF : column.headerFilterFunc = advancedFilter;
+  }
   return column;
 };
 
-},{"../helpers/isType":33,"./../popups/object":52,"es5-util/js/getKeys":6,"es5-util/js/toHtmlEntities":13,"es5-util/js/truncate":15}],49:[function(require,module,exports){
+},{"../filters/advanced":18,"../helpers/isType":37,"./../helpers/formatString":32,"./../popups/object":57}],54:[function(require,module,exports){
 "use strict";
 
 var isType = require('../helpers/isType');
@@ -1305,7 +1501,7 @@ module.exports = function (column, data, initial, options, element) {
   return column;
 };
 
-},{"../filters/timeAgo":23,"../formatters/timeAgo":28,"../helpers/isType":33,"../html/minMax":35}],50:[function(require,module,exports){
+},{"../filters/timeAgo":24,"../formatters/timeAgo":29,"../helpers/isType":37,"../html/minMax":40}],55:[function(require,module,exports){
 "use strict";
 
 function _toConsumableArray(arr) { return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _unsupportedIterableToArray(arr) || _nonIterableSpread(); }
@@ -1313,38 +1509,50 @@ function _nonIterableSpread() { throw new TypeError("Invalid attempt to spread n
 function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
 function _iterableToArray(iter) { if (typeof Symbol !== "undefined" && iter[Symbol.iterator] != null || iter["@@iterator"] != null) return Array.from(iter); }
 function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) return _arrayLikeToArray(arr); }
-function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) { arr2[i] = arr[i]; } return arr2; }
+function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) arr2[i] = arr[i]; return arr2; }
 var arrayColumn = require("es5-util/js/arrayColumn");
+var getKeys = require('es5-util/js/getKeys');
 var isType = require('../helpers/isType');
 var minMaxDom = require("../html/minMax");
 var minMaxFilter = require("../filters/minMax");
+var sum = require("../helpers/sum");
 module.exports = function (column, data, initial, options, element) {
   var _column$headerFilterP, _column$headerFilter, _column$headerFilterF, _column$headerFilterL, _column$hozAlign;
-  var type = isType('formatter', ['timeMs', 'minTimeMs', 'maxTimeMs'], column, initial);
+  // `timeMs*` to be deprecated in future versions, use `duration*` instead
+  var type = isType('formatter', ['duration', 'minDuration', 'maxDuration', 'timeMs', 'minTimeMs', 'maxTimeMs'], column, initial);
   if (!type) {
     return column;
   }
+  var unit = getKeys(column, 'formatterParams.unit', 'ms');
+  var prefix = getKeys(column, 'formatterParams.prefix', '');
+  var suffix = getKeys(column, 'formatterParams.suffix', ' ' + unit);
+  var precision = getKeys(column, 'formatterParams.precision', 2);
+  var bottomSum = getKeys(column, 'formatterParams.bottomSum', false);
   var values = data.length ? arrayColumn(data, column.field) : [];
   (_column$headerFilterP = column.headerFilterParams) !== null && _column$headerFilterP !== void 0 ? _column$headerFilterP : column.headerFilterParams = {
     min: values.length ? Math.min.apply(Math, _toConsumableArray(values)) : false,
     max: values.length ? Math.max.apply(Math, _toConsumableArray(values)) : false,
-    filterMin: ['timeMs', 'minTimeMs'].includes(type),
-    filterMax: ['timeMs', 'maxTimeMs'].includes(type)
+    filterMin: ['duration', 'minDuration', 'timeMs', 'minTimeMs'].includes(type),
+    filterMax: ['duration', 'maxDuration', 'timeMs', 'maxTimeMs'].includes(type)
   };
   (_column$headerFilter = column.headerFilter) !== null && _column$headerFilter !== void 0 ? _column$headerFilter : column.headerFilter = minMaxDom;
   (_column$headerFilterF = column.headerFilterFunc) !== null && _column$headerFilterF !== void 0 ? _column$headerFilterF : column.headerFilterFunc = minMaxFilter;
   (_column$headerFilterL = column.headerFilterLiveFilter) !== null && _column$headerFilterL !== void 0 ? _column$headerFilterL : column.headerFilterLiveFilter = false;
   column.formatter = function (cell, formatterParams, onRendered) {
-    return cell.getValue().toLocaleString(undefined, {
-      minimumFractionDigits: 2,
-      maximumFractionDigits: 2
-    }) + ' ms';
+    return prefix + cell.getValue().toLocaleString(undefined, {
+      minimumFractionDigits: precision,
+      maximumFractionDigits: precision
+    }) + suffix;
   };
+  if (bottomSum) {
+    var _column$bottomCalc;
+    (_column$bottomCalc = column.bottomCalc) !== null && _column$bottomCalc !== void 0 ? _column$bottomCalc : column.bottomCalc = sum;
+  }
   (_column$hozAlign = column.hozAlign) !== null && _column$hozAlign !== void 0 ? _column$hozAlign : column.hozAlign = 'right';
   return column;
 };
 
-},{"../filters/minMax":20,"../helpers/isType":33,"../html/minMax":35,"es5-util/js/arrayColumn":2}],51:[function(require,module,exports){
+},{"../filters/minMax":21,"../helpers/isType":37,"../helpers/sum":38,"../html/minMax":40,"es5-util/js/arrayColumn":2,"es5-util/js/getKeys":6}],56:[function(require,module,exports){
 "use strict";
 
 var isType = require('../helpers/isType');
@@ -1361,27 +1569,47 @@ module.exports = function (column, data, initial, options, element) {
   return column;
 };
 
-},{"../helpers/isType":33,"./../formatters/urls":29}],52:[function(require,module,exports){
+},{"../helpers/isType":37,"./../formatters/urls":30}],57:[function(require,module,exports){
 "use strict";
 
+function _typeof(obj) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (obj) { return typeof obj; } : function (obj) { return obj && "function" == typeof Symbol && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }, _typeof(obj); }
+function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); enumerableOnly && (symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; })), keys.push.apply(keys, symbols); } return keys; }
+function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = null != arguments[i] ? arguments[i] : {}; i % 2 ? ownKeys(Object(source), !0).forEach(function (key) { _defineProperty(target, key, source[key]); }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)) : ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } return target; }
+function _defineProperty(obj, key, value) { key = _toPropertyKey(key); if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+function _toPropertyKey(arg) { var key = _toPrimitive(arg, "string"); return _typeof(key) === "symbol" ? key : String(key); }
+function _toPrimitive(input, hint) { if (_typeof(input) !== "object" || input === null) return input; var prim = input[Symbol.toPrimitive]; if (prim !== undefined) { var res = prim.call(input, hint || "default"); if (_typeof(res) !== "object") return res; throw new TypeError("@@toPrimitive must return a primitive value."); } return (hint === "string" ? String : Number)(input); }
 var isObject = require('es5-util/js/isObject');
 var getKeys = require('es5-util/js/getKeys');
 var toHtmlEntities = require('es5-util/js/toHtmlEntities');
+var hasPopup = require('./../helpers/hasPopup');
+var formatString = require('./../helpers/formatString');
 module.exports = function (e, component, onRendered) {
+  var _column$formatterPara, _formatterParams$popu, _formatterParams$popu2, _ref, _formatterParams$popu3, _ref2, _formatterParams$popu4, _ref3, _formatterParams$popu5, _formatterParams$popu6, _formatterParams$popu7, _formatterParams$popu8;
   var content = component.getValue();
-  if (content == null) {
+  var column = component.getColumn().getDefinition() || {};
+  var showPopup = getKeys(column, 'formatterParams.showPopup', true);
+  if (content == null || showPopup === false) {
     return null;
   }
+  var formatterParams = _objectSpread({}, (_column$formatterPara = column.formatterParams) !== null && _column$formatterPara !== void 0 ? _column$formatterPara : {});
+  formatterParams.textLimit = (_formatterParams$popu = formatterParams.popupTextLimit) !== null && _formatterParams$popu !== void 0 ? _formatterParams$popu : false;
+  formatterParams.moreText = (_formatterParams$popu2 = formatterParams.popupMoreText) !== null && _formatterParams$popu2 !== void 0 ? _formatterParams$popu2 : '...';
+  formatterParams.htmlChars = (_ref = (_formatterParams$popu3 = formatterParams.popupHtmlChars) !== null && _formatterParams$popu3 !== void 0 ? _formatterParams$popu3 : formatterParams.htmlChars) !== null && _ref !== void 0 ? _ref : false;
+  formatterParams.whiteSpace = (_ref2 = (_formatterParams$popu4 = formatterParams.popupWhiteSpace) !== null && _formatterParams$popu4 !== void 0 ? _formatterParams$popu4 : formatterParams.whiteSpace) !== null && _ref2 !== void 0 ? _ref2 : 'pre';
+  formatterParams.space = (_ref3 = (_formatterParams$popu5 = formatterParams.popupSpace) !== null && _formatterParams$popu5 !== void 0 ? _formatterParams$popu5 : formatterParams.space) !== null && _ref3 !== void 0 ? _ref3 : 4;
+  formatterParams.modify = (_formatterParams$popu6 = formatterParams.popupModify) !== null && _formatterParams$popu6 !== void 0 ? _formatterParams$popu6 : false;
   if (isObject(content)) {
-    content = JSON.stringify(content, null, 4);
+    content = JSON.stringify(content, null, formatterParams.space);
   }
-  var config = component.getColumn().getDefinition() || {};
-  var htmlChars = getKeys(config, 'popupParams.htmlChars', getKeys(config, 'formatterParams.htmlChars', false));
-  content = htmlChars ? toHtmlEntities(content) : content;
-  return '<div style="white-space: pre; max-width: 50vw; max-height: 50vh">' + content + '</div>';
+  if (!hasPopup(showPopup, content, formatterParams, component, onRendered, e)) {
+    return null;
+  }
+  formatterParams.prefix = (_formatterParams$popu7 = formatterParams.popupPrefix) !== null && _formatterParams$popu7 !== void 0 ? _formatterParams$popu7 : "<div style=\"white-space: ".concat(formatterParams.whiteSpace, "; max-width: 50vw; max-height: 50vh\">");
+  formatterParams.suffix = (_formatterParams$popu8 = formatterParams.popupSuffix) !== null && _formatterParams$popu8 !== void 0 ? _formatterParams$popu8 : "</div>";
+  return formatString(content, formatterParams);
 };
 
-},{"es5-util/js/getKeys":6,"es5-util/js/isObject":9,"es5-util/js/toHtmlEntities":13}],53:[function(require,module,exports){
+},{"./../helpers/formatString":32,"./../helpers/hasPopup":34,"es5-util/js/getKeys":6,"es5-util/js/isObject":11,"es5-util/js/toHtmlEntities":15}],58:[function(require,module,exports){
 "use strict";
 
 var isObject = require('es5-util/js/isObject');
@@ -1395,7 +1623,7 @@ module.exports = function (o1, o2) {
   return objectSorter.apply(void 0, [a, b].concat(args));
 };
 
-},{"../sorters/object":55,"es5-util/js/isObject":9}],54:[function(require,module,exports){
+},{"../sorters/object":60,"es5-util/js/isObject":11}],59:[function(require,module,exports){
 "use strict";
 
 var getSize = require("../helpers/getSize");
@@ -1408,7 +1636,7 @@ module.exports = function (a, b, aRow, bRow, column, dir, sorterParams) {
   return objectSorter.apply(void 0, arguments);
 };
 
-},{"../helpers/getSize":31,"./../sorters/object":55}],55:[function(require,module,exports){
+},{"../helpers/getSize":33,"./../sorters/object":60}],60:[function(require,module,exports){
 "use strict";
 
 var isObject = require('es5-util/js/isObject');
@@ -1426,4 +1654,4 @@ module.exports.byKeys = function (a, b, aRow, bRow, column, dir, sorterParams) {
   return compare(a, b);
 };
 
-},{"es5-util/js/compare":3,"es5-util/js/isObject":9}]},{},[1]);
+},{"es5-util/js/compare":3,"es5-util/js/isObject":11}]},{},[1]);
