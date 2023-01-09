@@ -976,9 +976,10 @@ module.exports = sum;
 module.exports = {
   valuesLookup: function (component) {
     let filterTerm = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
-    var set = new Set();
-    component.getColumn().getCells().forEach(function (cell) {
-      let values = cell.getValue();
+    var set = new Set(),
+      field = component.getField();
+    component.getTable().getData().forEach(function (row) {
+      let values = row[field];
       values = Array.isArray(values) ? values : [values];
       values.forEach(function (value) {
         set.add(value);

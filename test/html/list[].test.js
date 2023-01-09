@@ -3,12 +3,11 @@ global.jQuery = global.$ = require("jquery")((new jsdom.JSDOM('')).window);
 global.document = (new jsdom.JSDOM('')).window.document;
 const {valuesLookup} = require('../../src/html/list[]');
 
-const cell = value => ({
-	getValue: () => value
-});
+const field = 'field_name';
 const component = data => ({
-	getColumn: () => ({
-		getCells: () => data.map(value => cell(value)),
+	getField: () => field,
+	getTable: () => ({
+		getData: () => data,
 	}),
 });
 
@@ -16,21 +15,21 @@ const table = [
 	[
 		['a', 'b', 'c'],
 		[
-			['a'],
-			['b'],
-			['c'],
-			['a', 'b'],
-			['a', 'c'],
-			['b', 'c'],
-			['a', 'b', 'c'],
+			{field_name: ['a']},
+			{field_name: ['b']},
+			{field_name: ['c']},
+			{field_name: ['a', 'b']},
+			{field_name: ['a', 'c']},
+			{field_name: ['b', 'c']},
+			{field_name: ['a', 'b', 'c']},
 		]
 	],
 	[
 		[1, 2, 3],
 		[
-			3,
-			[3],
-			[2, 1],
+			{field_name: 3},
+			{field_name: [3]},
+			{field_name: [2, 1]},
 		]
 	],
 ];
