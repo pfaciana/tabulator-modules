@@ -30,6 +30,8 @@ require('tabulator-modules');
 **REQUIRED:** In order to use this library you must replace the default `new Tabulator(element, config)` with  
 `Tabulator.Create(element, config)`. The signature is the same, you are just copying and pasting `Tabulator.Create` to replace `new Tabulator` in your code where you want to use this library. Both setups will work, but the default `new Tabulator(element, config)` won't run the Tabulator Modules code on that particular table.
 
+**OPTIONAL:** A third argument can be passed to `Tabulator.Create` to set a namespace for subsequent events. This can be useful for when you want events to be filtered for certain situations and not simply be global. The default namespace is `all`. [Read more](#jquery-small-pubsub).
+
 ```javascript
 // This setup ignores the Tabulator Modules
 var table = new Tabulator("#example-table", {
