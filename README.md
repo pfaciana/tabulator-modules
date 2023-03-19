@@ -845,8 +845,9 @@ truncate(input, length, suffix = '&hellip;')
 /**
  * Table Setup (before the Tabulator table is created)
  *
- * @param object        $options - options argument from `new Tabulator(element, options)`
- * @param string|object $element - element argument from `new Tabulator(element, options)`
+ * @param object        $options   - options argument from `new Tabulator(element, options, namespac)`
+ * @param string|object $element   - element argument from `new Tabulator(element, options, namespac)`
+ * @param string        $namespace - namespace to filter events by `new Tabulator(element, options, namespace)`
  * @return object - the modified $options object
  */
 jQuery.subscribe('tabulator-table-setup', function (options, element, namespace = 'all') {
@@ -859,11 +860,12 @@ jQuery.subscribe('tabulator-table-setup', function (options, element, namespace 
 /**
  * Column Setup (before the custom modules are run)
  *
- * @param object        $column  - column config object
- * @param string|object $data    - options.data value
- * @param string|object $initial - initial column config object (incase it was modified by another listener)
- * @param object        $options - options argument from `new Tabulator(element, options)`
- * @param string|object $element - element argument from `new Tabulator(element, options)`
+ * @param object        $column    - column config object
+ * @param string|object $data      - options.data value
+ * @param string|object $initial   - initial column config object (incase it was modified by another listener)
+ * @param object        $options   - options argument from `new Tabulator(element, options, namespace)`
+ * @param string|object $element   - element argument from `new Tabulator(element, options, namespace)`
+ * @param string        $namespace - namespace to filter events by `new Tabulator(element, options, namespace)`
  * @return object - the modified $column object
  */
 jQuery.subscribe('tabulator-column-setup', function (column, data, initial, options, element, namespace = 'all') {
@@ -877,11 +879,12 @@ jQuery.subscribe('tabulator-column-setup', function (column, data, initial, opti
 /**
  * Column Setup (after the custom modules are run)
  *
- * @param object        $column  - column config object
- * @param string|object $data    - options.data value
- * @param string|object $initial - initial column config object (incase it was modified by another listener)
- * @param object        $options - options argument from `new Tabulator(element, options)`
- * @param string|object $element - element argument from `new Tabulator(element, options)`
+ * @param object        $column    - column config object
+ * @param string|object $data      - options.data value
+ * @param string|object $initial   - initial column config object (incase it was modified by another listener)
+ * @param object        $options   - options argument from `new Tabulator(element, options, namespace)`
+ * @param string|object $element   - element argument from `new Tabulator(element, options, namespace)`
+ * @param string        $namespace - namespace to filter events by `new Tabulator(element, options, namespace)`
  * @return object - the modified $column object
  */
 jQuery.subscribe('tabulator-column-setup-after', function (column, data, initial, options, element, namespace = 'all') {
@@ -895,13 +898,14 @@ jQuery.subscribe('tabulator-column-setup-after', function (column, data, initial
 /**
  * Table Created (after the Tabulator table is created)
  *
- * @param object        $table   - The `Tabulator` instance after its initialized
- * @param string|object $element - element argument from `new Tabulator(element, options)`
- * @param object        $options - options argument from `new Tabulator(element, options)`
- * @param mixed    ...parameters - any other parameters passed to `new Tabulator` get appended to the event args
+ * @param object        $table     - The `Tabulator` instance after its initialized
+ * @param string|object $element   - element argument from `new Tabulator(element, options, namespace)`
+ * @param object        $options   - options argument from `new Tabulator(element, options, namespace)`
+ * @param string        $namespace - namespace to filter events by `new Tabulator(element, options, namespace)`
+ * @param mixed      ...parameters - any other parameters passed to `new Tabulator` get appended to the event args
  * @return void
  */
-jQuery.subscribe('tabulator-table-created', function (table, element, options, ...parameters) {
+jQuery.subscribe('tabulator-table-created', function (table, element, options, namespace, ...parameters) {
 	// Do something, like store the reference to table object somewhere in your app for later use
 	someVariable[element] = table;
 });
