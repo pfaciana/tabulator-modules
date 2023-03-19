@@ -847,7 +847,7 @@ truncate(input, length, suffix = '&hellip;')
  * @param string|object $element - element argument from `new Tabulator(element, options)`
  * @return object - the modified $options object
  */
-jQuery.subscribe('tabulator-table-setup', function (options, element) {
+jQuery.subscribe('tabulator-table-setup', function (options, element, namespace = 'all') {
 	// Do something that modifies the options variable
 	options.paginationSize ??= 10;
 	options.movableColumns ??= true;
@@ -864,7 +864,7 @@ jQuery.subscribe('tabulator-table-setup', function (options, element) {
  * @param string|object $element - element argument from `new Tabulator(element, options)`
  * @return object - the modified $column object
  */
-jQuery.subscribe('tabulator-column-setup', function (column, data, initial, options, element) {
+jQuery.subscribe('tabulator-column-setup', function (column, data, initial, options, element, namespace = 'all') {
 	// Do something that modifies the column variable
 	if (['boolean', 'tickCross'].includes(initial.formatter)) {
 		column.width ??= 75;
@@ -882,7 +882,7 @@ jQuery.subscribe('tabulator-column-setup', function (column, data, initial, opti
  * @param string|object $element - element argument from `new Tabulator(element, options)`
  * @return object - the modified $column object
  */
-jQuery.subscribe('tabulator-column-setup-after', function (column, data, initial, options, element) {
+jQuery.subscribe('tabulator-column-setup-after', function (column, data, initial, options, element, namespace = 'all') {
 	// Do something that modifies the column variable
 	if (['boolean', 'tickCross'].includes(initial.formatter)) {
 		column.headerWordWrap ??= true;
