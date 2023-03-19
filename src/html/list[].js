@@ -1,6 +1,6 @@
 module.exports = {
 	valuesLookup: function (component, filterTerm = null) {
-		var set = new Set(), field = component.getField()
+		var set = new Set(), field = component.getField();
 
 		component.getTable().getData().forEach(function (row) {
 			let values = row[field];
