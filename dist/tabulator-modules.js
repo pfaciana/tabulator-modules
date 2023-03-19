@@ -449,21 +449,22 @@ module.exports = truncate;
 
 let filters = [require('./modules/regex'), require('./modules/timeAgo'), require('./modules/timeMs'), require('./modules/minMax'), require('./modules/minMax{}'), require('./modules/minMax[]'), require('./modules/list[]'), require('./modules/list'), require('./modules/args'), require('./modules/files'), require('./modules/urls'), require('./modules/boolean'), require('./modules/number'), require('./modules/string'), require('./modules/object'), require('./modules/all')];
 function Create(element, options) {
+  let namespace = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 'all';
   var table,
     parameters = Object.values(arguments);
   if (typeof jQuery === 'function' && 'publish' in jQuery) {
-    options = jQuery.publish('tabulator-table-setup', options, element);
+    options = jQuery.publish('tabulator-table-setup', options, element, namespace);
   }
   function updateColumn(column, data) {
     const initial = jQuery.extend(true, {}, column || {});
     if (typeof jQuery === 'function' && 'publish' in jQuery) {
-      column = jQuery.publish('tabulator-column-setup', column, data, initial, options, element);
+      column = jQuery.publish('tabulator-column-setup', column, data, initial, options, element, namespace);
     }
     filters.forEach(function (filter) {
       column = filter(column, data, initial, options, element);
     });
     if (typeof jQuery === 'function' && 'publish' in jQuery) {
-      column = jQuery.publish('tabulator-column-setup-after', column, data, initial, options, element);
+      column = jQuery.publish('tabulator-column-setup-after', column, data, initial, options, element, namespace);
     }
     return column;
   }

@@ -17,23 +17,23 @@ let filters = [
 	require('./modules/all'),
 ];
 
-function Create(element, options) {
+function Create(element, options, namespace = 'all') {
 	var table, parameters = Object.values(arguments);
 
 	if (typeof jQuery === 'function' && 'publish' in jQuery) {
-		options = jQuery.publish('tabulator-table-setup', options, element);
+		options = jQuery.publish('tabulator-table-setup', options, element, namespace);
 	}
 
 	function updateColumn(column, data) {
 		const initial = jQuery.extend(true, {}, column || {});
 		if (typeof jQuery === 'function' && 'publish' in jQuery) {
-			column = jQuery.publish('tabulator-column-setup', column, data, initial, options, element);
+			column = jQuery.publish('tabulator-column-setup', column, data, initial, options, element, namespace);
 		}
 		filters.forEach(function (filter) {
 			column = filter(column, data, initial, options, element);
 		});
 		if (typeof jQuery === 'function' && 'publish' in jQuery) {
-			column = jQuery.publish('tabulator-column-setup-after', column, data, initial, options, element);
+			column = jQuery.publish('tabulator-column-setup-after', column, data, initial, options, element, namespace);
 		}
 		return column;
 	}
