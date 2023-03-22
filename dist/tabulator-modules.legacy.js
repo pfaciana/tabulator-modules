@@ -469,18 +469,21 @@ function Create(element, options) {
   var table,
     parameters = _objectValues(arguments);
   if (typeof jQuery === 'function' && 'publish' in jQuery) {
-    options = jQuery.publish('tabulator-table-setup', options, element, namespace);
+    options = jQuery.publish("tabulator-table-setup", options, element, namespace);
+    options = jQuery.publish("".concat(namespace, "/tabulator-table-setup"), options, element, namespace);
   }
   function updateColumn(column, data) {
     var initial = jQuery.extend(true, {}, column || {});
     if (typeof jQuery === 'function' && 'publish' in jQuery) {
-      column = jQuery.publish('tabulator-column-setup', column, data, initial, options, element, namespace);
+      column = jQuery.publish("tabulator-column-setup", column, data, initial, options, element, namespace);
+      column = jQuery.publish("tabulator-column-setup/".concat(namespace), column, data, initial, options, element, namespace);
     }
     filters.forEach(function (filter) {
       column = filter(column, data, initial, options, element);
     });
     if (typeof jQuery === 'function' && 'publish' in jQuery) {
-      column = jQuery.publish('tabulator-column-setup-after', column, data, initial, options, element, namespace);
+      column = jQuery.publish("tabulator-column-setup-after", column, data, initial, options, element, namespace);
+      column = jQuery.publish("".concat(namespace, "/tabulator-column-setup-after"), column, data, initial, options, element, namespace);
     }
     return column;
   }
@@ -505,8 +508,10 @@ function Create(element, options) {
     });
   }
   if (typeof jQuery === 'function' && 'publish' in jQuery) {
-    var _jQuery;
-    (_jQuery = jQuery).publish.apply(_jQuery, ['tabulator-table-created', table].concat(_toConsumableArray(parameters)));
+    var _jQuery, _jQuery2;
+    $(table.element).addClass('tabulator-modules').attr('data-namespace', namespace);
+    (_jQuery = jQuery).publish.apply(_jQuery, ["tabulator-table-created", table].concat(_toConsumableArray(parameters)));
+    (_jQuery2 = jQuery).publish.apply(_jQuery2, ["".concat(namespace, "/tabulator-table-created"), table].concat(_toConsumableArray(parameters)));
   }
   return table;
 }

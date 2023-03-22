@@ -841,6 +841,10 @@ truncate(input, length, suffix = '&hellip;')
 
 [jQuery Small Pub/Sub](https://github.com/pfaciana/jquery-small-pubsub) is an OPTIONAL dependency. If jQuery Small Pub/Sub is not loaded, this library will still work, its just these custom events won't fire. There are currently 4 custom events to subscribe to...
 
+As of v1.2 all of these events are namespaced as well. So if you want to subscribe to the `tabulator-table-setup` hook, but only when the namespace was set to `my-custom-project`, you can do so with the `my-custom-project/tabulator-table-setup` hook. The namespaced hook runs after the global (or non-namespaced) hook.
+
+> Remember: the default namespace is `all`, but that is not the same as the global hook (or not having a namespace).
+
 ```javascript
 /**
  * Table Setup (before the Tabulator table is created)

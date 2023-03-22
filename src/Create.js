@@ -21,19 +21,22 @@ function Create(element, options, namespace = 'all') {
 	var table, parameters = Object.values(arguments);
 
 	if (typeof jQuery === 'function' && 'publish' in jQuery) {
-		options = jQuery.publish('tabulator-table-setup', options, element, namespace);
+		options = jQuery.publish(`tabulator-table-setup`, options, element, namespace);
+		options = jQuery.publish(`${namespace}/tabulator-table-setup`, options, element, namespace);
 	}
 
 	function updateColumn(column, data) {
 		const initial = jQuery.extend(true, {}, column || {});
 		if (typeof jQuery === 'function' && 'publish' in jQuery) {
-			column = jQuery.publish('tabulator-column-setup', column, data, initial, options, element, namespace);
+			column = jQuery.publish(`tabulator-column-setup`, column, data, initial, options, element, namespace);
+			column = jQuery.publish(`tabulator-column-setup/${namespace}`, column, data, initial, options, element, namespace);
 		}
 		filters.forEach(function (filter) {
 			column = filter(column, data, initial, options, element);
 		});
 		if (typeof jQuery === 'function' && 'publish' in jQuery) {
-			column = jQuery.publish('tabulator-column-setup-after', column, data, initial, options, element, namespace);
+			column = jQuery.publish(`tabulator-column-setup-after`, column, data, initial, options, element, namespace);
+			column = jQuery.publish(`${namespace}/tabulator-column-setup-after`, column, data, initial, options, element, namespace);
 		}
 		return column;
 	}
@@ -59,7 +62,9 @@ function Create(element, options, namespace = 'all') {
 	}
 
 	if (typeof jQuery === 'function' && 'publish' in jQuery) {
-		jQuery.publish('tabulator-table-created', table, ...parameters);
+		$(table.element).addClass('tabulator-modules').attr('data-namespace', namespace);
+		jQuery.publish(`tabulator-table-created`, table, ...parameters);
+		jQuery.publish(`${namespace}/tabulator-table-created`, table, ...parameters);
 	}
 
 	return table;
