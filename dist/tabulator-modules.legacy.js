@@ -509,7 +509,7 @@ function Create(element, options) {
   }
   if (typeof jQuery === 'function' && 'publish' in jQuery) {
     var _jQuery, _jQuery2;
-    $(table.element).addClass('tabulator-modules').attr('data-namespace', namespace);
+    jQuery(table.element).addClass('tabulator-modules').attr('data-namespace', namespace);
     (_jQuery = jQuery).publish.apply(_jQuery, ["tabulator-table-created", table].concat(_toConsumableArray(parameters)));
     (_jQuery2 = jQuery).publish.apply(_jQuery2, ["".concat(namespace, "/tabulator-table-created"), table].concat(_toConsumableArray(parameters)));
   }

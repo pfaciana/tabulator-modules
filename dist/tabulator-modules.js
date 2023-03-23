@@ -492,7 +492,7 @@ function Create(element, options) {
     });
   }
   if (typeof jQuery === 'function' && 'publish' in jQuery) {
-    $(table.element).addClass('tabulator-modules').attr('data-namespace', namespace);
+    jQuery(table.element).addClass('tabulator-modules').attr('data-namespace', namespace);
     jQuery.publish(`tabulator-table-created`, table, ...parameters);
     jQuery.publish(`${namespace}/tabulator-table-created`, table, ...parameters);
   }
