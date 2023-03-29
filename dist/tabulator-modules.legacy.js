@@ -476,7 +476,7 @@ function Create(element, options) {
     var initial = jQuery.extend(true, {}, column || {});
     if (typeof jQuery === 'function' && 'publish' in jQuery) {
       column = jQuery.publish("tabulator-column-setup", column, data, initial, options, element, namespace);
-      column = jQuery.publish("tabulator-column-setup/".concat(namespace), column, data, initial, options, element, namespace);
+      column = jQuery.publish("".concat(namespace, "/tabulator-column-setup"), column, data, initial, options, element, namespace);
     }
     filters.forEach(function (filter) {
       column = filter(column, data, initial, options, element);
