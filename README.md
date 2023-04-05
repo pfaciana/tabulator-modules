@@ -60,6 +60,57 @@ var table = Tabulator.Create("#example-table", {
 
 This library adds custom formatters on top of the built-in formatters like  `money`, `tickCross`, `star`, etc.
 
+These new custom formatter provided in the library are...
+
+* [Arguments](#arguments)
+    * Takes in any type of value and outputs a string representation of the value
+        * for example, `{a: 1, b: 2, c: 3, 3: 4}` becomes `<div><span title="(object) object{4}" data-type="object">object{4}</span></div>`
+    * Aliases: args, argument, arguments, params, parameter, parameters
+* [Boolean](#boolean)
+    * Takes in truthy or falsey values and outputs a tickCross
+    * Aliases: bool, boolean, tickCross
+* [Duration](#duration)
+    * Displays, and converts, a formatted and human-readable number representing time
+    * Aliases: duration, minDuration, maxDuration, timeMs, minTimeMs, maxTimeMs
+* [Files](#files)
+    * Takes in an object, or array of objects, specifically formatted to display urls
+    * Aliases: file, files
+* [List](#list)
+    * Gets all the values in a column and create a header filter with a dropdown of those values
+    * Aliases: list
+* [List of Arrays](#list-of-arrays)
+    * Very similar to `list`, but is used for a value can be an array, it will parse the array for individual values
+    * Aliases: list[]
+* [Min/Max](#minmax)
+    * When values in a column are numbers, it will create a header filter of min and/or max inputs
+    * Aliases: minMax, min, max
+* [Min/Max for Array length](#minmax-for-array-length)
+    * Same as `minMax`, but for when values are arrays. It will use the length of the array as the min/max size comparison
+    * Aliases: minMax[], min[], max[]
+* [Min/Max for Object Keys](#minmax-for-object-keys)
+    * Same as `minMax`, but for when values objects. It will use the number of object keys as the min/max size comparison
+    * Aliases: minMax{}, min{}, max{}
+* [Number](#number)
+    * Filters and sorts values as numbers
+    * Aliases: number, num, int, integer
+* [Object](#object)
+    * Takes complex objects are values, and represents, filters and sorts them as strings
+    * Aliases: object, obj, compound
+* [RegExp](#regexp)
+    * Used for when teh values are regex expressions. The header filter will be a matching test case for regex expression
+    * Aliases: regex, RegExp
+* [Strings](#strings)
+    * Advanced options for formatting for strings values. `text` provides additional advanced filtering. `html` is the same as `test` with support of html chars
+    * Aliases: string, str
+    * Aliases: text
+    * Aliases: html
+* [Time Ago](#time-ago)
+    * Takes in a Unix timestamp (in seconds) and outputs a human-readable string representing how long ago that timestamp was
+    * Aliases: timeAgo, minTimeAgo, maxTimeAgo
+* [Urls](#urls)
+    * Takes in value that is a url, object representation of a url, or an array of urls/objects, and converts them to links
+    * Aliases: url, urls
+
 ---
 
 ## Arguments
@@ -273,7 +324,7 @@ const input = [{url: '#', text: 'abc'}, {url: '#', text: 'def'}], output = `<a h
 
 ## List
 
-Same as `list` filter but adds `headerFilterParams:` `clearable` and `valuesLookup` to `true`
+Same as `list` editor but for headerFilter and adds `headerFilterParams:` `clearable` and `valuesLookup` to `true`
 
 ### Formatter Aliases
 
@@ -285,7 +336,7 @@ None
 
 ### Input Type
 
-`string`
+`mixed`
 
 ### Output
 
@@ -293,7 +344,7 @@ Default Tabulator functionality
 
 ---
 
-## List[]
+## List of Arrays
 
 Same as `list` formatter, but instead of one value, this allows for values to be an array of values. This can parse the array and add them to the filter list individually.
 
@@ -326,7 +377,7 @@ Default Tabulator functionality
 
 ---
 
-## MinMax
+## Min/Max
 
 Adds the `minMaxFilterEditor` DOM elements seen here: https://tabulator.info/examples/#filter-header
 
@@ -362,7 +413,7 @@ Default Tabulator functionality
 
 ---
 
-## MinMax[]
+## Min/Max for Array length
 
 Same as `minMax` expect this accepts an array as the value and does the minMax sorting and filtering against the number of items in the array.
 
@@ -398,7 +449,7 @@ const input = [1, 2, 3], output = `3`; // because the array length is 3
 
 ---
 
-## MinMax{}
+## Min/Max for Object Keys
 
 Same as `minMax` expect this accepts an object as the value and does the minMax sorting and filtering against the number of keys in the object.
 
@@ -541,7 +592,7 @@ Default Tabulator functionality
 
 ---
 
-## String
+## Strings
 
 For display strings. `text` and `html` is used for longer strings. It aligns the text to the left and adds the Advanced Filtering Operators. `html` also sets `htmlChars` to `true`
 
@@ -633,7 +684,10 @@ const input = Date.now() / 1000 - 120, output = `2m`; // `2m` stands for `2 minu
 
 ## Urls
 
-Converts an url into a clickable link. It accepts a single url or an array of urls.
+Converts a url into a clickable link. It accepts a single url or an array of urls.
+Objects representing a url is also supported. An object must have at least an `href` key. Supported keys are `href`, `className` and `text` keys.
+An `attr` key is also supported and becomes the html attributes for the link tag. For example, `attr: { download: 'download' }` will add the `download` attribute to the link tag.
+If the url is represted as an object, the values can also be functions. A function will recieve arguments `(cell, origUrl, normalizedUrl)`, where `cell` is the Tabulator component, `origUrl` is the original url object, and `normalizedUrl` is the url converted to a standardized object url. So if `origUrl` is `/user`, then `normalizedUrl` will be `{ text: '/user', attr: {href: '/user'} }`.
 
 ### Formatter Aliases
 
@@ -650,13 +704,14 @@ formatterParams = {
 
 ### Input Type
 
-`string|string[]` as a valid url, or array of valid urls
+`string|string[]|object|object[]` as a valid url, url object, or array of valid urls/url objects
 
 ### Output
 
 ```javascript
 const input = '/abc', output = `<a href="/abc" target="_blank" class="someClass">/abc</a>`;
 const input = ['/abc', '/xyz'], output = `<a href="/abc" target="_blank" class="someClass">/abc</a><br><a href="/xyz" target="_blank" class="someClass">/xyz</a>`;
+const input = {text: 'click-me', href: '/page', className: 'some-class', attr: {'data-id': () => 5}}, output = `<a data-id="5" href="/page" class="some-class">click-me</a>`;
 ```
 
 ---
@@ -721,19 +776,19 @@ To activate a popup, set the `showPopup` key to a truthy value or statement or f
 `showPopup` accepts four different types of values:
 `boolean`, `integer`, `function` or `regex`.
 
-#### Boolean
+#### Boolean Type
 
 Simply a static true or false or all cells in that column.
 
-#### Integer
+#### Integer Type
 
 The length of the cell value (as a string) that will trigger a popup. So if `formatterParams.showPopup = 3`, then any cell value over 3 characters will trigger a popup. If the cell is 3 characters or less, then that cell won't have a popup.
 
-#### RegExp
+#### RegExp Type
 
 A regular express that is tested against each cell to determine if it should have a popup. `formatterParams.showPopup = /^select/i` would show a popup for any cell that starts with select (like a SQL statement).
 
-#### Function
+#### Function Type
 
 This function gets called on each cell value to determine if it should show a popup. The value returned should be a boolean. For example: `formatterParams.showPopup = (text, formatterParams, component, onRendered, e) => text.length > 25 || text[0] === '$'`
 

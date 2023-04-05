@@ -448,6 +448,24 @@ module.exports = truncate;
 "use strict";
 
 let filters = [require('./modules/regex'), require('./modules/timeAgo'), require('./modules/timeMs'), require('./modules/minMax'), require('./modules/minMax{}'), require('./modules/minMax[]'), require('./modules/list[]'), require('./modules/list'), require('./modules/args'), require('./modules/files'), require('./modules/urls'), require('./modules/boolean'), require('./modules/number'), require('./modules/string'), require('./modules/object'), require('./modules/all')];
+if ('moduleBindings' in Tabulator) {
+  Tabulator.moduleBindings['formatterOutput'] = function (TabulatorFull) {
+    this.initialize = () => {};
+    TabulatorFull.columnManager.optionsList.register('formatterOutput', null);
+  };
+}
+if ('extendModule' in Tabulator) {
+  Tabulator.extendModule('format', 'formatters', function () {
+    let formatters = {};
+    const formatterOutput = cell => cell.getValue();
+    filters.map(filter => filter.formatter).flat().forEach(formatterType => {
+      if (formatterType) {
+        formatters[formatterType] = formatterOutput;
+      }
+    });
+    return formatters;
+  }());
+}
 function Create(element, options) {
   let namespace = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 'all';
   var table,
@@ -785,19 +803,108 @@ module.exports = function (cell, formatterParams, onRendered) {
 },{"./../helpers/intervals":36,"es5-util/js/getKey":5}],30:[function(require,module,exports){
 "use strict";
 
-module.exports = function (cell, formatterParams, onRendered) {
-  var urls = cell.getValue();
-  if (!urls || typeof urls !== 'string' && !Array.isArray(urls)) {
-    return '';
+const isObject = require('es5-util/js/isObject');
+function getHtmlTag(args) {
+  if (!args) {
+    return false;
   }
-  urls = Array.isArray(urls) ? urls : [urls];
-  var links = urls.map(function (url) {
-    return `<a href="${url}" target="_blank" class="${formatterParams.className ?? ''}">${url}</a>`;
+  args.tag ?? (args.tag = 'a');
+  let attributes = Object.entries(args.attr).map(_ref => {
+    let [key, value] = _ref;
+    return `${key}="${String(value).replace(/"/g, '&quot;')}"`;
+  }).join(' ');
+  return `<${args.tag} ${attributes}>${args.text}</${args.tag}>`;
+}
+function normalizeArgs() {
+  let args = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
+  args.text = args.text ?? args.content ?? null;
+  args.attr ?? (args.attr = {});
+  args.attr.href = args.href ?? args.url ?? args.attr.href ?? args.attr.url ?? null;
+  args.attr.class = args.class ?? args.className ?? args.attr.class ?? args.attr.className ?? null;
+  delete args.href;
+  delete args.url;
+  delete args.attr.url;
+  if (!args.attr.href) {
+    delete args.attr.href;
+  }
+  delete args.class;
+  delete args.className;
+  delete args.attr.className;
+  if (!args.attr.class) {
+    delete args.attr.class;
+  }
+  delete args.content;
+  if (!args.text) {
+    delete args.text;
+  }
+  if (!Object.keys(args.attr).length) {
+    delete args.attr;
+  }
+  return args;
+}
+function mergeArgs(value) {
+  var _normalizedValue, _normalizedValue$attr, _normalizedValue2;
+  let formatterParams = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
+  let cell = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : {};
+  let normalizedValue = {};
+  if (value && typeof value === 'string') {
+    normalizedValue = {
+      tag: 'a',
+      attr: {
+        href: value,
+        target: '_blank'
+      },
+      text: value
+    };
+  } else if (isObject(value)) {
+    normalizedValue = normalizeArgs({
+      ...value
+    });
+  }
+  const normalizedParams = normalizeArgs({
+    ...formatterParams
   });
+  Object.entries(normalizedParams ?? {}).map(_ref2 => {
+    let [name, item] = _ref2;
+    if (!(name in normalizedValue) || typeof normalizedValue[name] !== 'function' && typeof item === 'function') {
+      normalizedValue[name] = item;
+    }
+  });
+  Object.entries(normalizedParams.attr ?? {}).map(_ref3 => {
+    let [name, item] = _ref3;
+    if (!(name in normalizedValue.attr) || typeof normalizedValue.attr[name] !== 'function' && typeof item === 'function') {
+      normalizedValue.attr[name] = item;
+    }
+  });
+  Object.entries(normalizedValue ?? {}).map(_ref4 => {
+    let [name, item] = _ref4;
+    if (typeof item === 'function') {
+      normalizedValue[name] = item(cell, value, normalizedValue);
+    }
+  });
+  Object.entries(normalizedValue.attr ?? {}).map(_ref5 => {
+    let [name, item] = _ref5;
+    if (typeof item === 'function') {
+      normalizedValue.attr[name] = item(cell, value, normalizedValue);
+    }
+  });
+  if (!((_normalizedValue = normalizedValue) !== null && _normalizedValue !== void 0 && (_normalizedValue$attr = _normalizedValue.attr) !== null && _normalizedValue$attr !== void 0 && _normalizedValue$attr.href) && !((_normalizedValue2 = normalizedValue) !== null && _normalizedValue2 !== void 0 && _normalizedValue2.text)) {
+    return false;
+  }
+  return normalizedValue;
+}
+function buildHtmlTags(cell, formatterParams, onRendered) {
+  var urls = cell.getValue();
+  urls = Array.isArray(urls) ? urls : [urls];
+  var links = urls.map(url => getHtmlTag(mergeArgs(url, formatterParams, cell))).filter(Boolean);
   return links.join(formatterParams.join || '<br>');
-};
+}
+module.exports = buildHtmlTags;
+module.exports.getHtmlTag = getHtmlTag;
+module.exports.normalizeArgs = normalizeArgs;
+module.exports.mergeArgs = mergeArgs;
 
-},{}],31:[function(require,module,exports){
+},{"es5-util/js/isObject":11}],31:[function(require,module,exports){
 "use strict";
 
 const safeStringify = require('es5-util/js/safeStringify');
@@ -1061,28 +1168,34 @@ const isType = require('../helpers/isType');
 const argsFilter = require('./../filters/args');
 const argsFormatter = require('./../formatters/args');
 const argsSorter = require('./../sorters/args');
+const formatters = ['args', 'argument', 'arguments', 'params', 'parameter', 'parameters'];
 module.exports = function (column, data, initial, options, element) {
-  var type = isType('formatter', ['args', 'argument', 'arguments', 'params', 'parameter', 'parameters'], column, initial);
+  var type = isType('formatter', formatters, column, initial);
   if (!type) {
     return column;
   }
   column.headerFilter ?? (column.headerFilter = 'input');
   column.headerFilterFunc ?? (column.headerFilterFunc = argsFilter);
-  column.formatter = argsFormatter;
+  column.formatter = column.formatterOutput ?? argsFormatter;
+  delete column.formatterOutput;
   column.sorter ?? (column.sorter = argsSorter);
   column.hozAlign ?? (column.hozAlign = 'left');
   return column;
 };
+module.exports.formatter = formatters;
 
 },{"../helpers/isType":37,"./../filters/args":19,"./../formatters/args":25,"./../sorters/args":58}],43:[function(require,module,exports){
 "use strict";
 
 const isType = require('../helpers/isType');
+const formatters = ['bool', 'boolean', 'tickCross'];
 module.exports = function (column, data, initial, options, element) {
-  if (!isType('formatter', ['bool', 'boolean', 'tickCross'], column, initial)) {
+  var type = isType('formatter', formatters, column, initial);
+  if (!type) {
     return column;
   }
-  column.formatter = 'tickCross';
+  column.formatter = column.formatterOutput ?? 'tickCross';
+  delete column.formatterOutput;
   return {
     ...{
       formatterParams: {
@@ -1098,6 +1211,7 @@ module.exports = function (column, data, initial, options, element) {
     ...column
   };
 };
+module.exports.formatter = formatters;
 
 },{"../helpers/isType":37}],44:[function(require,module,exports){
 "use strict";
@@ -1106,8 +1220,9 @@ const isType = require('../helpers/isType');
 const advancedFilter = require('./../filters/advanced');
 const filesFormatter = require('./../formatters/files');
 const objectSorter = require('./../sorters/object');
+const formatters = ['file', 'files'];
 module.exports = function (column, data, initial, options, element) {
-  var type = isType('formatter', ['file', 'files'], column, initial);
+  var type = isType('formatter', formatters, column, initial);
   if (!type) {
     return column;
   }
@@ -1116,18 +1231,21 @@ module.exports = function (column, data, initial, options, element) {
     strict: false
   });
   column.headerFilterFunc ?? (column.headerFilterFunc = advancedFilter);
-  column.formatter = filesFormatter;
+  column.formatter = column.formatterOutput ?? filesFormatter;
+  delete column.formatterOutput;
   column.sorter ?? (column.sorter = objectSorter);
   return column;
 };
+module.exports.formatter = formatters;
 
 },{"../helpers/isType":37,"./../filters/advanced":18,"./../formatters/files":27,"./../sorters/object":60}],45:[function(require,module,exports){
 "use strict";
 
 const isType = require('../helpers/isType');
 const objectSorter = require("../sorters/object");
+const formatters = ['list'];
 module.exports = function (column, data, initial, options, element) {
-  var type = isType('formatter', ['list'], column, initial);
+  var type = isType('formatter', formatters, column, initial);
   if (!type) {
     return column;
   }
@@ -1138,9 +1256,11 @@ module.exports = function (column, data, initial, options, element) {
     valuesLookup: true
   });
   column.sorter ?? (column.sorter = objectSorter);
-  delete column.formatter;
+  column.formatter = column.formatterOutput ?? column.formatter;
+  delete column.formatterOutput;
   return column;
 };
+module.exports.formatter = formatters;
 
 },{"../helpers/isType":37,"../sorters/object":60}],46:[function(require,module,exports){
 "use strict";
@@ -1150,8 +1270,9 @@ const {
   valuesLookup
 } = require('./../html/list[]');
 const arraySorter = require("../sorters/array");
+const formatters = ['list[]'];
 module.exports = function (column, data, initial, options, element) {
-  var type = isType('formatter', ['list[]'], column, initial);
+  var type = isType('formatter', formatters, column, initial);
   if (!type) {
     return column;
   }
@@ -1165,9 +1286,11 @@ module.exports = function (column, data, initial, options, element) {
     return rowValue.includes(headerValue);
   });
   column.sorter ?? (column.sorter = arraySorter);
-  delete column.formatter;
+  column.formatter = column.formatterOutput ?? column.formatter;
+  delete column.formatterOutput;
   return column;
 };
+module.exports.formatter = formatters;
 
 },{"../helpers/isType":37,"../sorters/array":59,"./../html/list[]":39}],47:[function(require,module,exports){
 "use strict";
@@ -1178,8 +1301,9 @@ const isType = require('../helpers/isType');
 const minMaxDom = require('../html/minMax');
 const minMaxFilter = require('../filters/minMax');
 const sum = require("../helpers/sum");
+const formatters = ['minMax', 'min', 'max'];
 module.exports = function (column, data, initial, options, element) {
-  var type = isType('formatter', ['minMax', 'min', 'max'], column, initial);
+  var type = isType('formatter', formatters, column, initial);
   if (!type) {
     return column;
   }
@@ -1197,9 +1321,11 @@ module.exports = function (column, data, initial, options, element) {
   if (bottomSum) {
     column.bottomCalc ?? (column.bottomCalc = sum);
   }
-  delete column.formatter;
+  column.formatter = column.formatterOutput ?? column.formatter;
+  delete column.formatterOutput;
   return column;
 };
+module.exports.formatter = formatters;
 
 },{"../filters/minMax":21,"../helpers/isType":37,"../helpers/sum":38,"../html/minMax":40,"es5-util/js/arrayColumn":2,"es5-util/js/getKeys":6}],48:[function(require,module,exports){
 "use strict";
@@ -1213,8 +1339,9 @@ const arrayFormatter = require('./../formatters/array');
 const arraySorter = require('./../sorters/array');
 const minMaxDom = require("../html/minMax");
 const objectPopup = require("../popups/object");
+const formatters = ['minMax[]', 'min[]', 'max[]'];
 module.exports = function (column, data, initial, options, element) {
-  var type = isType('formatter', ['minMax[]', 'min[]', 'max[]'], column, initial);
+  var type = isType('formatter', formatters, column, initial);
   if (!type) {
     return column;
   }
@@ -1230,7 +1357,8 @@ module.exports = function (column, data, initial, options, element) {
   column.headerFilter ?? (column.headerFilter = minMaxDom);
   column.headerFilterFunc ?? (column.headerFilterFunc = arrayFilter);
   column.headerFilterLiveFilter ?? (column.headerFilterLiveFilter = false);
-  column.formatter = arrayFormatter;
+  column.formatter = column.formatterOutput ?? arrayFormatter;
+  delete column.formatterOutput;
   column.headerSortStartingDir ?? (column.headerSortStartingDir = 'desc');
   column.sorter ?? (column.sorter = arraySorter);
   if (showPopup) {
@@ -1238,6 +1366,7 @@ module.exports = function (column, data, initial, options, element) {
   }
   return column;
 };
+module.exports.formatter = formatters;
 
 },{"../helpers/getSize":33,"../helpers/isType":37,"../html/minMax":40,"../popups/object":57,"./../filters/array":20,"./../formatters/array":26,"./../sorters/array":59,"es5-util/js/arrayColumn":2,"es5-util/js/getKeys":6}],49:[function(require,module,exports){
 "use strict";
@@ -1250,8 +1379,9 @@ const objectFormatter = require('./../formatters/object');
 const objectSorter = require('./../sorters/object');
 const minMaxDom = require("../html/minMax");
 const objectPopup = require("../popups/object");
+const formatters = ['minMax{}', 'min{}', 'max{}'];
 module.exports = function (column, data, initial, options, element) {
-  var type = isType('formatter', ['minMax{}', 'min{}', 'max{}'], column, initial);
+  var type = isType('formatter', formatters, column, initial);
   if (!type) {
     return column;
   }
@@ -1267,7 +1397,8 @@ module.exports = function (column, data, initial, options, element) {
   column.headerFilter ?? (column.headerFilter = minMaxDom);
   column.headerFilterFunc ?? (column.headerFilterFunc = objectFilter);
   column.headerFilterLiveFilter ?? (column.headerFilterLiveFilter = false);
-  column.formatter = objectFormatter.byKeys;
+  column.formatter = column.formatterOutput ?? objectFormatter.byKeys;
+  delete column.formatterOutput;
   column.headerSortStartingDir ?? (column.headerSortStartingDir = 'desc');
   column.sorter ?? (column.sorter = objectSorter.byKeys);
   if (showPopup) {
@@ -1275,21 +1406,25 @@ module.exports = function (column, data, initial, options, element) {
   }
   return column;
 };
+module.exports.formatter = formatters;
 
 },{"../helpers/isType":37,"../html/minMax":40,"../popups/object":57,"./../filters/object":22,"./../formatters/object":28,"./../sorters/object":60,"es5-util/js/arrayColumn":2,"es5-util/js/getKeys":6}],50:[function(require,module,exports){
 "use strict";
 
 const isType = require('../helpers/isType');
+const formatters = ['number', 'num', 'int', 'integer'];
 module.exports = function (column, data, initial, options, element) {
-  var type = isType('formatter', ['number', 'num', 'int', 'integer'], column, initial);
+  var type = isType('formatter', formatters, column, initial);
   if (!type) {
     return column;
   }
-  column.headerFilter ?? (column.headerFilter = 'input');
+  column.headerFilter ?? (column.headerFilter = 'number');
   column.sorter ?? (column.sorter = 'number');
-  delete column.formatter;
+  column.formatter = column.formatterOutput ?? column.formatter;
+  delete column.formatterOutput;
   return column;
 };
+module.exports.formatter = formatters;
 
 },{"../helpers/isType":37}],51:[function(require,module,exports){
 "use strict";
@@ -1300,8 +1435,9 @@ const objectFormatter = require('./../formatters/object');
 const objectSorter = require('./../sorters/object');
 const objectPopup = require('./../popups/object');
 const getKeys = require('es5-util/js/getKeys');
+const formatters = ['object', 'obj', 'compound'];
 module.exports = function (column, data, initial, options, element) {
-  var type = isType('formatter', ['object', 'obj', 'compound'], column, initial);
+  var type = isType('formatter', formatters, column, initial);
   if (!type) {
     return column;
   }
@@ -1314,26 +1450,29 @@ module.exports = function (column, data, initial, options, element) {
   column.headerFilterFunc ?? (column.headerFilterFunc = advancedFilter);
   if (showKeys) {
     column.headerFilterLiveFilter ?? (column.headerFilterLiveFilter = true);
-    column.formatter = objectFormatter.byKeys;
+    column.formatter = column.formatterOutput ?? objectFormatter.byKeys;
     column.headerSortStartingDir ?? (column.headerSortStartingDir = 'desc');
     column.sorter ?? (column.sorter = objectSorter.byKeys);
   } else {
-    column.formatter = objectFormatter;
+    column.formatter = column.formatterOutput ?? objectFormatter;
     column.sorter ?? (column.sorter = objectSorter);
     column.hozAlign ?? (column.hozAlign = 'left');
   }
+  delete column.formatterOutput;
   if (showPopup) {
     column.clickPopup = objectPopup;
   }
   return column;
 };
+module.exports.formatter = formatters;
 
 },{"../helpers/isType":37,"./../filters/advanced":18,"./../formatters/object":28,"./../popups/object":57,"./../sorters/object":60,"es5-util/js/getKeys":6}],52:[function(require,module,exports){
 "use strict";
 
 const isType = require('../helpers/isType');
+const formatters = ['regex', 'RegExp'];
 module.exports = function (column, data, initial, options, element) {
-  var type = isType('formatter', ['regex', 'RegExp'], column, initial);
+  var type = isType('formatter', formatters, column, initial);
   if (!type) {
     return column;
   }
@@ -1342,9 +1481,11 @@ module.exports = function (column, data, initial, options, element) {
     return new RegExp(rowValue).test(headerValue);
   });
   column.hozAlign ?? (column.hozAlign = 'left');
-  delete column.formatter;
+  column.formatter = column.formatterOutput ?? column.formatter;
+  delete column.formatterOutput;
   return column;
 };
+module.exports.formatter = formatters;
 
 },{"../helpers/isType":37}],53:[function(require,module,exports){
 "use strict";
@@ -1353,9 +1494,10 @@ const isType = require('../helpers/isType');
 const objectPopup = require('./../popups/object');
 const formatString = require('./../helpers/formatString');
 const advancedFilter = require("../filters/advanced");
+const formatters = ['string', 'str', 'text', 'html'];
 module.exports = function (column, data, initial, options, element) {
   var _column$formatterPara, _column$formatterPara2, _column$formatterPara3;
-  var type = isType('formatter', ['string', 'str', 'text', 'html'], column, initial);
+  var type = isType('formatter', formatters, column, initial);
   if (!type) {
     return column;
   }
@@ -1365,21 +1507,23 @@ module.exports = function (column, data, initial, options, element) {
   (_column$formatterPara3 = column.formatterParams).showPopup ?? (_column$formatterPara3.showPopup = column.formatterParams.textLimit);
   column.headerFilter ?? (column.headerFilter = 'input');
   if (column.formatterParams.textLimit) {
-    column.formatter = function (cell, formatterParams, onRendered) {
+    column.formatter = column.formatterOutput ?? function (cell, formatterParams, onRendered) {
       return formatString(cell.getValue(), formatterParams);
     };
     if (column.formatterParams.showPopup) {
       column.clickPopup = objectPopup;
     }
   } else {
-    delete column.formatter;
+    column.formatter = column.formatterOutput ?? column.formatter;
   }
+  delete column.formatterOutput;
   if (['text', 'html'].includes(type)) {
     column.hozAlign ?? (column.hozAlign = 'left');
     column.headerFilterFunc ?? (column.headerFilterFunc = advancedFilter);
   }
   return column;
 };
+module.exports.formatter = formatters;
 
 },{"../filters/advanced":18,"../helpers/isType":37,"./../helpers/formatString":32,"./../popups/object":57}],54:[function(require,module,exports){
 "use strict";
@@ -1388,8 +1532,9 @@ const isType = require('../helpers/isType');
 const minMaxDom = require("../html/minMax");
 const timeAgoFilter = require("../filters/timeAgo");
 const timeAgoFormatter = require("../formatters/timeAgo");
+const formatters = ['timeAgo', 'minTimeAgo', 'maxTimeAgo'];
 module.exports = function (column, data, initial, options, element) {
-  var type = isType('formatter', ['timeAgo', 'minTimeAgo', 'maxTimeAgo'], column, initial);
+  var type = isType('formatter', formatters, column, initial);
   if (!type) {
     return column;
   }
@@ -1406,9 +1551,11 @@ module.exports = function (column, data, initial, options, element) {
   column.headerFilterFunc ?? (column.headerFilterFunc = timeAgoFilter);
   column.headerFilterLiveFilter ?? (column.headerFilterLiveFilter = false);
   column.formatterParams ?? (column.formatterParams = {});
-  column.formatter = timeAgoFormatter;
+  column.formatter = column.formatterOutput ?? timeAgoFormatter;
+  delete column.formatterOutput;
   return column;
 };
+module.exports.formatter = formatters;
 
 },{"../filters/timeAgo":24,"../formatters/timeAgo":29,"../helpers/isType":37,"../html/minMax":40}],55:[function(require,module,exports){
 "use strict";
@@ -1419,9 +1566,11 @@ const isType = require('../helpers/isType');
 const minMaxDom = require("../html/minMax");
 const minMaxFilter = require("../filters/minMax");
 const sum = require("../helpers/sum");
+
+// `timeMs*` to be deprecated in future versions, use `duration*` instead
+const formatters = ['duration', 'minDuration', 'maxDuration', 'timeMs', 'minTimeMs', 'maxTimeMs'];
 module.exports = function (column, data, initial, options, element) {
-  // `timeMs*` to be deprecated in future versions, use `duration*` instead
-  var type = isType('formatter', ['duration', 'minDuration', 'maxDuration', 'timeMs', 'minTimeMs', 'maxTimeMs'], column, initial);
+  var type = isType('formatter', formatters, column, initial);
   if (!type) {
     return column;
   }
@@ -1440,7 +1589,7 @@ module.exports = function (column, data, initial, options, element) {
   column.headerFilter ?? (column.headerFilter = minMaxDom);
   column.headerFilterFunc ?? (column.headerFilterFunc = minMaxFilter);
   column.headerFilterLiveFilter ?? (column.headerFilterLiveFilter = false);
-  column.formatter = function (cell, formatterParams, onRendered) {
+  column.formatter = column.formatterOutput ?? function (cell, formatterParams, onRendered) {
     return prefix + cell.getValue().toLocaleString(undefined, {
       minimumFractionDigits: precision,
       maximumFractionDigits: precision
@@ -1450,24 +1599,29 @@ module.exports = function (column, data, initial, options, element) {
     column.bottomCalc ?? (column.bottomCalc = sum);
   }
   column.hozAlign ?? (column.hozAlign = 'right');
+  delete column.formatterOutput;
   return column;
 };
+module.exports.formatter = formatters;
 
 },{"../filters/minMax":21,"../helpers/isType":37,"../helpers/sum":38,"../html/minMax":40,"es5-util/js/arrayColumn":2,"es5-util/js/getKeys":6}],56:[function(require,module,exports){
 "use strict";
 
 const isType = require('../helpers/isType');
 const urlsFormatter = require('./../formatters/urls');
+const formatters = ['url', 'urls'];
 module.exports = function (column, data, initial, options, element) {
-  var type = isType('formatter', ['url', 'urls'], column, initial);
+  var type = isType('formatter', formatters, column, initial);
   if (!type) {
     return column;
   }
   column.headerFilter ?? (column.headerFilter = 'input');
-  column.formatter = urlsFormatter;
   column.hozAlign ?? (column.hozAlign = 'left');
+  column.formatter = column.formatterOutput ?? urlsFormatter;
+  delete column.formatterOutput;
   return column;
 };
+module.exports.formatter = formatters;
 
 },{"../helpers/isType":37,"./../formatters/urls":30}],57:[function(require,module,exports){
 "use strict";
