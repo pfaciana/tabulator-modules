@@ -7,8 +7,10 @@ const objectSorter = require('./../sorters/object');
 const minMaxDom = require("../html/minMax");
 const objectPopup = require("../popups/object");
 
+const formatters = ['minMax{}', 'min{}', 'max{}'];
+
 module.exports = function (column, data, initial, options, element) {
-	var type = isType('formatter', ['minMax{}', 'min{}', 'max{}'], column, initial);
+	var type = isType('formatter', formatters, column, initial);
 	if (!type) {
 		return column;
 	}
@@ -27,7 +29,9 @@ module.exports = function (column, data, initial, options, element) {
 	column.headerFilterFunc ??= objectFilter;
 	column.headerFilterLiveFilter ??= false;
 
-	column.formatter = objectFormatter.byKeys;
+	column.formatter = column.formatterOutput ?? objectFormatter.byKeys;
+
+	delete column.formatterOutput;
 
 	column.headerSortStartingDir ??= 'desc';
 	column.sorter ??= objectSorter.byKeys;
@@ -38,3 +42,5 @@ module.exports = function (column, data, initial, options, element) {
 
 	return column;
 };
+
+module.exports.formatter = formatters;

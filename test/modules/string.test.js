@@ -20,7 +20,7 @@ test('string', () => {
 
 	$.subscribe('tabulator-table-created', function (table, element, options) {
 		expect(options.columns[0]).toHaveProperty('headerFilter', 'input');
-		expect(options.columns[0]).not.toHaveProperty('formatter');
+		expect(options.columns[0]).toHaveProperty('formatter');
 	});
 
 	Tabulator.Create('#string', {
@@ -68,7 +68,7 @@ test('text', () => {
 		expect(options.columns[0]).toHaveProperty('headerFilter', 'input');
 		expect(options.columns[0]).toHaveProperty('headerFilterFunc');
 		expect(options.columns[0]).toHaveProperty('hozAlign', 'left');
-		expect(options.columns[0]).not.toHaveProperty('formatter');
+		expect(options.columns[0]).toHaveProperty('formatter');
 	});
 
 	Tabulator.Create('#text', {

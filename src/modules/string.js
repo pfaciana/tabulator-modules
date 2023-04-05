@@ -3,8 +3,10 @@ const objectPopup = require('./../popups/object');
 const formatString = require('./../helpers/formatString');
 const advancedFilter = require("../filters/advanced");
 
+const formatters = ['string', 'str', 'text', 'html'];
+
 module.exports = function (column, data, initial, options, element) {
-	var type = isType('formatter', ['string', 'str', 'text', 'html'], column, initial);
+	var type = isType('formatter', formatters, column, initial);
 	if (!type) {
 		return column;
 	}
@@ -17,15 +19,17 @@ module.exports = function (column, data, initial, options, element) {
 	column.headerFilter ??= 'input';
 
 	if (column.formatterParams.textLimit) {
-		column.formatter = function (cell, formatterParams, onRendered) {
+		column.formatter = column.formatterOutput ?? function (cell, formatterParams, onRendered) {
 			return formatString(cell.getValue(), formatterParams);
 		};
 		if (column.formatterParams.showPopup) {
 			column.clickPopup = objectPopup;
 		}
 	} else {
-		delete column.formatter;
+		column.formatter = column.formatterOutput ?? column.formatter;
 	}
+
+	delete column.formatterOutput;
 
 	if (['text', 'html'].includes(type)) {
 		column.hozAlign ??= 'left';
@@ -34,3 +38,5 @@ module.exports = function (column, data, initial, options, element) {
 
 	return column;
 };
+
+module.exports.formatter = formatters;

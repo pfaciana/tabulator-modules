@@ -5,8 +5,10 @@ const objectSorter = require('./../sorters/object');
 const objectPopup = require('./../popups/object');
 const getKeys = require('es5-util/js/getKeys');
 
+const formatters = ['object', 'obj', 'compound'];
+
 module.exports = function (column, data, initial, options, element) {
-	var type = isType('formatter', ['object', 'obj', 'compound'], column, initial);
+	var type = isType('formatter', formatters, column, initial);
 	if (!type) {
 		return column;
 	}
@@ -22,17 +24,19 @@ module.exports = function (column, data, initial, options, element) {
 	if (showKeys) {
 		column.headerFilterLiveFilter ??= true;
 
-		column.formatter = objectFormatter.byKeys;
+		column.formatter = column.formatterOutput ?? objectFormatter.byKeys;
 
 		column.headerSortStartingDir ??= 'desc';
 		column.sorter ??= objectSorter.byKeys;
 	} else {
-		column.formatter = objectFormatter;
+		column.formatter = column.formatterOutput ?? objectFormatter;
 
 		column.sorter ??= objectSorter;
 
 		column.hozAlign ??= 'left';
 	}
+
+	delete column.formatterOutput;
 
 	if (showPopup) {
 		column.clickPopup = objectPopup;
@@ -40,3 +44,5 @@ module.exports = function (column, data, initial, options, element) {
 
 	return column;
 };
+
+module.exports.formatter = formatters;

@@ -8,8 +8,10 @@ const arraySorter = require('./../sorters/array');
 const minMaxDom = require("../html/minMax");
 const objectPopup = require("../popups/object");
 
+const formatters = ['minMax[]', 'min[]', 'max[]'];
+
 module.exports = function (column, data, initial, options, element) {
-	var type = isType('formatter', ['minMax[]', 'min[]', 'max[]'], column, initial);
+	var type = isType('formatter', formatters, column, initial);
 	if (!type) {
 		return column;
 	}
@@ -28,7 +30,9 @@ module.exports = function (column, data, initial, options, element) {
 	column.headerFilterFunc ??= arrayFilter;
 	column.headerFilterLiveFilter ??= false;
 
-	column.formatter = arrayFormatter;
+	column.formatter = column.formatterOutput ?? arrayFormatter;
+
+	delete column.formatterOutput;
 
 	column.headerSortStartingDir ??= 'desc';
 	column.sorter ??= arraySorter;
@@ -39,3 +43,5 @@ module.exports = function (column, data, initial, options, element) {
 
 	return column;
 };
+
+module.exports.formatter = formatters;

@@ -17,6 +17,29 @@ let filters = [
 	require('./modules/all'),
 ];
 
+if ('moduleBindings' in Tabulator) {
+	Tabulator.moduleBindings['formatterOutput'] = function (TabulatorFull) {
+		this.initialize = () => {
+		};
+		TabulatorFull.columnManager.optionsList.register('formatterOutput', null);
+	};
+}
+
+if ('extendModule' in Tabulator) {
+	Tabulator.extendModule('format', 'formatters', (function () {
+		let formatters = {};
+
+		const formatterOutput = cell => cell.getValue();
+		filters.map(filter => filter.formatter).flat().forEach(formatterType => {
+			if (formatterType) {
+				formatters[formatterType] = formatterOutput;
+			}
+		});
+
+		return formatters;
+	})());
+}
+
 function Create(element, options, namespace = 'all') {
 	var table, parameters = Object.values(arguments);
 

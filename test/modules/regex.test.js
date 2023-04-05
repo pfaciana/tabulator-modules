@@ -14,7 +14,7 @@ test('regex', () => {
 		expect(options.columns[0]).toHaveProperty('headerFilter', 'input');
 		expect(options.columns[0]).toHaveProperty('headerFilterFunc');
 		expect(options.columns[0]).toHaveProperty('hozAlign', 'left');
-		expect(options.columns[0]).not.toHaveProperty('formatter');
+		expect(options.columns[0]).toHaveProperty('formatter');
 	});
 
 	Tabulator.Create('#regex', {

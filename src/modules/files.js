@@ -3,8 +3,10 @@ const advancedFilter = require('./../filters/advanced');
 const filesFormatter = require('./../formatters/files');
 const objectSorter = require('./../sorters/object');
 
+const formatters = ['file', 'files'];
+
 module.exports = function (column, data, initial, options, element) {
-	var type = isType('formatter', ['file', 'files'], column, initial);
+	var type = isType('formatter', formatters, column, initial);
 	if (!type) {
 		return column;
 	}
@@ -14,9 +16,13 @@ module.exports = function (column, data, initial, options, element) {
 	column.headerFilterFuncParams ??= {strict: false};
 	column.headerFilterFunc ??= advancedFilter;
 
-	column.formatter = filesFormatter;
+	column.formatter = column.formatterOutput ?? filesFormatter;
+
+	delete column.formatterOutput;
 
 	column.sorter ??= objectSorter;
 
 	return column;
 };
+
+module.exports.formatter = formatters;

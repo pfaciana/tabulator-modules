@@ -3,8 +3,10 @@ const argsFilter = require('./../filters/args');
 const argsFormatter = require('./../formatters/args');
 const argsSorter = require('./../sorters/args');
 
+const formatters = ['args', 'argument', 'arguments', 'params', 'parameter', 'parameters'];
+
 module.exports = function (column, data, initial, options, element) {
-	var type = isType('formatter', ['args', 'argument', 'arguments', 'params', 'parameter', 'parameters'], column, initial);
+	var type = isType('formatter', formatters, column, initial);
 	if (!type) {
 		return column;
 	}
@@ -12,7 +14,9 @@ module.exports = function (column, data, initial, options, element) {
 	column.headerFilter ??= 'input';
 	column.headerFilterFunc ??= argsFilter;
 
-	column.formatter = argsFormatter;
+	column.formatter = column.formatterOutput ?? argsFormatter;
+
+	delete column.formatterOutput;
 
 	column.sorter ??= argsSorter;
 
@@ -20,3 +24,5 @@ module.exports = function (column, data, initial, options, element) {
 
 	return column;
 };
+
+module.exports.formatter = formatters;

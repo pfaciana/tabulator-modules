@@ -25,7 +25,7 @@ test('minMax', () => {
 		expect(options.columns[0]).toHaveProperty('headerFilter');
 		expect(options.columns[0]).toHaveProperty('headerFilterFunc');
 		expect(options.columns[0]).toHaveProperty('headerFilterLiveFilter', false);
-		expect(options.columns[0]).not.toHaveProperty('formatter');
+		expect(options.columns[0]).toHaveProperty('formatter');
 	});
 
 	Tabulator.Create('#minMax', {

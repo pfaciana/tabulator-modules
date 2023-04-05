@@ -5,9 +5,11 @@ const minMaxDom = require("../html/minMax");
 const minMaxFilter = require("../filters/minMax");
 const sum = require("../helpers/sum");
 
+// `timeMs*` to be deprecated in future versions, use `duration*` instead
+const formatters = ['duration', 'minDuration', 'maxDuration', 'timeMs', 'minTimeMs', 'maxTimeMs'];
+
 module.exports = function (column, data, initial, options, element) {
-	// `timeMs*` to be deprecated in future versions, use `duration*` instead
-	var type = isType('formatter', ['duration', 'minDuration', 'maxDuration', 'timeMs', 'minTimeMs', 'maxTimeMs'], column, initial);
+	var type = isType('formatter', formatters, column, initial);
 	if (!type) {
 		return column;
 	}
@@ -30,7 +32,7 @@ module.exports = function (column, data, initial, options, element) {
 	column.headerFilterFunc ??= minMaxFilter;
 	column.headerFilterLiveFilter ??= false;
 
-	column.formatter = function (cell, formatterParams, onRendered) {
+	column.formatter = column.formatterOutput ?? function (cell, formatterParams, onRendered) {
 		return prefix + cell.getValue().toLocaleString(undefined, {
 			minimumFractionDigits: precision,
 			maximumFractionDigits: precision,
@@ -43,5 +45,9 @@ module.exports = function (column, data, initial, options, element) {
 
 	column.hozAlign ??= 'right';
 
+	delete column.formatterOutput;
+
 	return column;
 };
+
+module.exports.formatter = formatters;

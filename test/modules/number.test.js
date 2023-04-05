@@ -19,9 +19,9 @@ const data = [
 test('number', () => {
 
 	$.subscribe('tabulator-table-created', function (table, element, options) {
-		expect(options.columns[0]).toHaveProperty('headerFilter', 'input');
+		expect(options.columns[0]).toHaveProperty('headerFilter', 'number');
 		expect(options.columns[0]).toHaveProperty('sorter', 'number');
-		expect(options.columns[0]).not.toHaveProperty('formatter');
+		expect(options.columns[0]).toHaveProperty('formatter');
 	});
 
 	Tabulator.Create('#number', {

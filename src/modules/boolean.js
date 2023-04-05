@@ -1,11 +1,16 @@
 const isType = require('../helpers/isType');
 
+const formatters = ['bool', 'boolean', 'tickCross'];
+
 module.exports = function (column, data, initial, options, element) {
-	if (!isType('formatter', ['bool', 'boolean', 'tickCross'], column, initial)) {
+	var type = isType('formatter', formatters, column, initial);
+	if (!type) {
 		return column;
 	}
 
-	column.formatter = 'tickCross';
+	column.formatter = column.formatterOutput ?? 'tickCross';
+
+	delete column.formatterOutput;
 
 	return {
 		...{
@@ -17,3 +22,5 @@ module.exports = function (column, data, initial, options, element) {
 		...column
 	};
 };
+
+module.exports.formatter = formatters;

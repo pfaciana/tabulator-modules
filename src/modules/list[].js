@@ -2,8 +2,10 @@ const isType = require('../helpers/isType');
 const {valuesLookup} = require('./../html/list[]');
 const arraySorter = require("../sorters/array");
 
+const formatters = ['list[]'];
+
 module.exports = function (column, data, initial, options, element) {
-	var type = isType('formatter', ['list[]'], column, initial);
+	var type = isType('formatter', formatters, column, initial);
 	if (!type) {
 		return column;
 	}
@@ -21,7 +23,11 @@ module.exports = function (column, data, initial, options, element) {
 
 	column.sorter ??= arraySorter;
 
-	delete column.formatter;
+	column.formatter = column.formatterOutput ?? column.formatter;
+
+	delete column.formatterOutput;
 
 	return column;
 };
+
+module.exports.formatter = formatters;

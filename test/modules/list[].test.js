@@ -26,7 +26,7 @@ test('list[]', () => {
 		expect(options.columns[0].headerFilterParams).toHaveProperty('valuesLookup');
 		expect(options.columns[0]).toHaveProperty('headerFilterFunc');
 		expect(options.columns[0]).toHaveProperty('sorter');
-		expect(options.columns[0]).not.toHaveProperty('formatter');
+		expect(options.columns[0]).toHaveProperty('formatter');
 	});
 
 	Tabulator.Create('#list[]', {

@@ -1,8 +1,10 @@
 const isType = require('../helpers/isType');
 const objectSorter = require("../sorters/object");
 
+const formatters = ['list'];
+
 module.exports = function (column, data, initial, options, element) {
-	var type = isType('formatter', ['list'], column, initial);
+	var type = isType('formatter', formatters, column, initial);
 	if (!type) {
 		return column;
 	}
@@ -17,7 +19,11 @@ module.exports = function (column, data, initial, options, element) {
 
 	column.sorter ??= objectSorter;
 
-	delete column.formatter;
+	column.formatter = column.formatterOutput ?? column.formatter;
+
+	delete column.formatterOutput;
 
 	return column;
 };
+
+module.exports.formatter = formatters;

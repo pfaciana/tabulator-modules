@@ -5,8 +5,10 @@ const minMaxDom = require('../html/minMax');
 const minMaxFilter = require('../filters/minMax');
 const sum = require("../helpers/sum");
 
+const formatters = ['minMax', 'min', 'max'];
+
 module.exports = function (column, data, initial, options, element) {
-	var type = isType('formatter', ['minMax', 'min', 'max'], column, initial);
+	var type = isType('formatter', formatters, column, initial);
 	if (!type) {
 		return column;
 	}
@@ -29,7 +31,11 @@ module.exports = function (column, data, initial, options, element) {
 		column.bottomCalc ??= sum;
 	}
 
-	delete column.formatter;
+	column.formatter = column.formatterOutput ?? column.formatter;
+
+	delete column.formatterOutput;
 
 	return column;
 };
+
+module.exports.formatter = formatters;

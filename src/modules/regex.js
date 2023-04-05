@@ -1,7 +1,9 @@
 const isType = require('../helpers/isType');
 
+const formatters = ['regex', 'RegExp'];
+
 module.exports = function (column, data, initial, options, element) {
-	var type = isType('formatter', ['regex', 'RegExp'], column, initial);
+	var type = isType('formatter', formatters, column, initial);
 	if (!type) {
 		return column;
 	}
@@ -14,7 +16,11 @@ module.exports = function (column, data, initial, options, element) {
 
 	column.hozAlign ??= 'left';
 
-	delete column.formatter;
+	column.formatter = column.formatterOutput ?? column.formatter;
+
+	delete column.formatterOutput;
 
 	return column;
 };
+
+module.exports.formatter = formatters;
