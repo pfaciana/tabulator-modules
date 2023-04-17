@@ -19,6 +19,8 @@ function normalizeArgs(args = {}) {
 
 	args.attr.href = args.href ?? args.url ?? args.attr.href ?? args.attr.url ?? null
 
+	args.attr.target = args.target ?? args.attr.target ?? null
+
 	args.attr.class = args.class ?? args.className ?? args.attr.class ?? args.attr.className ?? null
 
 	delete args.href;
@@ -26,6 +28,9 @@ function normalizeArgs(args = {}) {
 	delete args.attr.url;
 	if (!args.attr.href) {
 		delete args.attr.href;
+	}
+	if (!args.attr.target) {
+		delete args.attr.target;
 	}
 
 	delete args.class;
@@ -50,8 +55,8 @@ function normalizeArgs(args = {}) {
 function mergeArgs(value, formatterParams = {}, cell = {}) {
 	let normalizedValue = {};
 
-	if (value && typeof value === 'string') {
-		normalizedValue = {tag: 'a', attr: {href: value, target: '_blank'}, text: value};
+	if (value && ['number', 'string'].includes(typeof value)) {
+		normalizedValue = {tag: 'a', attr: {href: value}, text: value};
 	} else if (isObject(value)) {
 		normalizedValue = normalizeArgs({...value});
 	}

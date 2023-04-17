@@ -820,12 +820,16 @@ function normalizeArgs() {
   args.text = args.text ?? args.content ?? null;
   args.attr ?? (args.attr = {});
   args.attr.href = args.href ?? args.url ?? args.attr.href ?? args.attr.url ?? null;
+  args.attr.target = args.target ?? args.attr.target ?? null;
   args.attr.class = args.class ?? args.className ?? args.attr.class ?? args.attr.className ?? null;
   delete args.href;
   delete args.url;
   delete args.attr.url;
   if (!args.attr.href) {
     delete args.attr.href;
+  }
+  if (!args.attr.target) {
+    delete args.attr.target;
   }
   delete args.class;
   delete args.className;
@@ -847,12 +851,11 @@ function mergeArgs(value) {
   let formatterParams = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
   let cell = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : {};
   let normalizedValue = {};
-  if (value && typeof value === 'string') {
+  if (value && ['number', 'string'].includes(typeof value)) {
     normalizedValue = {
       tag: 'a',
       attr: {
-        href: value,
-        target: '_blank'
+        href: value
       },
       text: value
     };

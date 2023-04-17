@@ -845,7 +845,6 @@ module.exports = function (cell, formatterParams, onRendered) {
 },{"./../helpers/intervals":36,"es5-util/js/getKey":5}],30:[function(require,module,exports){
 "use strict";
 
-function _typeof(obj) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (obj) { return typeof obj; } : function (obj) { return obj && "function" == typeof Symbol && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }, _typeof(obj); }
 function _objectEntries(obj) {
   var entries = [];
   var keys = Object.keys(obj);
@@ -857,6 +856,7 @@ function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { va
 function _defineProperty(obj, key, value) { key = _toPropertyKey(key); if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 function _toPropertyKey(arg) { var key = _toPrimitive(arg, "string"); return _typeof(key) === "symbol" ? key : String(key); }
 function _toPrimitive(input, hint) { if (_typeof(input) !== "object" || input === null) return input; var prim = input[Symbol.toPrimitive]; if (prim !== undefined) { var res = prim.call(input, hint || "default"); if (_typeof(res) !== "object") return res; throw new TypeError("@@toPrimitive must return a primitive value."); } return (hint === "string" ? String : Number)(input); }
+function _typeof(obj) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (obj) { return typeof obj; } : function (obj) { return obj && "function" == typeof Symbol && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }, _typeof(obj); }
 function _slicedToArray(arr, i) { return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _unsupportedIterableToArray(arr, i) || _nonIterableRest(); }
 function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
 function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
@@ -879,17 +879,21 @@ function getHtmlTag(args) {
   return "<".concat(args.tag, " ").concat(attributes, ">").concat(args.text, "</").concat(args.tag, ">");
 }
 function normalizeArgs() {
-  var _ref3, _args$text, _args$attr, _ref4, _ref5, _ref6, _args$href, _ref7, _ref8, _ref9, _args$class;
+  var _ref3, _args$text, _args$attr, _ref4, _ref5, _ref6, _args$href, _ref7, _args$target, _ref8, _ref9, _ref10, _args$class;
   var args = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
   args.text = (_ref3 = (_args$text = args.text) !== null && _args$text !== void 0 ? _args$text : args.content) !== null && _ref3 !== void 0 ? _ref3 : null;
   (_args$attr = args.attr) !== null && _args$attr !== void 0 ? _args$attr : args.attr = {};
   args.attr.href = (_ref4 = (_ref5 = (_ref6 = (_args$href = args.href) !== null && _args$href !== void 0 ? _args$href : args.url) !== null && _ref6 !== void 0 ? _ref6 : args.attr.href) !== null && _ref5 !== void 0 ? _ref5 : args.attr.url) !== null && _ref4 !== void 0 ? _ref4 : null;
-  args.attr["class"] = (_ref7 = (_ref8 = (_ref9 = (_args$class = args["class"]) !== null && _args$class !== void 0 ? _args$class : args.className) !== null && _ref9 !== void 0 ? _ref9 : args.attr["class"]) !== null && _ref8 !== void 0 ? _ref8 : args.attr.className) !== null && _ref7 !== void 0 ? _ref7 : null;
+  args.attr.target = (_ref7 = (_args$target = args.target) !== null && _args$target !== void 0 ? _args$target : args.attr.target) !== null && _ref7 !== void 0 ? _ref7 : null;
+  args.attr["class"] = (_ref8 = (_ref9 = (_ref10 = (_args$class = args["class"]) !== null && _args$class !== void 0 ? _args$class : args.className) !== null && _ref10 !== void 0 ? _ref10 : args.attr["class"]) !== null && _ref9 !== void 0 ? _ref9 : args.attr.className) !== null && _ref8 !== void 0 ? _ref8 : null;
   delete args.href;
   delete args.url;
   delete args.attr.url;
   if (!args.attr.href) {
     delete args.attr.href;
+  }
+  if (!args.attr.target) {
+    delete args.attr.target;
   }
   delete args["class"];
   delete args.className;
@@ -911,12 +915,11 @@ function mergeArgs(value) {
   var formatterParams = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
   var cell = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : {};
   var normalizedValue = {};
-  if (value && typeof value === 'string') {
+  if (value && ['number', 'string'].includes(_typeof(value))) {
     normalizedValue = {
       tag: 'a',
       attr: {
-        href: value,
-        target: '_blank'
+        href: value
       },
       text: value
     };
@@ -924,34 +927,34 @@ function mergeArgs(value) {
     normalizedValue = normalizeArgs(_objectSpread({}, value));
   }
   var normalizedParams = normalizeArgs(_objectSpread({}, formatterParams));
-  _objectEntries(normalizedParams !== null && normalizedParams !== void 0 ? normalizedParams : {}).map(function (_ref10) {
-    var _ref11 = _slicedToArray(_ref10, 2),
-      name = _ref11[0],
-      item = _ref11[1];
+  _objectEntries(normalizedParams !== null && normalizedParams !== void 0 ? normalizedParams : {}).map(function (_ref11) {
+    var _ref12 = _slicedToArray(_ref11, 2),
+      name = _ref12[0],
+      item = _ref12[1];
     if (!(name in normalizedValue) || typeof normalizedValue[name] !== 'function' && typeof item === 'function') {
       normalizedValue[name] = item;
     }
   });
-  _objectEntries((_normalizedParams$att = normalizedParams.attr) !== null && _normalizedParams$att !== void 0 ? _normalizedParams$att : {}).map(function (_ref12) {
-    var _ref13 = _slicedToArray(_ref12, 2),
-      name = _ref13[0],
-      item = _ref13[1];
+  _objectEntries((_normalizedParams$att = normalizedParams.attr) !== null && _normalizedParams$att !== void 0 ? _normalizedParams$att : {}).map(function (_ref13) {
+    var _ref14 = _slicedToArray(_ref13, 2),
+      name = _ref14[0],
+      item = _ref14[1];
     if (!(name in normalizedValue.attr) || typeof normalizedValue.attr[name] !== 'function' && typeof item === 'function') {
       normalizedValue.attr[name] = item;
     }
   });
-  _objectEntries((_normalizedValue = normalizedValue) !== null && _normalizedValue !== void 0 ? _normalizedValue : {}).map(function (_ref14) {
-    var _ref15 = _slicedToArray(_ref14, 2),
-      name = _ref15[0],
-      item = _ref15[1];
+  _objectEntries((_normalizedValue = normalizedValue) !== null && _normalizedValue !== void 0 ? _normalizedValue : {}).map(function (_ref15) {
+    var _ref16 = _slicedToArray(_ref15, 2),
+      name = _ref16[0],
+      item = _ref16[1];
     if (typeof item === 'function') {
       normalizedValue[name] = item(cell, value, normalizedValue);
     }
   });
-  _objectEntries((_normalizedValue$attr = normalizedValue.attr) !== null && _normalizedValue$attr !== void 0 ? _normalizedValue$attr : {}).map(function (_ref16) {
-    var _ref17 = _slicedToArray(_ref16, 2),
-      name = _ref17[0],
-      item = _ref17[1];
+  _objectEntries((_normalizedValue$attr = normalizedValue.attr) !== null && _normalizedValue$attr !== void 0 ? _normalizedValue$attr : {}).map(function (_ref17) {
+    var _ref18 = _slicedToArray(_ref17, 2),
+      name = _ref18[0],
+      item = _ref18[1];
     if (typeof item === 'function') {
       normalizedValue.attr[name] = item(cell, value, normalizedValue);
     }

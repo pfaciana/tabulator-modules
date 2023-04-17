@@ -11,14 +11,14 @@ describe('urlsFormatter', () => {
 		['', false],
 		['', true],
 		['', ''],
-		[`<a href="abc" target="_blank" class="someClass">abc</a>`, 'abc'],
+		[`<a href="abc" class="someClass">abc</a>`, 'abc'],
 		['', 0],
 		['', {}],
 		['', []],
-		[`<a href="/abc" target="_blank" class="someClass">/abc</a>`, ['/abc']],
-		[`<a href="/abc" target="_blank" class="someClass">/abc</a>
-<a href="/xyz" target="_blank" class="someClass">/xyz</a>`, ['/abc', '/xyz']],
-		[`<a data-id="5" href="/page" class="some-class">click-me</a>`, {text: 'click-me', href: '/page', class: 'some-class', attr: {'data-id': () => 5}}],
+		[`<a href="/abc" class="someClass">/abc</a>`, ['/abc']],
+		[`<a href="/abc" class="someClass">/abc</a>
+<a href="/xyz" class="someClass">/xyz</a>`, ['/abc', '/xyz']],
+		[`<a data-id="5" href="/page" target="_blank" class="some-class">click-me</a>`, {text: 'click-me', href: '/page', target: '_blank', class: 'some-class', attr: {'data-id': () => 5}}],
 	];
 
 	test.each(table)(
@@ -68,7 +68,8 @@ describe('mergeArgs', () => {
 		[
 			{tag: 'a', text: 'abc', attr: {href: 'abc', class: 'a'}},
 			{tag: 'b', text: 'xyz', attr: {href: 'xyz', class: 'b'}},
-			{tag: 'a', text: 'abc', attr: {href: 'abc', class: 'a'}}],
+			{tag: 'a', text: 'abc', attr: {href: 'abc', class: 'a'}}
+		],
 		[
 			'abc',
 			{
@@ -78,14 +79,14 @@ describe('mergeArgs', () => {
 			{
 				tag: 'a',
 				text: 'abc',
-				attr: {href: 'abc', target: '_blank', class: 'b'}
+				attr: {href: 'abc', class: 'b'}
 			}
 		],
 		[
 			'abc',
 			{
 				content: testFn,
-				attr: {url: testFn, class: 'b'}
+				attr: {url: testFn, target: '_blank', class: 'b'}
 			},
 			{
 				tag: 'a',
