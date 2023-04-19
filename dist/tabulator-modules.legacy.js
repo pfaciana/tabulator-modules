@@ -915,6 +915,9 @@ function mergeArgs(value) {
   var formatterParams = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
   var cell = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : {};
   var normalizedValue = {};
+  if ('show' in formatterParams && !formatterParams.show(cell, value)) {
+    return false;
+  }
   if (value && ['number', 'string'].includes(_typeof(value))) {
     normalizedValue = {
       tag: 'a',

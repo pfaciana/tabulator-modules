@@ -55,6 +55,10 @@ function normalizeArgs(args = {}) {
 function mergeArgs(value, formatterParams = {}, cell = {}) {
 	let normalizedValue = {};
 
+	if ('show' in formatterParams && !formatterParams.show(cell, value)) {
+		return false;
+	}
+
 	if (value && ['number', 'string'].includes(typeof value)) {
 		normalizedValue = {tag: 'a', attr: {href: value}, text: value};
 	} else if (isObject(value)) {

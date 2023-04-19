@@ -19,6 +19,8 @@ describe('urlsFormatter', () => {
 		[`<a href="/abc" class="someClass">/abc</a>
 <a href="/xyz" class="someClass">/xyz</a>`, ['/abc', '/xyz']],
 		[`<a data-id="5" href="/page" target="_blank" class="some-class">click-me</a>`, {text: 'click-me', href: '/page', target: '_blank', class: 'some-class', attr: {'data-id': () => 5}}],
+		[`<a href="/abc">link</a>`, '/abc', {show: () => true, text: () => 'link'}],
+		['', 'abc', {show: () => false}],
 	];
 
 	test.each(table)(
