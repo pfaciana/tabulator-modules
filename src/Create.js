@@ -23,6 +23,11 @@ if ('moduleBindings' in Tabulator) {
 		};
 		TabulatorFull.columnManager.optionsList.register('formatterOutput', null);
 	};
+	Tabulator.moduleBindings['headerFilterTemp'] = function (TabulatorFull) {
+		this.initialize = () => {
+		};
+		TabulatorFull.columnManager.optionsList.register('headerFilterTemp', null);
+	};
 }
 
 if ('extendModule' in Tabulator) {
@@ -72,13 +77,26 @@ function Create(element, options, namespace = 'all') {
 		parameters[1] = options;
 		table = new Tabulator(...parameters);
 	} else {
+		if (Array.isArray(options?.columns)) {
+			jQuery.each(options.columns, function (i, column) {
+				if ('headerFilter' in column) {
+					column.headerFilterTemp = column.headerFilter;
+					delete column.headerFilter;
+				}
+			});
+		}
 		parameters[1] = options;
 		table = new Tabulator(...parameters);
 		table.on('tableBuilt', function () {
 			var data = table.getData();
 			jQuery.each(table.columnManager.getColumns(), function (i, column) {
 				setTimeout(function () {
-					column.updateDefinition(updateColumn(column.getDefinition(), data));
+					let def = column.getDefinition();
+					if ('headerFilterTemp' in def) {
+						def.headerFilter = def.headerFilterTemp;
+						delete def.headerFilterTemp;
+					}
+					column.updateDefinition(updateColumn(def, data));
 				}, 1);
 			});
 		});
