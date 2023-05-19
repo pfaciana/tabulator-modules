@@ -453,6 +453,10 @@ if ('moduleBindings' in Tabulator) {
     this.initialize = () => {};
     TabulatorFull.columnManager.optionsList.register('formatterOutput', null);
   };
+  Tabulator.moduleBindings['headerFilterTemp'] = function (TabulatorFull) {
+    this.initialize = () => {};
+    TabulatorFull.columnManager.optionsList.register('headerFilterTemp', null);
+  };
 }
 if ('extendModule' in Tabulator) {
   Tabulator.extendModule('format', 'formatters', function () {
@@ -498,13 +502,27 @@ function Create(element, options) {
     parameters[1] = options;
     table = new Tabulator(...parameters);
   } else {
+    var _options;
+    if (Array.isArray((_options = options) === null || _options === void 0 ? void 0 : _options.columns)) {
+      jQuery.each(options.columns, function (i, column) {
+        if ('headerFilter' in column) {
+          column.headerFilterTemp = column.headerFilter;
+          delete column.headerFilter;
+        }
+      });
+    }
     parameters[1] = options;
     table = new Tabulator(...parameters);
     table.on('tableBuilt', function () {
       var data = table.getData();
       jQuery.each(table.columnManager.getColumns(), function (i, column) {
         setTimeout(function () {
-          column.updateDefinition(updateColumn(column.getDefinition(), data));
+          let def = column.getDefinition();
+          if ('headerFilterTemp' in def) {
+            def.headerFilter = def.headerFilterTemp;
+            delete def.headerFilterTemp;
+          }
+          column.updateDefinition(updateColumn(def, data));
         }, 1);
       });
     });
@@ -808,12 +826,15 @@ function getHtmlTag(args) {
   if (!args) {
     return false;
   }
-  args.tag ?? (args.tag = 'a');
-  let attributes = Object.entries(args.attr).map(_ref => {
+  const hasAttrs = Object.keys(args).length && 'attr' in args && Object.keys(args.attr).length;
+  const defaultTag = hasAttrs ? 'a' : 'span';
+  args.tag ?? (args.tag = defaultTag);
+  args.tag = args.tag === true ? defaultTag : args.tag;
+  let attributes = args && 'attr' in args && args.attr ? ' ' + Object.entries(args.attr).map(_ref => {
     let [key, value] = _ref;
     return `${key}="${String(value).replace(/"/g, '&quot;')}"`;
-  }).join(' ');
-  return `<${args.tag} ${attributes}>${args.text}</${args.tag}>`;
+  }).join(' ') : '';
+  return args.tag ? `<${args.tag}${attributes}>${args.text}</${args.tag}>` : args.text;
 }
 function normalizeArgs() {
   let args = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
@@ -1194,9 +1215,9 @@ module.exports.formatter = formatters;
 "use strict";
 
 const isType = require('../helpers/isType');
-const formatters = ['bool', 'boolean', 'tickCross'];
+const formatters = ['bool', 'boolean'];
 module.exports = function (column, data, initial, options, element) {
-  var type = isType('formatter', formatters, column, initial);
+  var type = isType('formatter', [...formatters, 'tickCross'], column, initial);
   if (!type) {
     return column;
   }
@@ -1500,10 +1521,10 @@ const isType = require('../helpers/isType');
 const objectPopup = require('./../popups/object');
 const formatString = require('./../helpers/formatString');
 const advancedFilter = require("../filters/advanced");
-const formatters = ['string', 'str', 'text', 'html'];
+const formatters = ['string', 'str', 'text'];
 module.exports = function (column, data, initial, options, element) {
   var _column$formatterPara, _column$formatterPara2, _column$formatterPara3;
-  var type = isType('formatter', formatters, column, initial);
+  var type = isType('formatter', [...formatters, 'html'], column, initial);
   if (!type) {
     return column;
   }

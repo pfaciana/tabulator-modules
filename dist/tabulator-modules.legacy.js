@@ -469,6 +469,10 @@ if ('moduleBindings' in Tabulator) {
     this.initialize = function () {};
     TabulatorFull.columnManager.optionsList.register('formatterOutput', null);
   };
+  Tabulator.moduleBindings['headerFilterTemp'] = function (TabulatorFull) {
+    this.initialize = function () {};
+    TabulatorFull.columnManager.optionsList.register('headerFilterTemp', null);
+  };
 }
 if ('extendModule' in Tabulator) {
   Tabulator.extendModule('format', 'formatters', function () {
@@ -518,13 +522,27 @@ function Create(element, options) {
     parameters[1] = options;
     table = _construct(Tabulator, _toConsumableArray(parameters));
   } else {
+    var _options;
+    if (Array.isArray((_options = options) === null || _options === void 0 ? void 0 : _options.columns)) {
+      jQuery.each(options.columns, function (i, column) {
+        if ('headerFilter' in column) {
+          column.headerFilterTemp = column.headerFilter;
+          delete column.headerFilter;
+        }
+      });
+    }
     parameters[1] = options;
     table = _construct(Tabulator, _toConsumableArray(parameters));
     table.on('tableBuilt', function () {
       var data = table.getData();
       jQuery.each(table.columnManager.getColumns(), function (i, column) {
         setTimeout(function () {
-          column.updateDefinition(updateColumn(column.getDefinition(), data));
+          var def = column.getDefinition();
+          if ('headerFilterTemp' in def) {
+            def.headerFilter = def.headerFilterTemp;
+            delete def.headerFilterTemp;
+          }
+          column.updateDefinition(updateColumn(def, data));
         }, 1);
       });
     });
@@ -869,14 +887,17 @@ function getHtmlTag(args) {
   if (!args) {
     return false;
   }
-  (_args$tag = args.tag) !== null && _args$tag !== void 0 ? _args$tag : args.tag = 'a';
-  var attributes = _objectEntries(args.attr).map(function (_ref) {
+  var hasAttrs = Object.keys(args).length && 'attr' in args && Object.keys(args.attr).length;
+  var defaultTag = hasAttrs ? 'a' : 'span';
+  (_args$tag = args.tag) !== null && _args$tag !== void 0 ? _args$tag : args.tag = defaultTag;
+  args.tag = args.tag === true ? defaultTag : args.tag;
+  var attributes = args && 'attr' in args && args.attr ? ' ' + _objectEntries(args.attr).map(function (_ref) {
     var _ref2 = _slicedToArray(_ref, 2),
       key = _ref2[0],
       value = _ref2[1];
     return "".concat(key, "=\"").concat(String(value).replace(/"/g, '&quot;'), "\"");
-  }).join(' ');
-  return "<".concat(args.tag, " ").concat(attributes, ">").concat(args.text, "</").concat(args.tag, ">");
+  }).join(' ') : '';
+  return args.tag ? "<".concat(args.tag).concat(attributes, ">").concat(args.text, "</").concat(args.tag, ">") : args.text;
 }
 function normalizeArgs() {
   var _ref3, _args$text, _args$attr, _ref4, _ref5, _ref6, _args$href, _ref7, _args$target, _ref8, _ref9, _ref10, _args$class;
@@ -1291,10 +1312,10 @@ function _defineProperty(obj, key, value) { key = _toPropertyKey(key); if (key i
 function _toPropertyKey(arg) { var key = _toPrimitive(arg, "string"); return _typeof(key) === "symbol" ? key : String(key); }
 function _toPrimitive(input, hint) { if (_typeof(input) !== "object" || input === null) return input; var prim = input[Symbol.toPrimitive]; if (prim !== undefined) { var res = prim.call(input, hint || "default"); if (_typeof(res) !== "object") return res; throw new TypeError("@@toPrimitive must return a primitive value."); } return (hint === "string" ? String : Number)(input); }
 var isType = require('../helpers/isType');
-var formatters = ['bool', 'boolean', 'tickCross'];
+var formatters = ['bool', 'boolean'];
 module.exports = function (column, data, initial, options, element) {
   var _column$formatterOutp;
-  var type = isType('formatter', formatters, column, initial);
+  var type = isType('formatter', [].concat(formatters, ['tickCross']), column, initial);
   if (!type) {
     return column;
   }
@@ -1628,10 +1649,10 @@ var isType = require('../helpers/isType');
 var objectPopup = require('./../popups/object');
 var formatString = require('./../helpers/formatString');
 var advancedFilter = require("../filters/advanced");
-var formatters = ['string', 'str', 'text', 'html'];
+var formatters = ['string', 'str', 'text'];
 module.exports = function (column, data, initial, options, element) {
   var _column$formatterPara, _column$formatterPara2, _column$formatterPara3, _column$formatterPara4, _column$formatterPara5, _column$formatterPara6, _column$formatterPara7, _column$headerFilter;
-  var type = isType('formatter', formatters, column, initial);
+  var type = isType('formatter', [].concat(formatters, ['html']), column, initial);
   if (!type) {
     return column;
   }
