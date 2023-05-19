@@ -3,10 +3,10 @@ const objectPopup = require('./../popups/object');
 const formatString = require('./../helpers/formatString');
 const advancedFilter = require("../filters/advanced");
 
-const formatters = ['string', 'str', 'text', 'html'];
+const formatters = ['string', 'str', 'text'];
 
 module.exports = function (column, data, initial, options, element) {
-	var type = isType('formatter', formatters, column, initial);
+	var type = isType('formatter', [...formatters, 'html'], column, initial);
 	if (!type) {
 		return column;
 	}
