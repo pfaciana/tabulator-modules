@@ -1,9 +1,9 @@
 const isType = require('../helpers/isType');
 
-const formatters = ['bool', 'boolean', 'tickCross'];
+const formatters = ['bool', 'boolean'];
 
 module.exports = function (column, data, initial, options, element) {
-	var type = isType('formatter', formatters, column, initial);
+	var type = isType('formatter', [...formatters, 'tickCross'], column, initial);
 	if (!type) {
 		return column;
 	}
