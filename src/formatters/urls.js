@@ -5,11 +5,15 @@ function getHtmlTag(args) {
 		return false;
 	}
 
-	args.tag ??= 'a';
+	const hasAttrs = (Object.keys(args).length && 'attr' in args && (Object.keys(args.attr).length));
+	const defaultTag = hasAttrs ? 'a' : 'span';
 
-	let attributes = Object.entries(args.attr).map(([key, value]) => `${key}="${String(value).replace(/"/g, '&quot;')}"`).join(' ');
+	args.tag ??= defaultTag;
+	args.tag = args.tag === true ? defaultTag : args.tag;
 
-	return `<${args.tag} ${attributes}>${args.text}</${args.tag}>`;
+	let attributes = (args && 'attr' in args && args.attr) ? ' ' + Object.entries(args.attr).map(([key, value]) => `${key}="${String(value).replace(/"/g, '&quot;')}"`).join(' ') : '';
+
+	return args.tag ? `<${args.tag}${attributes}>${args.text}</${args.tag}>` : args.text;
 }
 
 function normalizeArgs(args = {}) {
