@@ -1,33 +1,33 @@
-const getKey = require("es5-util/js/getKey");
-const intervals = require('./../helpers/intervals');
+const getKey = require('es5-util/js/getKey')
+const intervals = require('./../helpers/intervals')
 
-module.exports = function (cell, formatterParams, onRendered) {
+module.exports = function(cell, formatterParams, onRendered) {
 	if (!cell.getValue() || cell.getValue() <= 1) {
-		return '<span title="Invalid Date">-</span>';
+		return '<span title="Invalid Date">-</span>'
 	}
 
-	let startTime = getKey(formatterParams, 'startTime', Date.now() / 1000);
+	let startTime = getKey(formatterParams, 'startTime', Date.now() / 1000)
 	if (typeof startTime === 'function') {
-		startTime = startTime();
+		startTime = startTime()
 	}
-	const timeAgo = Math.floor(startTime - (cell.getValue() || 0));
+	const timeAgo = Math.floor(startTime - (cell.getValue() || 0))
 
-	let interval;
-	const timeAgoAbs = Math.abs(timeAgo);
+	let interval
+	const timeAgoAbs = Math.abs(timeAgo)
 	if (timeAgoAbs < 60) {
-		interval = 's';
+		interval = 's'
 	} else if (timeAgoAbs < 5970) {
-		interval = 'm';
+		interval = 'm'
 	} else if (timeAgoAbs < 86400) {
-		interval = 'h';
+		interval = 'h'
 	} else if (timeAgoAbs < 31536000) {
-		interval = 'd';
+		interval = 'd'
 	} else {
-		interval = 'y';
+		interval = 'y'
 	}
 
-	const dateObject = new Date(startTime - timeAgo * 1000);
-	const timeAgoFormatted = Math[getKey(formatterParams, 'round', 'floor')](timeAgo / intervals[interval[0]]) + interval;
+	const dateObject = new Date((startTime - timeAgo) * 1000)
+	const timeAgoFormatted = Math[getKey(formatterParams, 'round', 'floor')](timeAgo / intervals[interval[0]]) + interval
 
-	return `<span title="${dateObject.toLocaleString()}">${timeAgoFormatted}</span>`;
-};
+	return `<span title="${dateObject.toLocaleString()}">${timeAgoFormatted}</span>`
+}

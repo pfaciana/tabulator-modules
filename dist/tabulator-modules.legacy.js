@@ -831,7 +831,7 @@ module.exports.byKeys = function (cell, formatterParams, onRendered) {
 },{"./../helpers/formatString":32,"es5-util/js/isObject":11,"es5-util/js/toAssociativeArray":14}],29:[function(require,module,exports){
 "use strict";
 
-var getKey = require("es5-util/js/getKey");
+var getKey = require('es5-util/js/getKey');
 var intervals = require('./../helpers/intervals');
 module.exports = function (cell, formatterParams, onRendered) {
   if (!cell.getValue() || cell.getValue() <= 1) {
@@ -855,7 +855,7 @@ module.exports = function (cell, formatterParams, onRendered) {
   } else {
     interval = 'y';
   }
-  var dateObject = new Date(startTime - timeAgo * 1000);
+  var dateObject = new Date((startTime - timeAgo) * 1000);
   var timeAgoFormatted = Math[getKey(formatterParams, 'round', 'floor')](timeAgo / intervals[interval[0]]) + interval;
   return "<span title=\"".concat(dateObject.toLocaleString(), "\">").concat(timeAgoFormatted, "</span>");
 };

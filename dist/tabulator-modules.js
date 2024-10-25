@@ -502,8 +502,7 @@ function Create(element, options) {
     parameters[1] = options;
     table = new Tabulator(...parameters);
   } else {
-    var _options;
-    if (Array.isArray((_options = options) === null || _options === void 0 ? void 0 : _options.columns)) {
+    if (Array.isArray(options?.columns)) {
       jQuery.each(options.columns, function (i, column) {
         if ('headerFilter' in column) {
           column.headerFilterTemp = column.headerFilter;
@@ -789,7 +788,7 @@ module.exports.byKeys = function (cell, formatterParams, onRendered) {
 },{"./../helpers/formatString":32,"es5-util/js/isObject":11,"es5-util/js/toAssociativeArray":14}],29:[function(require,module,exports){
 "use strict";
 
-const getKey = require("es5-util/js/getKey");
+const getKey = require('es5-util/js/getKey');
 const intervals = require('./../helpers/intervals');
 module.exports = function (cell, formatterParams, onRendered) {
   if (!cell.getValue() || cell.getValue() <= 1) {
@@ -813,7 +812,7 @@ module.exports = function (cell, formatterParams, onRendered) {
   } else {
     interval = 'y';
   }
-  const dateObject = new Date(startTime - timeAgo * 1000);
+  const dateObject = new Date((startTime - timeAgo) * 1000);
   const timeAgoFormatted = Math[getKey(formatterParams, 'round', 'floor')](timeAgo / intervals[interval[0]]) + interval;
   return `<span title="${dateObject.toLocaleString()}">${timeAgoFormatted}</span>`;
 };
@@ -868,7 +867,6 @@ function normalizeArgs() {
   return args;
 }
 function mergeArgs(value) {
-  var _normalizedValue, _normalizedValue$attr, _normalizedValue2;
   let formatterParams = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
   let cell = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : {};
   let normalizedValue = {};
@@ -915,7 +913,7 @@ function mergeArgs(value) {
       normalizedValue.attr[name] = item(cell, value, normalizedValue);
     }
   });
-  if (!((_normalizedValue = normalizedValue) !== null && _normalizedValue !== void 0 && (_normalizedValue$attr = _normalizedValue.attr) !== null && _normalizedValue$attr !== void 0 && _normalizedValue$attr.href) && !((_normalizedValue2 = normalizedValue) !== null && _normalizedValue2 !== void 0 && _normalizedValue2.text)) {
+  if (!normalizedValue?.attr?.href && !normalizedValue?.text) {
     return false;
   }
   return normalizedValue;
