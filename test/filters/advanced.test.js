@@ -1,4 +1,4 @@
-const advancedFilter = require('../../src/filters/advanced');
+const advancedFilter = require('../../src/filters/advanced')
 
 const table = [
 	[true, 'null', null],
@@ -23,12 +23,19 @@ const table = [
 	[true, '2,3', [1, 2, 3]],
 	[true, '3]', [1, 2, 3]],
 	[false, '3,', [1, 2, 3]],
-	[true, '"c":3}', {a: 1, b: 2, c: 3}],
-	[true, '+"{\\"a\\":1,"', {a: 1, b: 2, c: 3}],
-	[false, '+"{\\"a\\" :1,"', {a: 1, b: 2, c: 3}], // no space after key in JSON.stringify
+	[true, '"c":3}', { a: 1, b: 2, c: 3 }],
+	[true, '+"{\\"a\\":1,"', { a: 1, b: 2, c: 3 }],
+	[false, '+"{\\"a\\" :1,"', { a: 1, b: 2, c: 3 }], // no space after key in JSON.stringify
 
 	[true, '+b', 'abc'],
 	[false, '+d', 'abc'],
+	[false, '+B', 'abc'],
+	[false, '+D', 'abc'],
+
+	[true, '~b', 'abc'],
+	[false, '~d', 'abc'],
+	[true, '~B', 'abc'],
+	[false, '~D', 'abc'],
 
 	[false, '-b', 'abc'],
 	[true, '-d', 'abc'],
@@ -77,12 +84,12 @@ const table = [
 	[true, 'regex:"c.*land\\\\s+rocks!"', ' cleveland rocks! '],
 	[true, 'regex:"c.*land\\\\s+\\"rocks\\"!"', ' cleveland "rocks"! '],
 	[true, 'regex:\\"rocks\\"', ' cleveland "rocks"! '],
-	[true, 'regex:"rtl\\":\\""', {rtl: "replace", suffix: ".min"}],
-];
+	[true, 'regex:"rtl\\":\\""', { rtl: 'replace', suffix: '.min' }],
+]
 
 test.each(table)(
 	'%s advancedFilter(%j, %j)',
 	(expected, headerValue, rowValue) => {
-		expect(advancedFilter(headerValue, rowValue)).toStrictEqual(expected);
+		expect(advancedFilter(headerValue, rowValue)).toStrictEqual(expected)
 	},
-);
+)

@@ -37,9 +37,9 @@ require('tabulator-modules');
 var table = new Tabulator("#example-table", {
 	data: [...],
 	columns: [
-		{...},
-		{...},
-		{...},
+		{ ... },
+		{ ... },
+		{ ... },
 		...
 	],
 });
@@ -48,9 +48,9 @@ var table = new Tabulator("#example-table", {
 var table = Tabulator.Create("#example-table", {
 	data: [...],
 	columns: [
-		{...},
-		{...},
-		{...},
+		{ ... },
+		{ ... },
+		{ ... },
 		...
 	],
 });
@@ -63,53 +63,53 @@ This library adds custom formatters on top of the built-in formatters like  `mon
 These new custom formatter provided in the library are...
 
 * [Arguments](#arguments)
-    * Takes in any type of value and outputs a string representation of the value
-        * for example, `{a: 1, b: 2, c: 3, 3: 4}` becomes `<div><span title="(object) object{4}" data-type="object">object{4}</span></div>`
-    * Aliases: args, argument, arguments, params, parameter, parameters
+	* Takes in any type of value and outputs a string representation of the value
+		* for example, `{a: 1, b: 2, c: 3, 3: 4}` becomes `<div><span title="(object) object{4}" data-type="object">object{4}</span></div>`
+	* Aliases: args, argument, arguments, params, parameter, parameters
 * [Boolean](#boolean)
-    * Takes in truthy or falsey values and outputs a tickCross
-    * Aliases: bool, boolean, tickCross
+	* Takes in truthy or falsey values and outputs a tickCross
+	* Aliases: bool, boolean, tickCross
 * [Duration](#duration)
-    * Displays, and converts, a formatted and human-readable number representing time
-    * Aliases: duration, minDuration, maxDuration, timeMs, minTimeMs, maxTimeMs
+	* Displays, and converts, a formatted and human-readable number representing time
+	* Aliases: duration, minDuration, maxDuration, timeMs, minTimeMs, maxTimeMs
 * [Files](#files)
-    * Takes in an object, or array of objects, specifically formatted to display urls
-    * Aliases: file, files
+	* Takes in an object, or array of objects, specifically formatted to display urls
+	* Aliases: file, files
 * [List](#list)
-    * Gets all the values in a column and create a header filter with a dropdown of those values
-    * Aliases: list
+	* Gets all the values in a column and create a header filter with a dropdown of those values
+	* Aliases: list
 * [List of Arrays](#list-of-arrays)
-    * Very similar to `list`, but is used for a value can be an array, it will parse the array for individual values
-    * Aliases: list[]
+	* Very similar to `list`, but is used for a value can be an array, it will parse the array for individual values
+	* Aliases: list[]
 * [Min/Max](#minmax)
-    * When values in a column are numbers, it will create a header filter of min and/or max inputs
-    * Aliases: minMax, min, max
+	* When values in a column are numbers, it will create a header filter of min and/or max inputs
+	* Aliases: minMax, min, max
 * [Min/Max for Array length](#minmax-for-array-length)
-    * Same as `minMax`, but for when values are arrays. It will use the length of the array as the min/max size comparison
-    * Aliases: minMax[], min[], max[]
+	* Same as `minMax`, but for when values are arrays. It will use the length of the array as the min/max size comparison
+	* Aliases: minMax[], min[], max[]
 * [Min/Max for Object Keys](#minmax-for-object-keys)
-    * Same as `minMax`, but for when values objects. It will use the number of object keys as the min/max size comparison
-    * Aliases: minMax{}, min{}, max{}
+	* Same as `minMax`, but for when values objects. It will use the number of object keys as the min/max size comparison
+	* Aliases: minMax{}, min{}, max{}
 * [Number](#number)
-    * Filters and sorts values as numbers
-    * Aliases: number, num, int, integer
+	* Filters and sorts values as numbers
+	* Aliases: number, num, int, integer
 * [Object](#object)
-    * Takes complex objects are values, and represents, filters and sorts them as strings
-    * Aliases: object, obj, compound
+	* Takes complex objects are values, and represents, filters and sorts them as strings
+	* Aliases: object, obj, compound
 * [RegExp](#regexp)
-    * Used for when teh values are regex expressions. The header filter will be a matching test case for regex expression
-    * Aliases: regex, RegExp
+	* Used for when teh values are regex expressions. The header filter will be a matching test case for regex expression
+	* Aliases: regex, RegExp
 * [Strings](#strings)
-    * Advanced options for formatting for strings values. `text` provides additional advanced filtering. `html` is the same as `test` with support of html chars
-    * Aliases: string, str
-    * Aliases: text
-    * Aliases: html
+	* Advanced options for formatting for strings values. `text` provides additional advanced filtering. `html` is the same as `test` with support of html chars
+	* Aliases: string, str
+	* Aliases: text
+	* Aliases: html
 * [Time Ago](#time-ago)
-    * Takes in a Unix timestamp (in seconds) and outputs a human-readable string representing how long ago that timestamp was
-    * Aliases: timeAgo, minTimeAgo, maxTimeAgo
+	* Takes in a Unix timestamp (in seconds) and outputs a human-readable string representing how long ago that timestamp was
+	* Aliases: timeAgo, minTimeAgo, maxTimeAgo
 * [Urls](#urls)
-    * Takes in value that is a url, object representation of a url, or an array of urls/objects, and converts them to links
-    * Aliases: url, urls
+	* Takes in value that is a url, object representation of a url, or an array of urls/objects, and converts them to links
+	* Aliases: url, urls
 
 ---
 
@@ -153,7 +153,7 @@ By default, it will convert any value(s) to a human-readable string that will ap
 This will truncate a long string if the `formatterParams.textLimit` is set. This will also convert a string to HTML entities for the title tag attribute.
 
 ```javascript
-const input = {a: 1, b: 2, c: 3, 3: 4}, output = `<div><span title="(object) object{4}" data-type="object">object{4}</span></div>`;
+const input = { a: 1, b: 2, c: 3, 3: 4 }, output = `<div><span title="(object) object{4}" data-type="object">object{4}</span></div>`;
 const input = [[1, 2, 3]], output = `<div><span title="(array) array[3]" data-type="array">array[3]</span></div>`;
 const input = [null], output = `<div><span title="(null) null" data-type="null">null</span></div>`;
 const input = true, output = `<div><span title="(boolean) true" data-type="boolean">true</span></div>`;
@@ -178,10 +178,10 @@ const input = [1, 2, 3], output = `<div><span title="(integer) 1" data-type="int
 If an object is set with `text` and `type` keys, it will use that information directly with no variable conversion. This always you to set custom type and text values.
 
 ```javascript
-const input = {type: 'array', text: 'array[5]'}, output = `<div><span title="(array) array[5]" data-type="array">array[5]</span></div>`;
-const input = {type: 'object', text: 'WP_Post{72}'}, output = `<div><span title="(object) WP_Post{72}" data-type="object">WP_Post{72}</span></div>`;
-const input = {type: 'callable', text: 'Closure()'}, output = `<div><span title="(callable) Closure()" data-type="callable">Closure()</span></div>`;
-const input = [{type: 'string', text: 'a'}, {type: 'integer', text: 0}],
+const input = { type: 'array', text: 'array[5]' }, output = `<div><span title="(array) array[5]" data-type="array">array[5]</span></div>`;
+const input = { type: 'object', text: 'WP_Post{72}' }, output = `<div><span title="(object) WP_Post{72}" data-type="object">WP_Post{72}</span></div>`;
+const input = { type: 'callable', text: 'Closure()' }, output = `<div><span title="(callable) Closure()" data-type="callable">Closure()</span></div>`;
+const input = [{ type: 'string', text: 'a' }, { type: 'integer', text: 0 }],
 	output = `<div><span title="(string) a" data-type="string">a</span>
 <span title="(integer) 0" data-type="integer">0</span></div>`;
 // etc.
@@ -273,7 +273,7 @@ bottomCalcParams = {
 	prefix: '$ ', // string - text to display before the bottomSum. Defaults to ``
 	suffix: ' ms', // string - text to display after the bottomSum. Defaults to ``
 	locales: 'en-US', // string|undefined - toLocaleString()'s locales string as a BCP 47 language tag. Defaults to `undefined`
-	options: {style: 'currency'}, // object - toLocaleString()'s options object adjusting the output format. Defaults to `{minimumFractionDigits: 0, maximumFractionDigits: 0}`
+	options: { style: 'currency' }, // object - toLocaleString()'s options object adjusting the output format. Defaults to `{minimumFractionDigits: 0, maximumFractionDigits: 0}`
 }
 ```
 
@@ -316,8 +316,8 @@ headerFilterFuncParams = {
 ### Output
 
 ```javascript
-const input = {url: '#', text: 'abc'}, output = `<a href="#" target="_blank">abc</a>`;
-const input = [{url: '#', text: 'abc'}, {url: '#', text: 'def'}], output = `<a href="#" target="_blank">abc</a> | <a href="#" target="_blank">def</a>`;
+const input = { url: '#', text: 'abc' }, output = `<a href="#" target="_blank">abc</a>`;
+const input = [{ url: '#', text: 'abc' }, { url: '#', text: 'def' }], output = `<a href="#" target="_blank">abc</a> | <a href="#" target="_blank">def</a>`;
 ```
 
 ---
@@ -399,7 +399,7 @@ bottomCalcParams = {
 	prefix: '$ ', // string - text to display before the bottomSum. Defaults to ``
 	suffix: ' ms', // string - text to display after the bottomSum. Defaults to ``
 	locales: 'en-US', // string|undefined - toLocaleString()'s locales string as a BCP 47 language tag. Defaults to `undefined`
-	options: {style: 'currency'}, // object - toLocaleString()'s options object adjusting the output format. Defaults to `{minimumFractionDigits: 0, maximumFractionDigits: 0}`
+	options: { style: 'currency' }, // object - toLocaleString()'s options object adjusting the output format. Defaults to `{minimumFractionDigits: 0, maximumFractionDigits: 0}`
 }
 ```
 
@@ -480,7 +480,7 @@ formatterParams = {
 ### Output
 
 ```javascript
-const input = {a: 1, b: 2, c: 3, d: 4, e: 5}, output = `5`; // because there are 5 keys: a, b, c, d and e
+const input = { a: 1, b: 2, c: 3, d: 4, e: 5 }, output = `5`; // because there are 5 keys: a, b, c, d and e
 ```
 
 ---
@@ -557,7 +557,7 @@ headerFilterFuncParams = {
 ### Output
 
 ```javascript
-const input = {a: 1, b: 2, c: 3, 3: 4}, output = `<div style="white-space: pre">{"3":4,"a":1,"b":2,"c":3}</div>`;
+const input = { a: 1, b: 2, c: 3, 3: 4 }, output = `<div style="white-space: pre">{"3":4,"a":1,"b":2,"c":3}</div>`;
 const input = [1, 2, 3], output = `1<br>2<br>3`;
 const input = true, output = `true`;
 const input = Infinity, output = `Infinity`;
@@ -632,7 +632,7 @@ formatterParams = {
 ### Output
 
 ```javascript
-const input = 'abcdefghijklmnopqrstuvwxyz', formatterParams = {textLimit: 3}, output = `abc...`;
+const input = 'abcdefghijklmnopqrstuvwxyz', formatterParams = { textLimit: 3 }, output = `abc...`;
 ```
 
 ---
@@ -711,7 +711,7 @@ formatterParams = {
 ```javascript
 const input = '/abc', output = `<a href="/abc" target="_blank" class="someClass">/abc</a>`;
 const input = ['/abc', '/xyz'], output = `<a href="/abc" target="_blank" class="someClass">/abc</a><br><a href="/xyz" target="_blank" class="someClass">/xyz</a>`;
-const input = {text: 'click-me', href: '/page', className: 'some-class', attr: {'data-id': () => 5}}, output = `<a data-id="5" href="/page" class="some-class">click-me</a>`;
+const input = { text: 'click-me', href: '/page', className: 'some-class', attr: { 'data-id': () => 5 } }, output = `<a data-id="5" href="/page" class="some-class">click-me</a>`;
 ```
 
 ---
@@ -724,14 +724,15 @@ The `object`, `args`, `files` and `minMax{}` formatters use advanced filtering o
 
 Keywords searches are split on spaces. So `search1 search2` is split into two searches, `search1` AND `search2`. If either checks returns `false` then the filter returns `false`.
 
-| **Operator** | **Description**                               | **Example**                     |
-|--------------|-----------------------------------------------|---------------------------------|
-| regex:       | regex search (no modifiers)                   | regex:^wp_.*_filter$            |
-| i:           | case insensitive                              | i:MacGruber                      | 
-| regex:i:     | regex search (with case insensitive modifier) | regex:i:select\s+\w+\.\*\s+from |
-| not:         | text not in value                             | not:NULL                        |
-| - | same as `not:`                                | -NULL                           |
-| + | same as having no operator (default)          | +/home/                         |
+| **Operator** | **Description**                                 | **Example**                     |
+|--------------|-------------------------------------------------|---------------------------------|
+| regex:       | regex search (no modifiers)                     | regex:^wp_.*_filter$            |
+| i:           | case insensitive                                | i:MacGruber                     | 
+| regex:i:     | regex search (with case insensitive modifier)   | regex:i:select\s+\w+\.\*\s+from |
+| not:         | text not in value                               | not:NULL                        |
+| -            | same as `not:`                                  | -NULL                           |
+| +            | same as having no operator (default)            | +/home/                         |
+| ~            | same as having no operator, but case insenstive | +/home/i                        |
 
 ### Combining Operators
 
@@ -909,7 +910,7 @@ As of v1.2 all of these events are namespaced as well. So if you want to subscri
  * @param string        $namespace - namespace to filter events by `new Tabulator(element, options, namespace)`
  * @return object - the modified $options object
  */
-jQuery.subscribe('tabulator-table-setup', function (options, element, namespace = 'all') {
+jQuery.subscribe('tabulator-table-setup', function(options, element, namespace = 'all') {
 	// Do something that modifies the options variable
 	options.paginationSize ??= 10;
 	options.movableColumns ??= true;
@@ -927,7 +928,7 @@ jQuery.subscribe('tabulator-table-setup', function (options, element, namespace 
  * @param string        $namespace - namespace to filter events by `new Tabulator(element, options, namespace)`
  * @return object - the modified $column object
  */
-jQuery.subscribe('tabulator-column-setup', function (column, data, initial, options, element, namespace = 'all') {
+jQuery.subscribe('tabulator-column-setup', function(column, data, initial, options, element, namespace = 'all') {
 	// Do something that modifies the column variable
 	if (['boolean', 'tickCross'].includes(initial.formatter)) {
 		column.width ??= 75;
@@ -946,7 +947,7 @@ jQuery.subscribe('tabulator-column-setup', function (column, data, initial, opti
  * @param string        $namespace - namespace to filter events by `new Tabulator(element, options, namespace)`
  * @return object - the modified $column object
  */
-jQuery.subscribe('tabulator-column-setup-after', function (column, data, initial, options, element, namespace = 'all') {
+jQuery.subscribe('tabulator-column-setup-after', function(column, data, initial, options, element, namespace = 'all') {
 	// Do something that modifies the column variable
 	if (['boolean', 'tickCross'].includes(initial.formatter)) {
 		column.headerWordWrap ??= true;
@@ -964,7 +965,7 @@ jQuery.subscribe('tabulator-column-setup-after', function (column, data, initial
  * @param mixed      ...parameters - any other parameters passed to `new Tabulator` get appended to the event args
  * @return void
  */
-jQuery.subscribe('tabulator-table-created', function (table, element, options, namespace, ...parameters) {
+jQuery.subscribe('tabulator-table-created', function(table, element, options, namespace, ...parameters) {
 	// Do something, like store the reference to table object somewhere in your app for later use
 	someVariable[element] = table;
 });

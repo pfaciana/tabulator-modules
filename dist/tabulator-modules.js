@@ -554,7 +554,7 @@ module.exports = function (headerValue, rowValue, rowData) {
     headerValue = (headerValue ?? '').toLowerCase();
     rowValue = (rowValue ?? '').toLowerCase();
   }
-  if (!headerValue.includes(' ') && !headerValue.includes(':') && !headerValue.includes('-') && !headerValue.includes('+')) {
+  if (!headerValue.includes(' ') && !headerValue.includes(':') && !headerValue.includes('-') && !headerValue.includes('+') && !headerValue.includes('~')) {
     return rowValue.includes(headerValue);
   }
   var keywords = headerValue.match(/(?:[^\s"]+|"[^"]*(?:(?!\\").)*")+/g);
@@ -964,6 +964,10 @@ module.exports = function (keyword, content) {
     }
   } else if (keyword.startsWith('+')) {
     if (!content.includes(stripQuotes(keyword.slice(1)))) {
+      return false;
+    }
+  } else if (keyword.startsWith('~')) {
+    if (!content.toLowerCase().includes(stripQuotes(keyword.slice(1)).toLowerCase())) {
       return false;
     }
   } else if (!content.includes(keyword)) {
