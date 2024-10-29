@@ -18,6 +18,7 @@ module.exports.formatters = {
   args: require('./src/formatters/args'),
   array: require('./src/formatters/array'),
   files: require('./src/formatters/files'),
+  humanReadable: require('./src/formatters/humanReadable'),
   object: require('./src/formatters/object'),
   timeAgo: require('./src/formatters/timeAgo'),
   urls: require('./src/formatters/urls')
@@ -76,16 +77,16 @@ module.exports.modules = {
   list: require('./src/modules/list')({
     formatter: 'list'
   }),
-  "list[]": require('./src/modules/list[]')({
+  'list[]': require('./src/modules/list[]')({
     formatter: 'list[]'
   }),
   minMax: require('./src/modules/minMax')({
     formatter: 'minMax'
   }, []),
-  "minMax[]": require('./src/modules/minMax[]')({
+  'minMax[]': require('./src/modules/minMax[]')({
     formatter: 'minMax[]'
   }, []),
-  "minMax{}": require('./src/modules/minMax{}')({
+  'minMax{}': require('./src/modules/minMax{}')({
     formatter: 'minMax{}'
   }, []),
   number: require('./src/modules/number')({
@@ -123,7 +124,7 @@ if ((typeof window === "undefined" ? "undefined" : _typeof(window)) === 'object'
 }
 
 }).call(this)}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./src/Create":17,"./src/filters/advanced":18,"./src/filters/args":19,"./src/filters/array":20,"./src/filters/minMax":21,"./src/filters/object":22,"./src/filters/regex":23,"./src/filters/timeAgo":24,"./src/formatters/args":25,"./src/formatters/array":26,"./src/formatters/files":27,"./src/formatters/object":28,"./src/formatters/timeAgo":29,"./src/formatters/urls":30,"./src/helpers/advancedSearch":31,"./src/helpers/formatString":32,"./src/helpers/getSize":33,"./src/helpers/hasPopup":34,"./src/helpers/indexOf":35,"./src/helpers/intervals":36,"./src/helpers/isType":37,"./src/html/list[]":39,"./src/html/minMax":40,"./src/modules/all":41,"./src/modules/args":42,"./src/modules/boolean":43,"./src/modules/files":44,"./src/modules/list":45,"./src/modules/list[]":46,"./src/modules/minMax":47,"./src/modules/minMax[]":48,"./src/modules/minMax{}":49,"./src/modules/number":50,"./src/modules/object":51,"./src/modules/regex":52,"./src/modules/string":53,"./src/modules/timeAgo":54,"./src/modules/timeMs":55,"./src/modules/urls":56,"./src/popups/object":57,"./src/sorters/args":58,"./src/sorters/array":59,"./src/sorters/object":60,"es5-util/js/arrayColumn":2,"es5-util/js/compare":3,"es5-util/js/getFromObjPath":4,"es5-util/js/getKey":5,"es5-util/js/getKeys":6,"es5-util/js/getValues":7,"es5-util/js/hasKey":8,"es5-util/js/hasKeys":9,"es5-util/js/isInteger":10,"es5-util/js/isObject":11,"es5-util/js/safeParse":12,"es5-util/js/safeStringify":13,"es5-util/js/toAssociativeArray":14,"es5-util/js/toHtmlEntities":15,"es5-util/js/truncate":16}],2:[function(require,module,exports){
+},{"./src/Create":17,"./src/filters/advanced":18,"./src/filters/args":19,"./src/filters/array":20,"./src/filters/minMax":21,"./src/filters/object":22,"./src/filters/regex":23,"./src/filters/timeAgo":24,"./src/formatters/args":25,"./src/formatters/array":26,"./src/formatters/files":27,"./src/formatters/humanReadable":28,"./src/formatters/object":29,"./src/formatters/timeAgo":30,"./src/formatters/urls":31,"./src/helpers/advancedSearch":32,"./src/helpers/formatString":33,"./src/helpers/getSize":34,"./src/helpers/hasPopup":35,"./src/helpers/indexOf":36,"./src/helpers/intervals":37,"./src/helpers/isType":38,"./src/html/list[]":40,"./src/html/minMax":41,"./src/modules/all":42,"./src/modules/args":43,"./src/modules/boolean":44,"./src/modules/files":45,"./src/modules/list":46,"./src/modules/list[]":47,"./src/modules/minMax":48,"./src/modules/minMax[]":49,"./src/modules/minMax{}":50,"./src/modules/number":51,"./src/modules/object":52,"./src/modules/regex":53,"./src/modules/string":54,"./src/modules/timeAgo":55,"./src/modules/timeMs":56,"./src/modules/urls":57,"./src/popups/object":58,"./src/sorters/args":59,"./src/sorters/array":60,"./src/sorters/object":61,"es5-util/js/arrayColumn":2,"es5-util/js/compare":3,"es5-util/js/getFromObjPath":4,"es5-util/js/getKey":5,"es5-util/js/getKeys":6,"es5-util/js/getValues":7,"es5-util/js/hasKey":8,"es5-util/js/hasKeys":9,"es5-util/js/isInteger":10,"es5-util/js/isObject":11,"es5-util/js/safeParse":12,"es5-util/js/safeStringify":13,"es5-util/js/toAssociativeArray":14,"es5-util/js/toHtmlEntities":15,"es5-util/js/truncate":16}],2:[function(require,module,exports){
 const getFromObjPath = require('./getFromObjPath');
 const getValues = require('./getValues');
 
@@ -557,7 +558,7 @@ function Create(element, options) {
 }
 module.exports = Create;
 
-},{"./modules/all":41,"./modules/args":42,"./modules/boolean":43,"./modules/files":44,"./modules/list":45,"./modules/list[]":46,"./modules/minMax":47,"./modules/minMax[]":48,"./modules/minMax{}":49,"./modules/number":50,"./modules/object":51,"./modules/regex":52,"./modules/string":53,"./modules/timeAgo":54,"./modules/timeMs":55,"./modules/urls":56}],18:[function(require,module,exports){
+},{"./modules/all":42,"./modules/args":43,"./modules/boolean":44,"./modules/files":45,"./modules/list":46,"./modules/list[]":47,"./modules/minMax":48,"./modules/minMax[]":49,"./modules/minMax{}":50,"./modules/number":51,"./modules/object":52,"./modules/regex":53,"./modules/string":54,"./modules/timeAgo":55,"./modules/timeMs":56,"./modules/urls":57}],18:[function(require,module,exports){
 "use strict";
 
 function _createForOfIteratorHelper(o, allowArrayLike) { var it = typeof Symbol !== "undefined" && o[Symbol.iterator] || o["@@iterator"]; if (!it) { if (Array.isArray(o) || (it = _unsupportedIterableToArray(o)) || allowArrayLike && o && typeof o.length === "number") { if (it) o = it; var i = 0; var F = function F() {}; return { s: F, n: function n() { if (i >= o.length) return { done: true }; return { done: false, value: o[i++] }; }, e: function e(_e) { throw _e; }, f: F }; } throw new TypeError("Invalid attempt to iterate non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); } var normalCompletion = true, didErr = false, err; return { s: function s() { it = it.call(o); }, n: function n() { var step = it.next(); normalCompletion = step.done; return step; }, e: function e(_e2) { didErr = true; err = _e2; }, f: function f() { try { if (!normalCompletion && it["return"] != null) it["return"](); } finally { if (didErr) throw err; } } }; }
@@ -580,7 +581,7 @@ module.exports = function (headerValue, rowValue, rowData) {
     headerValue = ((_headerValue = headerValue) !== null && _headerValue !== void 0 ? _headerValue : '').toLowerCase();
     rowValue = ((_rowValue = rowValue) !== null && _rowValue !== void 0 ? _rowValue : '').toLowerCase();
   }
-  if (!headerValue.includes(' ') && !headerValue.includes(':') && !headerValue.includes('-') && !headerValue.includes('+')) {
+  if (!headerValue.includes(' ') && !headerValue.includes(':') && !headerValue.includes('-') && !headerValue.includes('+') && !headerValue.includes('~')) {
     return rowValue.includes(headerValue);
   }
   var keywords = headerValue.match(/(?:[^\s"]+|"[^"]*(?:(?!\\").)*")+/g);
@@ -601,7 +602,7 @@ module.exports = function (headerValue, rowValue, rowData) {
   return true;
 };
 
-},{"../helpers/advancedSearch":31,"es5-util/js/safeStringify":13}],19:[function(require,module,exports){
+},{"../helpers/advancedSearch":32,"es5-util/js/safeStringify":13}],19:[function(require,module,exports){
 "use strict";
 
 var isObject = require('es5-util/js/isObject');
@@ -627,7 +628,7 @@ module.exports = function (headerValue, rowValue) {
   return minMaxFilter.apply(void 0, [headerValue, getSize(rowValue)].concat(args));
 };
 
-},{"./../filters/minMax":21,"./../helpers/getSize":33}],21:[function(require,module,exports){
+},{"./../filters/minMax":21,"./../helpers/getSize":34}],21:[function(require,module,exports){
 "use strict";
 
 module.exports = function (headerValue, rowValue, rowData, filterParams) {
@@ -687,7 +688,7 @@ module.exports = function (headerValue, rowValue, rowData, filterParams) {
   return minMaxFilter(headerValue, rowValue, rowData, filterParams);
 };
 
-},{"./../filters/minMax":21,"./../helpers/intervals":36,"es5-util/js/getKey":5}],25:[function(require,module,exports){
+},{"./../filters/minMax":21,"./../helpers/intervals":37,"es5-util/js/getKey":5}],25:[function(require,module,exports){
 "use strict";
 
 var toAssociativeArray = require('es5-util/js/toAssociativeArray');
@@ -761,7 +762,7 @@ module.exports = function (cell, formatterParams, onRendered) {
 module.exports.getType = formatArg;
 module.exports.getType = getType;
 
-},{"./../helpers/formatString":32,"es5-util/js/getKey":5,"es5-util/js/hasKey":8,"es5-util/js/isInteger":10,"es5-util/js/toAssociativeArray":14,"es5-util/js/toHtmlEntities":15}],26:[function(require,module,exports){
+},{"./../helpers/formatString":33,"es5-util/js/getKey":5,"es5-util/js/hasKey":8,"es5-util/js/isInteger":10,"es5-util/js/toAssociativeArray":14,"es5-util/js/toHtmlEntities":15}],26:[function(require,module,exports){
 "use strict";
 
 var getSize = require("../helpers/getSize");
@@ -769,7 +770,7 @@ module.exports = function (cell, formatterParams, onRendered) {
   return getSize(cell.getValue());
 };
 
-},{"../helpers/getSize":33}],27:[function(require,module,exports){
+},{"../helpers/getSize":34}],27:[function(require,module,exports){
 "use strict";
 
 var isObject = require('es5-util/js/isObject');
@@ -794,6 +795,63 @@ module.exports = function (cell, formatterParams, onRendered) {
 };
 
 },{"es5-util/js/isObject":11}],28:[function(require,module,exports){
+"use strict";
+
+function _typeof(obj) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (obj) { return typeof obj; } : function (obj) { return obj && "function" == typeof Symbol && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }, _typeof(obj); }
+function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); enumerableOnly && (symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; })), keys.push.apply(keys, symbols); } return keys; }
+function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = null != arguments[i] ? arguments[i] : {}; i % 2 ? ownKeys(Object(source), !0).forEach(function (key) { _defineProperty(target, key, source[key]); }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)) : ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } return target; }
+function _defineProperty(obj, key, value) { key = _toPropertyKey(key); if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+function _toPropertyKey(arg) { var key = _toPrimitive(arg, "string"); return _typeof(key) === "symbol" ? key : String(key); }
+function _toPrimitive(input, hint) { if (_typeof(input) !== "object" || input === null) return input; var prim = input[Symbol.toPrimitive]; if (prim !== undefined) { var res = prim.call(input, hint || "default"); if (_typeof(res) !== "object") return res; throw new TypeError("@@toPrimitive must return a primitive value."); } return (hint === "string" ? String : Number)(input); }
+module.exports = function (cell, formatterParams, onRendered) {
+  var value = cell.getValue();
+  if (!value && value !== 0) {
+    return '<span title="Invalid Number">-</span>';
+  }
+  var defaultParams = {
+    format: {
+      minimumFractionDigits: 0,
+      maximumFractionDigits: 0,
+      useGrouping: true
+    },
+    binary: false,
+    billion: 'G',
+    lower: false,
+    delimiter: '',
+    prefix: '',
+    suffix: '',
+    force: null
+  };
+  var params = _objectSpread(_objectSpread(_objectSpread({}, defaultParams), formatterParams), {}, {
+    format: (formatterParams === null || formatterParams === void 0 ? void 0 : formatterParams.format) === false ? false : formatterParams !== null && formatterParams !== void 0 && formatterParams.format ? _objectSpread(_objectSpread({}, defaultParams.format), formatterParams.format) : defaultParams.format
+  });
+  var units = ['', 'K', 'M', params.billion.toUpperCase(), 'T', 'P', 'E', 'Z', 'Y'];
+  var multiplier = params.binary ? 1024 : 1000;
+  var number = +value;
+  var count = 0;
+  if (params.force) {
+    count = units.indexOf(params.force.toUpperCase());
+    if (count !== -1) {
+      number /= Math.pow(multiplier, count);
+    }
+  } else {
+    while (number >= multiplier && count < units.length - 1) {
+      number /= multiplier;
+      count++;
+    }
+  }
+  if (params.format) {
+    var formatter = new Intl.NumberFormat(undefined, params.format);
+    number = formatter.format(number);
+  }
+  var unit = params.lower ? units[count].toLowerCase() : units[count].toUpperCase();
+  var humanReadable = params.prefix + number + (count > 0 ? params.delimiter : '') + unit + params.suffix;
+
+  // Return with title showing the original number
+  return "<span title=\"".concat(value, "\">").concat(humanReadable, "</span>");
+};
+
+},{}],29:[function(require,module,exports){
 "use strict";
 
 function _typeof(obj) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (obj) { return typeof obj; } : function (obj) { return obj && "function" == typeof Symbol && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }, _typeof(obj); }
@@ -828,7 +886,7 @@ module.exports.byKeys = function (cell, formatterParams, onRendered) {
   return isObject(value) ? Object.keys(value).length : +!!value;
 };
 
-},{"./../helpers/formatString":32,"es5-util/js/isObject":11,"es5-util/js/toAssociativeArray":14}],29:[function(require,module,exports){
+},{"./../helpers/formatString":33,"es5-util/js/isObject":11,"es5-util/js/toAssociativeArray":14}],30:[function(require,module,exports){
 "use strict";
 
 var getKey = require('es5-util/js/getKey');
@@ -860,7 +918,7 @@ module.exports = function (cell, formatterParams, onRendered) {
   return "<span title=\"".concat(dateObject.toLocaleString(), "\">").concat(timeAgoFormatted, "</span>");
 };
 
-},{"./../helpers/intervals":36,"es5-util/js/getKey":5}],30:[function(require,module,exports){
+},{"./../helpers/intervals":37,"es5-util/js/getKey":5}],31:[function(require,module,exports){
 "use strict";
 
 function _objectEntries(obj) {
@@ -1001,7 +1059,7 @@ module.exports.getHtmlTag = getHtmlTag;
 module.exports.normalizeArgs = normalizeArgs;
 module.exports.mergeArgs = mergeArgs;
 
-},{"es5-util/js/isObject":11}],31:[function(require,module,exports){
+},{"es5-util/js/isObject":11}],32:[function(require,module,exports){
 "use strict";
 
 var safeStringify = require('es5-util/js/safeStringify');
@@ -1038,13 +1096,17 @@ module.exports = function (keyword, content) {
     if (!content.includes(stripQuotes(keyword.slice(1)))) {
       return false;
     }
+  } else if (keyword.startsWith('~')) {
+    if (!content.toLowerCase().includes(stripQuotes(keyword.slice(1)).toLowerCase())) {
+      return false;
+    }
   } else if (!content.includes(keyword)) {
     return false;
   }
   return true;
 };
 
-},{"es5-util/js/safeStringify":13}],32:[function(require,module,exports){
+},{"es5-util/js/safeStringify":13}],33:[function(require,module,exports){
 "use strict";
 
 function _typeof(obj) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (obj) { return typeof obj; } : function (obj) { return obj && "function" == typeof Symbol && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }, _typeof(obj); }
@@ -1081,14 +1143,14 @@ module.exports = function (content) {
   return prefix + content + suffix;
 };
 
-},{"es5-util/js/getKeys":6,"es5-util/js/toHtmlEntities":15,"es5-util/js/truncate":16}],33:[function(require,module,exports){
+},{"es5-util/js/getKeys":6,"es5-util/js/toHtmlEntities":15,"es5-util/js/truncate":16}],34:[function(require,module,exports){
 "use strict";
 
 module.exports = function (items) {
   return Array.isArray(items) ? items.length : +![undefined, null, false, '', '0', 0].includes(items);
 };
 
-},{}],34:[function(require,module,exports){
+},{}],35:[function(require,module,exports){
 "use strict";
 
 var isObject = require('es5-util/js/isObject');
@@ -1106,7 +1168,7 @@ module.exports = function (condition, content, params, cell, onRendered) {
   return condition < (isObject(cell.getValue()) ? JSON.stringify(cell.getValue(), null, 0) : cell.getValue()).length;
 };
 
-},{"es5-util/js/isObject":11}],35:[function(require,module,exports){
+},{"es5-util/js/isObject":11}],36:[function(require,module,exports){
 "use strict";
 
 function indexOf(haystack) {
@@ -1132,7 +1194,7 @@ module.exports = indexOf;
 module.exports.fn = indexOfFn;
 module.exports.nl = indexOfNlFn;
 
-},{}],36:[function(require,module,exports){
+},{}],37:[function(require,module,exports){
 "use strict";
 
 module.exports = {
@@ -1143,7 +1205,7 @@ module.exports = {
   y: 60 * 60 * 24 * 365
 };
 
-},{}],37:[function(require,module,exports){
+},{}],38:[function(require,module,exports){
 "use strict";
 
 function _typeof(obj) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (obj) { return typeof obj; } : function (obj) { return obj && "function" == typeof Symbol && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }, _typeof(obj); }
@@ -1177,7 +1239,7 @@ module.exports = function (key, values) {
   return false;
 };
 
-},{}],38:[function(require,module,exports){
+},{}],39:[function(require,module,exports){
 "use strict";
 
 var getKey = require("es5-util/js/getKey");
@@ -1197,7 +1259,7 @@ function sum(values) {
 }
 module.exports = sum;
 
-},{"es5-util/js/getKey":5}],39:[function(require,module,exports){
+},{"es5-util/js/getKey":5}],40:[function(require,module,exports){
 "use strict";
 
 module.exports = {
@@ -1216,7 +1278,7 @@ module.exports = {
   }
 };
 
-},{}],40:[function(require,module,exports){
+},{}],41:[function(require,module,exports){
 "use strict";
 
 module.exports = function (cell, onRendered, success, cancel, params) {
@@ -1256,7 +1318,7 @@ module.exports = function (cell, onRendered, success, cancel, params) {
   return container;
 };
 
-},{}],41:[function(require,module,exports){
+},{}],42:[function(require,module,exports){
 "use strict";
 
 function _typeof(obj) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (obj) { return typeof obj; } : function (obj) { return obj && "function" == typeof Symbol && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }, _typeof(obj); }
@@ -1278,7 +1340,7 @@ module.exports = function (column, data, initial, options, element) {
   }), column);
 };
 
-},{}],42:[function(require,module,exports){
+},{}],43:[function(require,module,exports){
 "use strict";
 
 var isType = require('../helpers/isType');
@@ -1302,7 +1364,7 @@ module.exports = function (column, data, initial, options, element) {
 };
 module.exports.formatter = formatters;
 
-},{"../helpers/isType":37,"./../filters/args":19,"./../formatters/args":25,"./../sorters/args":58}],43:[function(require,module,exports){
+},{"../helpers/isType":38,"./../filters/args":19,"./../formatters/args":25,"./../sorters/args":59}],44:[function(require,module,exports){
 "use strict";
 
 function _typeof(obj) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (obj) { return typeof obj; } : function (obj) { return obj && "function" == typeof Symbol && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }, _typeof(obj); }
@@ -1335,7 +1397,7 @@ module.exports = function (column, data, initial, options, element) {
 };
 module.exports.formatter = formatters;
 
-},{"../helpers/isType":37}],44:[function(require,module,exports){
+},{"../helpers/isType":38}],45:[function(require,module,exports){
 "use strict";
 
 var isType = require('../helpers/isType');
@@ -1361,7 +1423,7 @@ module.exports = function (column, data, initial, options, element) {
 };
 module.exports.formatter = formatters;
 
-},{"../helpers/isType":37,"./../filters/advanced":18,"./../formatters/files":27,"./../sorters/object":60}],45:[function(require,module,exports){
+},{"../helpers/isType":38,"./../filters/advanced":18,"./../formatters/files":27,"./../sorters/object":61}],46:[function(require,module,exports){
 "use strict";
 
 var isType = require('../helpers/isType');
@@ -1386,7 +1448,7 @@ module.exports = function (column, data, initial, options, element) {
 };
 module.exports.formatter = formatters;
 
-},{"../helpers/isType":37,"../sorters/object":60}],46:[function(require,module,exports){
+},{"../helpers/isType":38,"../sorters/object":61}],47:[function(require,module,exports){
 "use strict";
 
 var isType = require('../helpers/isType');
@@ -1416,7 +1478,7 @@ module.exports = function (column, data, initial, options, element) {
 };
 module.exports.formatter = formatters;
 
-},{"../helpers/isType":37,"../sorters/array":59,"./../html/list[]":39}],47:[function(require,module,exports){
+},{"../helpers/isType":38,"../sorters/array":60,"./../html/list[]":40}],48:[function(require,module,exports){
 "use strict";
 
 function _toConsumableArray(arr) { return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _unsupportedIterableToArray(arr) || _nonIterableSpread(); }
@@ -1459,7 +1521,7 @@ module.exports = function (column, data, initial, options, element) {
 };
 module.exports.formatter = formatters;
 
-},{"../filters/minMax":21,"../helpers/isType":37,"../helpers/sum":38,"../html/minMax":40,"es5-util/js/arrayColumn":2,"es5-util/js/getKeys":6}],48:[function(require,module,exports){
+},{"../filters/minMax":21,"../helpers/isType":38,"../helpers/sum":39,"../html/minMax":41,"es5-util/js/arrayColumn":2,"es5-util/js/getKeys":6}],49:[function(require,module,exports){
 "use strict";
 
 function _toConsumableArray(arr) { return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _unsupportedIterableToArray(arr) || _nonIterableSpread(); }
@@ -1509,7 +1571,7 @@ module.exports = function (column, data, initial, options, element) {
 };
 module.exports.formatter = formatters;
 
-},{"../helpers/getSize":33,"../helpers/isType":37,"../html/minMax":40,"../popups/object":57,"./../filters/array":20,"./../formatters/array":26,"./../sorters/array":59,"es5-util/js/arrayColumn":2,"es5-util/js/getKeys":6}],49:[function(require,module,exports){
+},{"../helpers/getSize":34,"../helpers/isType":38,"../html/minMax":41,"../popups/object":58,"./../filters/array":20,"./../formatters/array":26,"./../sorters/array":60,"es5-util/js/arrayColumn":2,"es5-util/js/getKeys":6}],50:[function(require,module,exports){
 "use strict";
 
 function _toConsumableArray(arr) { return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _unsupportedIterableToArray(arr) || _nonIterableSpread(); }
@@ -1558,7 +1620,7 @@ module.exports = function (column, data, initial, options, element) {
 };
 module.exports.formatter = formatters;
 
-},{"../helpers/isType":37,"../html/minMax":40,"../popups/object":57,"./../filters/object":22,"./../formatters/object":28,"./../sorters/object":60,"es5-util/js/arrayColumn":2,"es5-util/js/getKeys":6}],50:[function(require,module,exports){
+},{"../helpers/isType":38,"../html/minMax":41,"../popups/object":58,"./../filters/object":22,"./../formatters/object":29,"./../sorters/object":61,"es5-util/js/arrayColumn":2,"es5-util/js/getKeys":6}],51:[function(require,module,exports){
 "use strict";
 
 var isType = require('../helpers/isType');
@@ -1577,7 +1639,7 @@ module.exports = function (column, data, initial, options, element) {
 };
 module.exports.formatter = formatters;
 
-},{"../helpers/isType":37}],51:[function(require,module,exports){
+},{"../helpers/isType":38}],52:[function(require,module,exports){
 "use strict";
 
 var isType = require('../helpers/isType');
@@ -1620,7 +1682,7 @@ module.exports = function (column, data, initial, options, element) {
 };
 module.exports.formatter = formatters;
 
-},{"../helpers/isType":37,"./../filters/advanced":18,"./../formatters/object":28,"./../popups/object":57,"./../sorters/object":60,"es5-util/js/getKeys":6}],52:[function(require,module,exports){
+},{"../helpers/isType":38,"./../filters/advanced":18,"./../formatters/object":29,"./../popups/object":58,"./../sorters/object":61,"es5-util/js/getKeys":6}],53:[function(require,module,exports){
 "use strict";
 
 var isType = require('../helpers/isType');
@@ -1642,7 +1704,7 @@ module.exports = function (column, data, initial, options, element) {
 };
 module.exports.formatter = formatters;
 
-},{"../helpers/isType":37}],53:[function(require,module,exports){
+},{"../helpers/isType":38}],54:[function(require,module,exports){
 "use strict";
 
 var isType = require('../helpers/isType');
@@ -1683,7 +1745,7 @@ module.exports = function (column, data, initial, options, element) {
 };
 module.exports.formatter = formatters;
 
-},{"../filters/advanced":18,"../helpers/isType":37,"./../helpers/formatString":32,"./../popups/object":57}],54:[function(require,module,exports){
+},{"../filters/advanced":18,"../helpers/isType":38,"./../helpers/formatString":33,"./../popups/object":58}],55:[function(require,module,exports){
 "use strict";
 
 var isType = require('../helpers/isType');
@@ -1716,7 +1778,7 @@ module.exports = function (column, data, initial, options, element) {
 };
 module.exports.formatter = formatters;
 
-},{"../filters/timeAgo":24,"../formatters/timeAgo":29,"../helpers/isType":37,"../html/minMax":40}],55:[function(require,module,exports){
+},{"../filters/timeAgo":24,"../formatters/timeAgo":30,"../helpers/isType":38,"../html/minMax":41}],56:[function(require,module,exports){
 "use strict";
 
 function _toConsumableArray(arr) { return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _unsupportedIterableToArray(arr) || _nonIterableSpread(); }
@@ -1771,7 +1833,7 @@ module.exports = function (column, data, initial, options, element) {
 };
 module.exports.formatter = formatters;
 
-},{"../filters/minMax":21,"../helpers/isType":37,"../helpers/sum":38,"../html/minMax":40,"es5-util/js/arrayColumn":2,"es5-util/js/getKeys":6}],56:[function(require,module,exports){
+},{"../filters/minMax":21,"../helpers/isType":38,"../helpers/sum":39,"../html/minMax":41,"es5-util/js/arrayColumn":2,"es5-util/js/getKeys":6}],57:[function(require,module,exports){
 "use strict";
 
 var isType = require('../helpers/isType');
@@ -1791,7 +1853,7 @@ module.exports = function (column, data, initial, options, element) {
 };
 module.exports.formatter = formatters;
 
-},{"../helpers/isType":37,"./../formatters/urls":30}],57:[function(require,module,exports){
+},{"../helpers/isType":38,"./../formatters/urls":31}],58:[function(require,module,exports){
 "use strict";
 
 function _typeof(obj) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (obj) { return typeof obj; } : function (obj) { return obj && "function" == typeof Symbol && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }, _typeof(obj); }
@@ -1831,7 +1893,7 @@ module.exports = function (e, component, onRendered) {
   return formatString(content, formatterParams);
 };
 
-},{"./../helpers/formatString":32,"./../helpers/hasPopup":34,"es5-util/js/getKeys":6,"es5-util/js/isObject":11,"es5-util/js/toHtmlEntities":15}],58:[function(require,module,exports){
+},{"./../helpers/formatString":33,"./../helpers/hasPopup":35,"es5-util/js/getKeys":6,"es5-util/js/isObject":11,"es5-util/js/toHtmlEntities":15}],59:[function(require,module,exports){
 "use strict";
 
 var isObject = require('es5-util/js/isObject');
@@ -1845,7 +1907,7 @@ module.exports = function (o1, o2) {
   return objectSorter.apply(void 0, [a, b].concat(args));
 };
 
-},{"../sorters/object":60,"es5-util/js/isObject":11}],59:[function(require,module,exports){
+},{"../sorters/object":61,"es5-util/js/isObject":11}],60:[function(require,module,exports){
 "use strict";
 
 var getSize = require("../helpers/getSize");
@@ -1858,7 +1920,7 @@ module.exports = function (a, b, aRow, bRow, column, dir, sorterParams) {
   return objectSorter.apply(void 0, arguments);
 };
 
-},{"../helpers/getSize":33,"./../sorters/object":60}],60:[function(require,module,exports){
+},{"../helpers/getSize":34,"./../sorters/object":61}],61:[function(require,module,exports){
 "use strict";
 
 var isObject = require('es5-util/js/isObject');
